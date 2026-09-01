@@ -1,3 +1,4 @@
+
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -9,10 +10,55 @@ const Login = () => {
     password: "",
   });
 
+  const [error, setError] = useState("");
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    setError("");
 
-    alert("Login functionality will be connected to the backend later.");
+    // Get registered user
+    const savedUser = JSON.parse(
+      localStorage.getItem("watchmeUser")
+    );
+
+    // Check account
+    if (!savedUser) {
+      setError(
+        "No account found. Please create an account first."
+      );
+      return;
+    }
+
+    // Check email
+    if (
+      savedUser.email.toLowerCase() !==
+      form.email.toLowerCase()
+    ) {
+      setError("Invalid email or password.");
+      return;
+    }
+
+    // Check password
+    if (savedUser.password !== form.password) {
+      setError("Invalid email or password.");
+      return;
+    }
+
+    // Save login session
+    localStorage.setItem(
+      "watchmeLoggedIn",
+      "true"
+    );
+
+    localStorage.setItem(
+      "watchmeCurrentUser",
+      JSON.stringify({
+        name: savedUser.name,
+        email: savedUser.email,
+      })
+    );
+
+    alert(`Welcome back, ${savedUser.name}!`);
 
     navigate("/");
   };
@@ -20,9 +66,11 @@ const Login = () => {
   return (
     <main className="auth-page">
       <div className="auth-container">
+
         <div className="auth-image">
           <div>
             <p>WATCHME</p>
+
             <h2>
               Time is
               <br />
@@ -33,7 +81,10 @@ const Login = () => {
 
         <div className="auth-form-container">
           <div className="auth-form">
-            <p className="section-label">WELCOME BACK</p>
+
+            <p className="section-label">
+              WELCOME BACK
+            </p>
 
             <h1>Sign In</h1>
 
@@ -41,9 +92,17 @@ const Login = () => {
               Enter your details to access your account.
             </p>
 
+            {error && (
+              <div className="auth-error">
+                {error}
+              </div>
+            )}
+
             <form onSubmit={handleSubmit}>
+
               <div className="form-group">
                 <label>Email Address</label>
+
                 <input
                   type="email"
                   required
@@ -60,6 +119,7 @@ const Login = () => {
 
               <div className="form-group">
                 <label>Password</label>
+
                 <input
                   type="password"
                   required
@@ -75,7 +135,17 @@ const Login = () => {
               </div>
 
               <div className="forgot-password">
-                <a href="#">Forgot password?</a>
+                <a
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    alert(
+                      "Password recovery will be connected to the backend later."
+                    );
+                  }}
+                >
+                  Forgot password?
+                </a>
               </div>
 
               <button
@@ -84,14 +154,19 @@ const Login = () => {
               >
                 Sign In
               </button>
+
             </form>
 
             <p className="auth-switch">
               Don't have an account?{" "}
-              <Link to="/register">Create Account</Link>
+              <Link to="/register">
+                Create Account
+              </Link>
             </p>
+
           </div>
         </div>
+
       </div>
     </main>
   );

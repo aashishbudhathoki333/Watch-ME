@@ -1,83 +1,320 @@
-import { useContext, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+
+import { useContext, useEffect, useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
-  Menu,
-  X,
-  Search,
   Heart,
   ShoppingBag,
+  Menu,
+  X,
   User,
+  LogOut,
 } from "lucide-react";
+
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
 
-const Navbar = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
+import "./Navbar.css";
 
+const Navbar = () => {
   const { cartCount } = useContext(CartContext);
   const { wishlistItems } = useContext(WishlistContext);
 
-  const closeMenu = () => setMenuOpen(false);
+  const [mobileMenu, setMobileMenu] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  const navigate = useNavigate();
+
+  const wishlistCount = wishlistItems.length;
+
+  // Check login status
+  useEffect(() => {
+    const loggedIn =
+      localStorage.getItem("watchmeLoggedIn") === "true";
+
+    const savedUser = JSON.parse(
+      localStorage.getItem("watchmeCurrentUser")
+    );
+
+    setIsLoggedIn(loggedIn);
+    setCurrentUser(savedUser);
+  }, []);
+
+  const closeMenu = () => {
+    setMobileMenu(false);
+  };
+
+  // Logout
+  const handleLogout = () => {
+    localStorage.removeItem("watchmeLoggedIn");
+    localStorage.removeItem("watchmeCurrentUser");
+
+    setIsLoggedIn(false);
+    setCurrentUser(null);
+
+    closeMenu();
+    navigate("/");
+  };
 
   return (
     <header className="navbar">
+
       <div className="navbar-container">
-        <Link to="/" className="logo" onClick={closeMenu}>
+
+        {/* ================= LOGO ================= */}
+
+        <Link
+          to="/"
+          className="navbar-logo"
+          onClick={closeMenu}
+        >
           WATCH<span>ME</span>
         </Link>
 
-        <nav className={`nav-links ${menuOpen ? "active" : ""}`}>
-          <NavLink to="/" onClick={closeMenu}>
+        {/* ================= DESKTOP NAV ================= */}
+
+        <nav className="desktop-nav">
+
+          <NavLink
+            to="/"
+            className={({ isActive }) =>
+              isActive ? "nav-link active" : "nav-link"
+            }
+          >
             Home
           </NavLink>
 
-          <NavLink to="/shop" onClick={closeMenu}>
+          <NavLink
+            to="/shop"
+            className={({ isActive }) =>
+              isActive ? "nav-link active" : "nav-link"
+            }
+          >
             Shop
           </NavLink>
 
-          <NavLink to="/categories" onClick={closeMenu}>
+          <NavLink
+            to="/categories"
+            className={({ isActive }) =>
+              isActive ? "nav-link active" : "nav-link"
+            }
+          >
             Categories
           </NavLink>
 
-          <NavLink to="/about" onClick={closeMenu}>
+          <NavLink
+            to="/about"
+            className={({ isActive }) =>
+              isActive ? "nav-link active" : "nav-link"
+            }
+          >
             About
           </NavLink>
 
-          <NavLink to="/contact" onClick={closeMenu}>
+          <NavLink
+            to="/contact"
+            className={({ isActive }) =>
+              isActive ? "nav-link active" : "nav-link"
+            }
+          >
             Contact
           </NavLink>
+
         </nav>
 
-        <div className="nav-actions">
-          <Link to="/shop" aria-label="Search">
-            <Search size={20} />
-          </Link>
+        {/* ================= ACTIONS ================= */}
 
-          <Link to="/wishlist" className="icon-with-count">
-            <Heart size={20} />
-            {wishlistItems.length > 0 && (
-              <span>{wishlistItems.length}</span>
+        <div className="navbar-actions">
+
+          {/* Wishlist */}
+
+          <Link
+            to="/wishlist"
+            className="nav-action"
+            aria-label="Wishlist"
+          >
+            <Heart size={21} />
+
+            {wishlistCount > 0 && (
+              <span className="nav-count">
+                {wishlistCount}
+              </span>
             )}
           </Link>
 
-          <Link to="/cart" className="icon-with-count">
-            <ShoppingBag size={20} />
-            {cartCount > 0 && <span>{cartCount}</span>}
+          {/* Cart */}
+
+          <Link
+            to="/cart"
+            className="nav-action"
+            aria-label="Shopping cart"
+          >
+            <ShoppingBag size={21} />
+
+            {cartCount > 0 && (
+              <span className="nav-count">
+                {cartCount}
+              </span>
+            )}
           </Link>
 
-          <Link to="/login">
-            <User size={20} />
-          </Link>
+          {/* ================= USER ================= */}
+
+          {isLoggedIn ? (
+            <div className="nav-account">
+
+              <Link
+                to="/"
+                className="nav-user logged-user"
+                aria-label="Account"
+              >
+                <User size={19} />
+
+                <span>
+                  {currentUser?.name || "Account"}
+                </span>
+              </Link>
+
+              <button
+                type="button"
+                className="nav-logout"
+                onClick={handleLogout}
+                aria-label="Logout"
+              >
+                <LogOut size={17} />
+              </button>
+
+            </div>
+          ) : (
+            <Link
+              to="/login"
+              className="nav-user"
+              aria-label="Login"
+            >
+              <User size={19} />
+              <span>Login</span>
+            </Link>
+          )}
+
+          {/* Mobile Menu */}
 
           <button
-            className="mobile-menu-button"
-            onClick={() => setMenuOpen(!menuOpen)}
             type="button"
+            className="mobile-menu-button"
+            onClick={() => setMobileMenu(!mobileMenu)}
+            aria-label="Toggle menu"
           >
-            {menuOpen ? <X size={23} /> : <Menu size={23} />}
+            {mobileMenu ? (
+              <X size={24} />
+            ) : (
+              <Menu size={24} />
+            )}
           </button>
+
         </div>
+
       </div>
+
+      {/* ================= MOBILE NAV ================= */}
+
+      <div
+        className={`mobile-nav ${
+          mobileMenu ? "show" : ""
+        }`}
+      >
+
+        <NavLink
+          to="/"
+          onClick={closeMenu}
+          className="mobile-nav-link"
+        >
+          Home
+        </NavLink>
+
+        <NavLink
+          to="/shop"
+          onClick={closeMenu}
+          className="mobile-nav-link"
+        >
+          Shop
+        </NavLink>
+
+        <NavLink
+          to="/categories"
+          onClick={closeMenu}
+          className="mobile-nav-link"
+        >
+          Categories
+        </NavLink>
+
+        <NavLink
+          to="/wishlist"
+          onClick={closeMenu}
+          className="mobile-nav-link"
+        >
+          Wishlist
+
+          {wishlistCount > 0 && (
+            <span>{wishlistCount}</span>
+          )}
+        </NavLink>
+
+        <NavLink
+          to="/cart"
+          onClick={closeMenu}
+          className="mobile-nav-link"
+        >
+          Cart
+
+          {cartCount > 0 && (
+            <span>{cartCount}</span>
+          )}
+        </NavLink>
+
+        <NavLink
+          to="/about"
+          onClick={closeMenu}
+          className="mobile-nav-link"
+        >
+          About
+        </NavLink>
+
+        <NavLink
+          to="/contact"
+          onClick={closeMenu}
+          className="mobile-nav-link"
+        >
+          Contact
+        </NavLink>
+
+        {/* Mobile Account */}
+
+        {isLoggedIn ? (
+          <button
+            type="button"
+            className="mobile-nav-link mobile-logout"
+            onClick={handleLogout}
+          >
+            <User size={17} />
+
+            <span>
+              {currentUser?.name || "Account"}
+            </span>
+
+            <LogOut size={16} />
+          </button>
+        ) : (
+          <NavLink
+            to="/login"
+            onClick={closeMenu}
+            className="mobile-nav-link"
+          >
+            Login
+          </NavLink>
+        )}
+
+      </div>
+
     </header>
   );
 };

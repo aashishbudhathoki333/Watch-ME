@@ -1,184 +1,399 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, ShieldCheck, Truck, RotateCcw } from "lucide-react";
-import products from "../data/products";
-import ProductGrid from "../components/ProductGrid";
+import { useContext } from "react";
+import { CartContext } from "../context/CartContext";
+import { WishlistContext } from "../context/WishlistContext";
+import {
+  ArrowRight,
+  Truck,
+  ShieldCheck,
+  RotateCcw,
+  Star,
+  Heart,
+  ShoppingBag,
+} from "lucide-react";
+import "./Home.css";
 
-const Home = () => {
-  const featuredProducts = products.slice(0, 4);
+const featuredWatches = [
+  {
+    id: 1,
+    name: "Apex Classic",
+    category: "Men's Collection",
+    price: 12999,
+    oldPrice: 15999,
+    rating: 4.8,
+    badge: "Best Seller",
+    color: "black",
+  },
+  {
+    id: 2,
+    name: "Luna Elegance",
+    category: "Women's Collection",
+    price: 10999,
+    oldPrice: 13999,
+    rating: 4.7,
+    badge: "New",
+    color: "rose",
+  },
+  {
+    id: 3,
+    name: "Chrono Sport",
+    category: "Sports Collection",
+    price: 8999,
+    oldPrice: 11999,
+    rating: 4.6,
+    badge: "Popular",
+    color: "silver",
+  },
+  {
+    id: 4,
+    name: "Royal Elite",
+    category: "Luxury Collection",
+    price: 24999,
+    oldPrice: 29999,
+    rating: 4.9,
+    badge: "Premium",
+    color: "gold",
+  },
+];
+
+const categories = [
+  {
+    title: "Men's Watches",
+    description: "Bold designs for every occasion",
+    icon: "⌚",
+  },
+  {
+    title: "Women's Watches",
+    description: "Elegant timepieces with style",
+    icon: "◉",
+  },
+  {
+    title: "Luxury Watches",
+    description: "Premium craftsmanship & detail",
+    icon: "✦",
+  },
+];
+
+function Home() {
+  const { addToCart } = useContext(CartContext);
+
+  const {
+    toggleWishlist,
+    isInWishlist,
+  } = useContext(WishlistContext);
 
   return (
-    <>
-      <main>
-        {/* HERO */}
-        <section className="hero">
-          <div className="hero-container">
-            <div className="hero-content">
-              <p className="hero-label">TIMELESS COLLECTION</p>
+    <main className="home-page">
 
-              <h1>
-                Time is
-                <br />
-                <em>your</em> story.
-              </h1>
+      {/* ================= HERO ================= */}
+      <section className="hero-section">
+        <div className="hero-content">
+          <span className="hero-tag">TIMELESS COLLECTION 2026</span>
 
-              <p className="hero-description">
-                Discover carefully crafted watches designed
-                to make every moment memorable.
-              </p>
+          <h1>
+            Time is your
+            <span> statement.</span>
+          </h1>
 
-              <div className="hero-buttons">
-                <Link to="/shop" className="btn btn-dark">
-                  Shop Collection
-                  <ArrowRight size={18} />
-                </Link>
+          <p>
+            Discover carefully crafted timepieces designed to elevate
+            your style, from everyday essentials to luxury classics.
+          </p>
 
-                <Link to="/categories" className="text-link">
-                  Explore Categories
-                </Link>
-              </div>
+          <div className="hero-buttons">
+            <Link to="/shop" className="btn-primary">
+              Shop Collection
+              <ArrowRight size={18} />
+            </Link>
+
+            <Link to="/categories" className="btn-secondary">
+              Explore Categories
+            </Link>
+          </div>
+
+          <div className="hero-trust">
+            <div>
+              <strong>500+</strong>
+              <span>Watches</span>
             </div>
 
-            <div className="hero-image-container">
-              <div className="hero-circle"></div>
+            <div>
+              <strong>10K+</strong>
+              <span>Happy Customers</span>
+            </div>
 
-              <img
-                src="https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=1000&q=85"
-                alt="Premium Watch"
-                className="hero-image"
-              />
+            <div>
+              <strong>4.9/5</strong>
+              <span>Customer Rating</span>
+            </div>
+          </div>
+        </div>
 
-              <div className="hero-floating-card">
-                <span>01</span>
-                <div>
-                  <strong>Timeless</strong>
-                  <small>Premium Collection</small>
+        <div className="hero-watch-area">
+          <div className="hero-circle"></div>
+
+          <div className="hero-watch">
+            <div className="watch-crown"></div>
+            <div className="watch-face">
+              <div className="watch-marker marker-12">12</div>
+              <div className="watch-marker marker-3">3</div>
+              <div className="watch-marker marker-6">6</div>
+              <div className="watch-marker marker-9">9</div>
+
+              <div className="watch-hand hour-hand"></div>
+              <div className="watch-hand minute-hand"></div>
+              <div className="watch-hand second-hand"></div>
+
+              <div className="watch-center"></div>
+            </div>
+          </div>
+
+          <div className="hero-floating-card">
+            <Star size={16} fill="currentColor" />
+            <div>
+              <strong>4.9 Rating</strong>
+              <span>Trusted by customers</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= CATEGORIES ================= */}
+      <section className="categories-section">
+        <div className="section-heading">
+          <div>
+            <span className="section-label">EXPLORE</span>
+            <h2>Shop by Category</h2>
+          </div>
+
+          <Link to="/categories" className="view-all">
+            View All
+            <ArrowRight size={17} />
+          </Link>
+        </div>
+
+        <div className="category-grid">
+          {categories.map((category) => (
+            <Link
+              to="/shop"
+              className="category-card"
+              key={category.title}
+            >
+              <div className="category-icon">{category.icon}</div>
+
+              <div>
+                <h3>{category.title}</h3>
+                <p>{category.description}</p>
+              </div>
+
+              <ArrowRight className="category-arrow" size={20} />
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ================= FEATURED ================= */}
+      <section className="featured-section">
+        <div className="section-heading">
+          <div>
+            <span className="section-label">OUR COLLECTION</span>
+            <h2>Featured Watches</h2>
+          </div>
+
+          <Link to="/shop" className="view-all">
+            Shop All
+            <ArrowRight size={17} />
+          </Link>
+        </div>
+
+        <div className="product-grid">
+          {featuredWatches.map((watch) => (
+            <article className="home-product-card" key={watch.id}>
+
+              <div className={`product-image ${watch.color}`}>
+                <span className="product-badge">{watch.badge}</span>
+<button
+  className={`wishlist-button ${
+    isInWishlist(watch.id) ? "active" : ""
+  }`}
+  type="button"
+  aria-label={
+    isInWishlist(watch.id)
+      ? `Remove ${watch.name} from wishlist`
+      : `Add ${watch.name} to wishlist`
+  }
+  onClick={() => toggleWishlist(watch)}
+>
+  <Heart
+    size={19}
+    fill={
+      isInWishlist(watch.id)
+        ? "currentColor"
+        : "none"
+    }
+  />
+</button>
+
+                <div className="watch-placeholder">
+                  <div className="mini-watch">
+                    <div className="mini-watch-face">
+                      <span></span>
+                    </div>
+                  </div>
+                </div>
+
+                <Link
+                  to={`/products/${watch.id}`}
+                  className="quick-view"
+                >
+                  Quick View
+                </Link>
+              </div>
+
+              <div className="product-info">
+                <span className="product-category">
+                  {watch.category}
+                </span>
+
+               <Link
+  to={`/products/${watch.id}`}
+  className="product-name"
+>
+  {watch.name}
+</Link>
+
+                <div className="rating">
+                  <Star size={15} fill="currentColor" />
+                  <span>{watch.rating}</span>
+                  <span className="review-count">(24 reviews)</span>
+                </div>
+
+                <div className="product-bottom">
+                  <div className="price">
+                    <strong>Rs. {watch.price.toLocaleString()}</strong>
+                    <del>Rs. {watch.oldPrice.toLocaleString()}</del>
+                  </div>
+<button
+  className="add-cart"
+  type="button"
+  aria-label={`Add ${watch.name} to cart`}
+  onClick={() => addToCart(watch)}
+>
+  <ShoppingBag size={18} />
+</button>
                 </div>
               </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* ================= PROMO ================= */}
+      <section className="promo-section">
+        <div className="promo-content">
+          <span className="section-label">WATCHME EXCLUSIVE</span>
+
+          <h2>
+            Find the watch that
+            <span> defines you.</span>
+          </h2>
+
+          <p>
+            From minimal everyday watches to sophisticated luxury
+            timepieces, discover something made for your wrist.
+          </p>
+
+          <Link to="/shop" className="btn-primary">
+            Discover Watches
+            <ArrowRight size={18} />
+          </Link>
+        </div>
+
+        <div className="promo-decoration">
+          <div className="promo-watch">
+            <div className="promo-face">
+              <span>WATCHME</span>
+              <div className="promo-hand promo-hour"></div>
+              <div className="promo-hand promo-minute"></div>
+              <div className="promo-dot"></div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* FEATURES */}
-        <section className="features">
-          <div className="features-container">
-            <div className="feature">
-              <ShieldCheck />
-              <div>
-                <h4>Authentic Quality</h4>
-                <p>Premium craftsmanship</p>
-              </div>
-            </div>
-
-            <div className="feature">
-              <Truck />
-              <div>
-                <h4>Fast Delivery</h4>
-                <p>Across Nepal</p>
-              </div>
-            </div>
-
-            <div className="feature">
-              <RotateCcw />
-              <div>
-                <h4>Easy Returns</h4>
-                <p>7-day return policy</p>
-              </div>
-            </div>
+      {/* ================= WHY WATCHME ================= */}
+      <section className="benefits-section">
+        <div className="section-heading centered">
+          <div>
+            <span className="section-label">THE WATCHME PROMISE</span>
+            <h2>Why Shop With Us?</h2>
           </div>
-        </section>
+        </div>
 
-        {/* CATEGORIES */}
-        <section className="section categories-section">
-          <div className="section-heading">
-            <div>
-              <p className="section-label">DISCOVER</p>
-              <h2>Shop by Category</h2>
+        <div className="benefits-grid">
+
+          <div className="benefit-card">
+            <div className="benefit-icon">
+              <Truck size={25} />
             </div>
-
-            <Link to="/categories" className="text-link">
-              View All <ArrowRight size={17} />
-            </Link>
-          </div>
-
-          <div className="category-grid">
-            <Link to="/shop?category=Men" className="category-card category-men">
-              <div>
-                <span>01</span>
-                <h3>Men's Watches</h3>
-                <p>Strong. Refined. Timeless.</p>
-              </div>
-            </Link>
-
-            <Link to="/shop?category=Women" className="category-card category-women">
-              <div>
-                <span>02</span>
-                <h3>Women's Watches</h3>
-                <p>Elegant. Modern. Beautiful.</p>
-              </div>
-            </Link>
-
-            <Link to="/shop?type=Luxury" className="category-card category-luxury">
-              <div>
-                <span>03</span>
-                <h3>Luxury Collection</h3>
-                <p>Crafted for distinction.</p>
-              </div>
-            </Link>
-          </div>
-        </section>
-
-        {/* FEATURED PRODUCTS */}
-        <section className="section featured-section">
-          <div className="section-heading center-heading">
-            <p className="section-label">OUR COLLECTION</p>
-            <h2>Featured Watches</h2>
+            <h3>Fast Delivery</h3>
             <p>
-              Discover some of our most loved timepieces.
+              Get your favorite timepiece delivered safely to your
+              doorstep.
             </p>
           </div>
 
-          <ProductGrid products={featuredProducts} />
-
-          <div className="center-button">
-            <Link to="/shop" className="btn btn-outline">
-              View All Watches
-              <ArrowRight size={18} />
-            </Link>
-          </div>
-        </section>
-
-        {/* PROMO */}
-        <section className="promo-section">
-          <div className="promo-content">
-            <p className="section-label">WATCHME EXCLUSIVE</p>
-
-            <h2>
-              Designed to be
-              <br />
-              <em>remembered.</em>
-            </h2>
-
+          <div className="benefit-card">
+            <div className="benefit-icon">
+              <ShieldCheck size={25} />
+            </div>
+            <h3>Authentic Products</h3>
             <p>
-              Every WatchMe timepiece combines modern
-              aesthetics with timeless craftsmanship.
+              Every watch is carefully selected for quality and
+              authenticity.
             </p>
-
-            <Link to="/shop" className="btn btn-light">
-              Discover Collection
-              <ArrowRight size={18} />
-            </Link>
           </div>
 
-          <div className="promo-image">
-            <img
-              src="https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=80"
-              alt="WatchMe Collection"
-            />
+          <div className="benefit-card">
+            <div className="benefit-icon">
+              <RotateCcw size={25} />
+            </div>
+            <h3>Easy Returns</h3>
+            <p>
+              Shop confidently with our simple and convenient return
+              process.
+            </p>
           </div>
-        </section>
-      </main>
-    </>
+
+        </div>
+      </section>
+
+      {/* ================= NEWSLETTER ================= */}
+      <section className="newsletter-section">
+        <div>
+          <span className="section-label">STAY IN THE LOOP</span>
+          <h2>Never miss a moment.</h2>
+          <p>
+            Subscribe for new collections, exclusive offers and
+            watch inspiration.
+          </p>
+        </div>
+
+        <form className="newsletter-form">
+          <input
+            type="email"
+            placeholder="Enter your email address"
+            aria-label="Email address"
+          />
+          <button type="submit">
+            Subscribe
+            <ArrowRight size={17} />
+          </button>
+        </form>
+      </section>
+
+    </main>
   );
-};
+}
 
 export default Home;

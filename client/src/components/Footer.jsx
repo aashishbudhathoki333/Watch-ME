@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
-import {
-  Instagram,
-  Facebook,
-  Twitter,
-  Mail,
-} from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
 
+import {
+  FaFacebookF,
+  FaInstagram,
+  FaTwitter
+} from "react-icons/fa";
 const Footer = () => {
   return (
     <footer className="footer">
@@ -19,20 +19,19 @@ const Footer = () => {
             Timeless watches for modern lifestyles. Discover
             your perfect timepiece with WatchMe.
           </p>
+<div className="social-links">
+  <a href="#" aria-label="Facebook">
+    <FaFacebookF />
+  </a>
 
-          <div className="social-links">
-            <a href="#" aria-label="Instagram">
-              <Instagram size={19} />
-            </a>
+  <a href="#" aria-label="Instagram">
+    <FaInstagram />
+  </a>
 
-            <a href="#" aria-label="Facebook">
-              <Facebook size={19} />
-            </a>
-
-            <a href="#" aria-label="Twitter">
-              <Twitter size={19} />
-            </a>
-          </div>
+  <a href="#" aria-label="Twitter">
+    <FaTwitter />
+  </a>
+</div>
         </div>
 
         <div className="footer-column">

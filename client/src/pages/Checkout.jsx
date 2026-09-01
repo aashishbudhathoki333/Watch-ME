@@ -1,222 +1,571 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import {
+ArrowLeft,
+ArrowRight,
+Check,
+CreditCard,
+MapPin,
+ShieldCheck,
+Truck,
+} from "lucide-react";
 import { CartContext } from "../context/CartContext";
+import "./Checkout.css";
 
 const Checkout = () => {
-  const { cartItems, cartTotal, clearCart } =
-    useContext(CartContext);
+const { cartItems, cartTotal } = useContext(CartContext);
+const navigate = useNavigate();
 
-  const navigate = useNavigate();
+const delivery = cartItems.length > 0 ? 100 : 0;
+const total = cartTotal + delivery;
 
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    city: "",
-    province: "",
-  });
+const [paymentMethod, setPaymentMethod] = useState("cod");
 
-  const delivery = 100;
-  const total = cartTotal + delivery;
+const [formData, setFormData] = useState({
+firstName: "",
+lastName: "",
+email: "",
+phone: "",
+address: "",
+city: "",
+province: "",
+postalCode: "",
+});
 
-  const handleChange = (e) => {
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value,
-    });
-  };
+const handleChange = (e) => {
+const { name, value } = e.target;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+setFormData((previous) => ({
+  ...previous,
+  [name]: value,
+}));
 
-    alert(
-      "Order placed successfully! Thank you for shopping with WatchMe."
-    );
 
-    clearCart();
-    navigate("/");
-  };
+};
 
-  if (cartItems.length === 0) {
-    return (
-      <main className="empty-page">
-        <div>
-          <h1>No items to checkout</h1>
-          <p>Add some watches to your cart first.</p>
+const handleSubmit = (e) => {
+e.preventDefault();
 
-          <Link to="/shop" className="btn btn-dark">
-            Shop Now
-          </Link>
+
+// Temporary checkout action.
+// Later this will create an order in the backend/database.
+navigate("/order-success");
+
+
+};
+
+if (cartItems.length === 0) {
+return ( <main className="checkout-empty"> <div className="checkout-empty-icon">🛍</div>
+
+    <h1>Your cart is empty</h1>
+
+    <p>
+      You need to add at least one watch before
+      proceeding to checkout.
+    </p>
+
+    <Link to="/shop" className="checkout-dark-btn">
+      Start Shopping
+      <ArrowRight size={18} />
+    </Link>
+  </main>
+);
+
+}
+
+return ( <main className="checkout-page">
+
+
+  {/* ================= HEADER ================= */}
+
+  <section className="checkout-header">
+    <div>
+      <Link to="/cart" className="back-to-cart">
+        <ArrowLeft size={16} />
+        Back to Cart
+      </Link>
+
+      <span className="section-label">
+        WATCHME CHECKOUT
+      </span>
+
+      <h1>Complete Your Order</h1>
+
+      <p>
+        You're one step away from owning your
+        perfect timepiece.
+      </p>
+    </div>
+  </section>
+
+  {/* ================= CHECKOUT CONTENT ================= */}
+
+  <form
+    className="checkout-container"
+    onSubmit={handleSubmit}
+  >
+
+    {/* ================= LEFT SIDE ================= */}
+
+    <div className="checkout-main">
+
+      {/* CUSTOMER INFORMATION */}
+
+      <section className="checkout-card">
+
+        <div className="checkout-card-heading">
+          <div className="checkout-step">
+            <span>01</span>
+          </div>
+
+          <div>
+            <h2>Contact Information</h2>
+            <p>
+              How can we reach you about your order?
+            </p>
+          </div>
         </div>
-      </main>
-    );
-  }
 
-  return (
-    <main className="checkout-page">
-      <section className="page-header">
-        <p className="section-label">WATCHME</p>
-        <h1>Checkout</h1>
+        <div className="checkout-form-grid">
+
+          <div className="form-group">
+            <label htmlFor="firstName">
+              First Name
+            </label>
+
+            <input
+              id="firstName"
+              name="firstName"
+              type="text"
+              placeholder="Aashish"
+              value={formData.firstName}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="lastName">
+              Last Name
+            </label>
+
+            <input
+              id="lastName"
+              name="lastName"
+              type="text"
+              placeholder="Budhathoki"
+              value={formData.lastName}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="email">
+              Email Address
+            </label>
+
+            <input
+              id="email"
+              name="email"
+              type="email"
+              placeholder="you@example.com"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="phone">
+              Phone Number
+            </label>
+
+            <input
+              id="phone"
+              name="phone"
+              type="tel"
+              placeholder="98XXXXXXXX"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+        </div>
       </section>
 
-      <div className="checkout-container">
-        <form
-          className="checkout-form"
-          onSubmit={handleSubmit}
-        >
-          <h2>Shipping Information</h2>
+      {/* DELIVERY INFORMATION */}
 
-          <div className="form-grid">
-            <div className="form-group full">
-              <label>Full Name</label>
-              <input
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                required
-                placeholder="Your full name"
-              />
-            </div>
+      <section className="checkout-card">
 
-            <div className="form-group">
-              <label>Email</label>
-              <input
-                type="email"
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                required
-                placeholder="you@example.com"
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Phone Number</label>
-              <input
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                required
-                placeholder="98XXXXXXXX"
-              />
-            </div>
-
-            <div className="form-group full">
-              <label>Address</label>
-              <input
-                name="address"
-                value={form.address}
-                onChange={handleChange}
-                required
-                placeholder="Street / Tole / Ward"
-              />
-            </div>
-
-            <div className="form-group">
-              <label>City</label>
-              <input
-                name="city"
-                value={form.city}
-                onChange={handleChange}
-                required
-                placeholder="City"
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Province</label>
-              <select
-                name="province"
-                value={form.province}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select Province</option>
-                <option>Koshi</option>
-                <option>Madhesh</option>
-                <option>Bagmati</option>
-                <option>Gandaki</option>
-                <option>Lumbini</option>
-                <option>Karnali</option>
-                <option>Sudurpashchim</option>
-              </select>
-            </div>
+        <div className="checkout-card-heading">
+          <div className="checkout-step">
+            <span>02</span>
           </div>
 
-          <h2 className="payment-title">
-            Payment Method
-          </h2>
+          <div>
+            <h2>Delivery Address</h2>
+            <p>
+              Where should we deliver your watches?
+            </p>
+          </div>
+        </div>
 
-          <div className="payment-option">
+        <div className="address-icon">
+          <MapPin size={19} />
+          <span>Shipping Address</span>
+        </div>
+
+        <div className="checkout-form-grid">
+
+          <div className="form-group full-width">
+            <label htmlFor="address">
+              Street Address
+            </label>
+
+            <input
+              id="address"
+              name="address"
+              type="text"
+              placeholder="House number, street name"
+              value={formData.address}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="city">
+              City
+            </label>
+
+            <input
+              id="city"
+              name="city"
+              type="text"
+              placeholder="Kathmandu"
+              value={formData.city}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="province">
+              Province
+            </label>
+
+            <select
+              id="province"
+              name="province"
+              value={formData.province}
+              onChange={handleChange}
+              required
+            >
+              <option value="">
+                Select Province
+              </option>
+              <option value="Koshi">
+                Koshi Province
+              </option>
+              <option value="Madhesh">
+                Madhesh Province
+              </option>
+              <option value="Bagmati">
+                Bagmati Province
+              </option>
+              <option value="Gandaki">
+                Gandaki Province
+              </option>
+              <option value="Lumbini">
+                Lumbini Province
+              </option>
+              <option value="Karnali">
+                Karnali Province
+              </option>
+              <option value="Sudurpashchim">
+                Sudurpashchim Province
+              </option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="postalCode">
+              Postal Code
+            </label>
+
+            <input
+              id="postalCode"
+              name="postalCode"
+              type="text"
+              placeholder="44600"
+              value={formData.postalCode}
+              onChange={handleChange}
+            />
+          </div>
+
+        </div>
+      </section>
+
+      {/* PAYMENT */}
+
+      <section className="checkout-card">
+
+        <div className="checkout-card-heading">
+          <div className="checkout-step">
+            <span>03</span>
+          </div>
+
+          <div>
+            <h2>Payment Method</h2>
+            <p>
+              Choose how you'd like to pay.
+            </p>
+          </div>
+        </div>
+
+        <div className="payment-options">
+
+          <label
+            className={`payment-option ${
+              paymentMethod === "cod"
+                ? "selected"
+                : ""
+            }`}
+          >
             <input
               type="radio"
-              checked
-              readOnly
+              name="payment"
+              value="cod"
+              checked={paymentMethod === "cod"}
+              onChange={(e) =>
+                setPaymentMethod(e.target.value)
+              }
             />
 
-            <div>
-              <strong>Cash on Delivery</strong>
-              <p>Pay when your order arrives.</p>
+            <div className="payment-icon">
+              <Truck size={21} />
             </div>
-          </div>
 
-          <button
-            type="submit"
-            className="btn btn-dark place-order"
-          >
-            Place Order — Rs. {total.toLocaleString()}
-          </button>
-        </form>
-
-        <aside className="checkout-summary">
-          <h2>Your Order</h2>
-
-          {cartItems.map((item) => (
-            <div
-              className="checkout-item"
-              key={item.id}
-            >
-              <img src={item.image} alt={item.name} />
-
-              <div>
-                <h4>{item.name}</h4>
-                <span>
-                  Qty: {item.quantity}
-                </span>
-              </div>
-
+            <div className="payment-info">
               <strong>
-                Rs.{" "}
-                {(item.price * item.quantity).toLocaleString()}
+                Cash on Delivery
               </strong>
+
+              <span>
+                Pay when your order arrives.
+              </span>
             </div>
-          ))}
 
-          <hr />
+            <div className="payment-check">
+              <Check size={15} />
+            </div>
+          </label>
 
-          <div>
-            <span>Subtotal</span>
-            <strong>
-              Rs. {cartTotal.toLocaleString()}
-            </strong>
+          <label
+            className={`payment-option ${
+              paymentMethod === "card"
+                ? "selected"
+                : ""
+            }`}
+          >
+            <input
+              type="radio"
+              name="payment"
+              value="card"
+              checked={paymentMethod === "card"}
+              onChange={(e) =>
+                setPaymentMethod(e.target.value)
+              }
+            />
+
+            <div className="payment-icon">
+              <CreditCard size={21} />
+            </div>
+
+            <div className="payment-info">
+              <strong>
+                Card Payment
+              </strong>
+
+              <span>
+                Secure online card payment.
+              </span>
+            </div>
+
+            <div className="payment-check">
+              <Check size={15} />
+            </div>
+          </label>
+
+        </div>
+
+        {paymentMethod === "card" && (
+          <div className="card-notice">
+            <CreditCard size={18} />
+
+            <div>
+              <strong>
+                Online payment coming soon
+              </strong>
+
+              <p>
+                Card payment integration will be
+                connected when we build the backend.
+              </p>
+            </div>
           </div>
+        )}
 
-          <div>
-            <span>Delivery</span>
-            <strong>Rs. {delivery}</strong>
-          </div>
+      </section>
 
-          <div className="checkout-total">
-            <span>Total</span>
-            <strong>
-              Rs. {total.toLocaleString()}
-            </strong>
-          </div>
-        </aside>
+      {/* SECURITY */}
+
+      <div className="checkout-security">
+        <ShieldCheck size={21} />
+
+        <div>
+          <strong>Safe & Secure Checkout</strong>
+
+          <p>
+            Your personal information is protected
+            and handled securely.
+          </p>
+        </div>
       </div>
-    </main>
-  );
+
+    </div>
+
+    {/* ================= RIGHT SIDE ================= */}
+
+    <aside className="checkout-summary">
+
+      <div className="summary-header">
+        <div>
+          <span className="section-label">
+            YOUR ORDER
+          </span>
+
+          <h2>Order Summary</h2>
+        </div>
+
+        <span className="item-count">
+          {cartItems.reduce(
+            (totalItems, item) =>
+              totalItems + item.quantity,
+            0
+          )}{" "}
+          items
+        </span>
+      </div>
+
+      {/* PRODUCTS */}
+
+      <div className="checkout-products">
+
+        {cartItems.map((item) => (
+          <div
+            className="checkout-product"
+            key={item.id}
+          >
+            <div className="checkout-product-image">
+              {item.image ? (
+                <img
+                  src={item.image}
+                  alt={item.name}
+                />
+              ) : (
+                <div
+                  className={`checkout-watch-placeholder ${item.color}`}
+                >
+                  <div className="checkout-mini-watch">
+                    <div className="checkout-mini-face">
+                      <span>12</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="checkout-product-info">
+              <span>{item.brand || "WATCHME"}</span>
+
+              <h3>{item.name}</h3>
+
+              <p>
+                Qty: {item.quantity}
+              </p>
+            </div>
+
+            <strong>
+              Rs.{" "}
+              {(
+                item.price * item.quantity
+              ).toLocaleString()}
+            </strong>
+          </div>
+        ))}
+
+      </div>
+
+      {/* TOTALS */}
+
+      <div className="summary-calculation">
+
+        <div>
+          <span>Subtotal</span>
+
+          <strong>
+            Rs. {cartTotal.toLocaleString()}
+          </strong>
+        </div>
+
+        <div>
+          <span>Delivery</span>
+
+          <strong>
+            Rs. {delivery.toLocaleString()}
+          </strong>
+        </div>
+
+        <div className="summary-total">
+          <span>Total</span>
+
+          <strong>
+            Rs. {total.toLocaleString()}
+          </strong>
+        </div>
+
+      </div>
+
+      <button
+        type="submit"
+        className="place-order-btn"
+      >
+        Place Order
+        <ArrowRight size={19} />
+      </button>
+
+      <p className="terms-text">
+        By placing your order, you agree to
+        WatchMe's terms and conditions.
+      </p>
+
+      <Link
+        to="/cart"
+        className="edit-cart-link"
+      >
+        <ArrowLeft size={15} />
+        Edit Cart
+      </Link>
+
+    </aside>
+
+  </form>
+</main>
+
+);
 };
 
 export default Checkout;

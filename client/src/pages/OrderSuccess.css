@@ -1,0 +1,154 @@
+.success-page {
+    min-height: 75vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    background: #f8f7f4;
+}
+
+.success-card {
+    width: 100%;
+    max-width: 650px;
+    background: #ffffff;
+    padding: 60px 50px;
+    text-align: center;
+    border: 1px solid #e8e5df;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.06);
+}
+
+.success-icon {
+    width: 90px;
+    height: 90px;
+    margin: 0 auto 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #f1f4ee;
+    color: #52634b;
+}
+
+.success-label {
+    display: block;
+    margin-bottom: 14px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #77736c;
+}
+
+.success-card h1 {
+    margin: 0 0 18px;
+    font-size: 38px;
+    line-height: 1.15;
+    color: #171717;
+}
+
+.success-message {
+    max-width: 500px;
+    margin: 0 auto;
+    color: #77736c;
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+.order-number {
+    margin: 35px auto;
+    padding: 18px 25px;
+    max-width: 350px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: #f8f7f4;
+    border: 1px solid #e8e5df;
+}
+
+.order-number span {
+    color: #77736c;
+    font-size: 13px;
+}
+
+.order-number strong {
+    color: #171717;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.success-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+}
+
+.success-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-width: 220px;
+}
+
+.success-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: #171717;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.success-home:hover {
+    text-decoration: underline;
+}
+
+.success-note {
+    margin-top: 45px;
+    padding-top: 25px;
+    border-top: 1px solid #e8e5df;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.success-note strong {
+    font-size: 13px;
+    letter-spacing: 2px;
+}
+
+.success-note span {
+    color: #8a867f;
+    font-size: 12px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 600px) {
+    .success-page {
+        padding: 50px 15px;
+    }
+
+    .success-card {
+        padding: 45px 25px;
+    }
+
+    .success-card h1 {
+        font-size: 30px;
+    }
+
+    .success-message {
+        font-size: 14px;
+    }
+
+    .order-number {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .success-actions .btn {
+        width: 100%;
+    }
+}
