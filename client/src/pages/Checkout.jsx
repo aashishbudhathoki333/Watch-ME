@@ -49,7 +49,7 @@ e.preventDefault();
 
 // Temporary checkout action.
 // Later this will create an order in the backend/database.
-navigate("/order-success");
+navigate("/success");
 
 
 };

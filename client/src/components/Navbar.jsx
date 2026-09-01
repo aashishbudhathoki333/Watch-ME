@@ -1,5 +1,4 @@
-
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import {
   Heart,
@@ -12,53 +11,33 @@ import {
 
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
+import { AuthContext } from "../context/AuthContext";
 
 import "./Navbar.css";
 
 const Navbar = () => {
   const { cartCount } = useContext(CartContext);
   const { wishlistItems } = useContext(WishlistContext);
+  const { user, isLoggedIn, logout } = useContext(AuthContext);
 
   const [mobileMenu, setMobileMenu] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
 
   const navigate = useNavigate();
 
   const wishlistCount = wishlistItems.length;
 
-  // Check login status
-  useEffect(() => {
-    const loggedIn =
-      localStorage.getItem("watchmeLoggedIn") === "true";
-
-    const savedUser = JSON.parse(
-      localStorage.getItem("watchmeCurrentUser")
-    );
-
-    setIsLoggedIn(loggedIn);
-    setCurrentUser(savedUser);
-  }, []);
-
   const closeMenu = () => {
     setMobileMenu(false);
   };
 
-  // Logout
   const handleLogout = () => {
-    localStorage.removeItem("watchmeLoggedIn");
-    localStorage.removeItem("watchmeCurrentUser");
-
-    setIsLoggedIn(false);
-    setCurrentUser(null);
-
+    logout();
     closeMenu();
     navigate("/");
   };
 
   return (
     <header className="navbar">
-
       <div className="navbar-container">
 
         {/* ================= LOGO ================= */}
@@ -161,27 +140,23 @@ const Navbar = () => {
           {/* ================= USER ================= */}
 
           {isLoggedIn ? (
-            <div className="nav-account">
+            <div className="nav-user-area">
 
-              <Link
-                to="/"
-                className="nav-user logged-user"
-                aria-label="Account"
-              >
+              <span className="nav-user">
                 <User size={19} />
 
                 <span>
-                  {currentUser?.name || "Account"}
+                  {user?.name || user?.email || "Account"}
                 </span>
-              </Link>
+              </span>
 
               <button
                 type="button"
                 className="nav-logout"
                 onClick={handleLogout}
-                aria-label="Logout"
               >
                 <LogOut size={17} />
+                <span>Logout</span>
               </button>
 
             </div>
@@ -196,7 +171,7 @@ const Navbar = () => {
             </Link>
           )}
 
-          {/* Mobile Menu */}
+          {/* ================= MOBILE MENU ================= */}
 
           <button
             type="button"
@@ -287,22 +262,25 @@ const Navbar = () => {
           Contact
         </NavLink>
 
-        {/* Mobile Account */}
-
         {isLoggedIn ? (
-          <button
-            type="button"
-            className="mobile-nav-link mobile-logout"
-            onClick={handleLogout}
-          >
-            <User size={17} />
+          <>
+            <div className="mobile-user">
+              <User size={18} />
 
-            <span>
-              {currentUser?.name || "Account"}
-            </span>
+              <span>
+                {user?.name || user?.email || "Account"}
+              </span>
+            </div>
 
-            <LogOut size={16} />
-          </button>
+            <button
+              type="button"
+              className="mobile-logout"
+              onClick={handleLogout}
+            >
+              <LogOut size={18} />
+              Logout
+            </button>
+          </>
         ) : (
           <NavLink
             to="/login"
@@ -314,7 +292,6 @@ const Navbar = () => {
         )}
 
       </div>
-
     </header>
   );
 };

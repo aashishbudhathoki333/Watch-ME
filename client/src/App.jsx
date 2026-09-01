@@ -6,6 +6,9 @@ import ScrollToTop from "./components/ScrollToTop";
 
 import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
+import { AuthProvider } from "./context/AuthContext";
+
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
@@ -22,119 +25,123 @@ import OrderSuccess from "./pages/OrderSuccess";
 
 const App = () => {
   return (
-    <BrowserRouter>
-
+    <AuthProvider>
       <CartProvider>
         <WishlistProvider>
 
-          <ScrollToTop />
+          <BrowserRouter>
+            <ScrollToTop />
 
-          <Navbar />
+            <Navbar />
 
-          <Routes>
+            <Routes>
 
-            {/* ================= HOME ================= */}
+              {/* ================= HOME ================= */}
 
-            <Route
-              path="/"
-              element={<Home />}
-            />
+              <Route
+                path="/"
+                element={<Home />}
+              />
 
-            {/* ================= SHOP ================= */}
+              {/* ================= SHOP ================= */}
 
-            <Route
-              path="/shop"
-              element={<Shop />}
-            />
+              <Route
+                path="/shop"
+                element={<Shop />}
+              />
 
-            {/* ================= CATEGORIES ================= */}
+              {/* ================= CATEGORIES ================= */}
 
-            <Route
-              path="/categories"
-              element={<Categories />}
-            />
+              <Route
+                path="/categories"
+                element={<Categories />}
+              />
 
-            {/* ================= PRODUCT DETAILS ================= */}
+              {/* ================= PRODUCT DETAILS ================= */}
 
-            <Route
-              path="/products/:id"
-              element={<ProductDetails />}
-            />
+              <Route
+                path="/products/:id"
+                element={<ProductDetails />}
+              />
 
-            {/* ================= CART ================= */}
+              {/* ================= CART ================= */}
 
-            <Route
-              path="/cart"
-              element={<Cart />}
-            />
+              <Route
+                path="/cart"
+                element={<Cart />}
+              />
 
-            {/* ================= WISHLIST ================= */}
+              {/* ================= WISHLIST ================= */}
 
-            <Route
-              path="/wishlist"
-              element={<Wishlist />}
-            />
+              <Route
+                path="/wishlist"
+                element={<Wishlist />}
+              />
 
-            {/* ================= CHECKOUT ================= */}
+              {/* ================= CHECKOUT ================= */}
 
-            <Route
-              path="/checkout"
-              element={<Checkout />}
-            />
+              <Route
+                path="/checkout"
+                element={
+                  <ProtectedRoute>
+                    <Checkout />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* ================= AUTH ================= */}
+              {/* ================= AUTH ================= */}
 
-            <Route
-              path="/login"
-              element={<Login />}
-            />
+              <Route
+                path="/login"
+                element={<Login />}
+              />
 
-            <Route
-              path="/register"
-              element={<Register />}
-            />
+              <Route
+                path="/register"
+                element={<Register />}
+              />
 
-            {/* ================= OTHER PAGES ================= */}
+              {/* ================= OTHER PAGES ================= */}
 
-            <Route
-              path="/about"
-              element={<About />}
-            />
+              <Route
+                path="/about"
+                element={<About />}
+              />
 
-            <Route
-              path="/contact"
-              element={<Contact />}
-            />
+              <Route
+                path="/contact"
+                element={<Contact />}
+              />
 
-            {/* ================= ORDER SUCCESS ================= */}
+              {/* ================= ORDER SUCCESS ================= */}
 
-            <Route
-              path="/success"
-              element={<OrderSuccess />}
-            />
+              <Route
+                path="/success"
+                element={<OrderSuccess />}
+              />
 
-            {/* ================= 404 ================= */}
+              {/* ================= 404 ================= */}
 
-            <Route
-              path="*"
-              element={
-                <div className="not-found">
-                  <h1>404</h1>
-                  <p>Page not found.</p>
-                </div>
-              }
-            />
+              <Route
+                path="*"
+                element={
+                  <div className="not-found">
+                    <h1>404</h1>
+                    <p>Page not found.</p>
+                  </div>
+                }
+              />
 
-          </Routes>
+            </Routes>
 
-          <Footer />
+            <Footer />
+
+          </BrowserRouter>
 
         </WishlistProvider>
       </CartProvider>
-
-    </BrowserRouter>
+    </AuthProvider>
   );
 };
 
 export default App;
-

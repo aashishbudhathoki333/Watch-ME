@@ -1,64 +1,29 @@
-
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AuthContext } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
 
-  const [error, setError] = useState("");
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError("");
 
-    // Get registered user
-    const savedUser = JSON.parse(
-      localStorage.getItem("watchmeUser")
-    );
+    // Temporary frontend login
+    // Backend authentication will be connected later.
+    const userData = {
+      email: form.email,
+      name: form.email.split("@")[0],
+    };
 
-    // Check account
-    if (!savedUser) {
-      setError(
-        "No account found. Please create an account first."
-      );
-      return;
-    }
+    login(userData);
 
-    // Check email
-    if (
-      savedUser.email.toLowerCase() !==
-      form.email.toLowerCase()
-    ) {
-      setError("Invalid email or password.");
-      return;
-    }
-
-    // Check password
-    if (savedUser.password !== form.password) {
-      setError("Invalid email or password.");
-      return;
-    }
-
-    // Save login session
-    localStorage.setItem(
-      "watchmeLoggedIn",
-      "true"
-    );
-
-    localStorage.setItem(
-      "watchmeCurrentUser",
-      JSON.stringify({
-        name: savedUser.name,
-        email: savedUser.email,
-      })
-    );
-
-    alert(`Welcome back, ${savedUser.name}!`);
+    alert("Login successful!");
 
     navigate("/");
   };
@@ -92,18 +57,15 @@ const Login = () => {
               Enter your details to access your account.
             </p>
 
-            {error && (
-              <div className="auth-error">
-                {error}
-              </div>
-            )}
-
             <form onSubmit={handleSubmit}>
 
               <div className="form-group">
-                <label>Email Address</label>
+                <label htmlFor="email">
+                  Email Address
+                </label>
 
                 <input
+                  id="email"
                   type="email"
                   required
                   placeholder="you@example.com"
@@ -118,9 +80,12 @@ const Login = () => {
               </div>
 
               <div className="form-group">
-                <label>Password</label>
+                <label htmlFor="password">
+                  Password
+                </label>
 
                 <input
+                  id="password"
                   type="password"
                   required
                   placeholder="••••••••"
@@ -135,15 +100,7 @@ const Login = () => {
               </div>
 
               <div className="forgot-password">
-                <a
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    alert(
-                      "Password recovery will be connected to the backend later."
-                    );
-                  }}
-                >
+                <a href="#forgot-password">
                   Forgot password?
                 </a>
               </div>

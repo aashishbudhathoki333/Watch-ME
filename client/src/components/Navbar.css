@@ -13,7 +13,6 @@
     width: min(1200px, 92%);
     height: 78px;
     margin: 0 auto;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -24,7 +23,6 @@
 .navbar-logo {
     text-decoration: none;
     color: #171717;
-
     font-size: 24px;
     font-weight: 800;
     letter-spacing: 3px;
@@ -44,15 +42,11 @@
 
 .nav-link {
     position: relative;
-
     text-decoration: none;
     color: #66625c;
-
     font-size: 14px;
     font-weight: 500;
-
     padding: 29px 0;
-
     transition: color 0.2s ease;
 }
 
@@ -67,12 +61,10 @@
 
 .nav-link.active::after {
     content: "";
-
     position: absolute;
     left: 0;
     right: 0;
     bottom: 21px;
-
     height: 2px;
     background: #171717;
 }
@@ -87,22 +79,15 @@
 
 .nav-action {
     position: relative;
-
     width: 38px;
     height: 38px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     color: #252525;
     text-decoration: none;
-
     border-radius: 50%;
-
-    transition:
-        background 0.2s ease,
-        transform 0.2s ease;
+    transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .nav-action:hover {
@@ -114,73 +99,113 @@
 
 .nav-count {
     position: absolute;
-
     top: -3px;
     right: -3px;
-
     min-width: 17px;
     height: 17px;
-
     padding: 0 4px;
-
     display: flex;
     align-items: center;
     justify-content: center;
-
     border-radius: 50%;
-
     background: #171717;
     color: #ffffff;
-
     font-size: 9px;
     font-weight: 700;
-
     border: 2px solid #ffffff;
 }
 
-/* ================= LOGIN ================= */
+/* ================= USER ACCOUNT ================= */
+
+.nav-user-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* User name / email button */
 
 .nav-user {
     height: 40px;
-
-    padding: 0 15px;
-
+    padding: 0 10px;
     display: flex;
     align-items: center;
     gap: 7px;
 
     text-decoration: none;
+    color: #171717;
+    background: transparent;
 
-    color: #ffffff;
-    background: #171717;
+    border: none;
+    border-radius: 4px;
 
     font-size: 13px;
     font-weight: 600;
 
+    cursor: pointer;
+
     transition:
         background 0.2s ease,
-        transform 0.2s ease;
+        color 0.2s ease;
 }
 
 .nav-user:hover {
-    background: #333333;
-    transform: translateY(-1px);
+    background: #f5f3ef;
+    color: #111111;
+}
+
+/* User name text */
+
+.logged-user {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ================= LOGOUT ================= */
+
+.nav-logout {
+    height: 36px;
+    padding: 0 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+
+    border: 1px solid #ddd;
+    background: #ffffff;
+    color: #777;
+
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+
+    border-radius: 4px;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.nav-logout:hover {
+    background: #171717;
+    color: #ffffff;
+    border-color: #171717;
 }
 
 /* ================= MOBILE BUTTON ================= */
 
 .mobile-menu-button {
     display: none;
-
     width: 40px;
     height: 40px;
-
     align-items: center;
     justify-content: center;
-
     border: none;
     background: transparent;
-
     cursor: pointer;
     color: #171717;
 }
@@ -189,6 +214,41 @@
 
 .mobile-nav {
     display: none;
+}
+
+/* ================= MOBILE USER ================= */
+
+.mobile-user {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 10px;
+    font-weight: 600;
+    color: #171717;
+}
+
+.mobile-logout {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    border: none;
+    background: transparent;
+
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+
+    padding: 14px 10px;
+    color: #777;
+
+    text-align: left;
+}
+
+.mobile-logout:hover {
+    color: #111111;
+    background: #f5f3ef;
 }
 
 /* ================= TABLET ================= */
@@ -203,21 +263,14 @@
         font-size: 13px;
     }
 
-    .nav-user span {
-        display: none;
-    }
-
-    .nav-user {
-        width: 38px;
-        padding: 0;
-
-        justify-content: center;
+    .logged-user {
+        max-width: 100px;
     }
 }
 
 /* ================= MOBILE ================= */
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
 
     .navbar-container {
         height: 68px;
@@ -239,20 +292,21 @@
         gap: 8px;
     }
 
+    .nav-user-area {
+        display: none;
+    }
+
     .nav-user {
         display: none;
     }
 
     .mobile-nav {
         display: flex;
-
         max-height: 0;
         overflow: hidden;
-
         flex-direction: column;
 
         background: #ffffff;
-
         border-top: 1px solid transparent;
 
         transition:
@@ -297,7 +351,6 @@
     .mobile-nav-link span {
         min-width: 20px;
         height: 20px;
-
         padding: 0 5px;
 
         display: flex;
@@ -305,7 +358,6 @@
         justify-content: center;
 
         border-radius: 50%;
-
         background: #171717;
         color: #ffffff;
 
@@ -329,62 +381,5 @@
     .nav-action {
         width: 34px;
         height: 34px;
-    }
-}
-/* ================= ACCOUNT ================= */
-
-.nav-account {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.logged-user {
-    max-width: 130px;
-}
-
-.logged-user span {
-    max-width: 90px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.nav-logout {
-    width: 34px;
-    height: 34px;
-    border: 1px solid #ddd;
-    background: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.nav-logout:hover {
-    background: #111;
-    color: white;
-    border-color: #111;
-}
-
-.mobile-logout {
-    width: 100%;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    text-align: left;
-    font-family: inherit;
-}
-
-.mobile-logout svg:last-child {
-    margin-left: auto;
-}
-
-/* Mobile */
-
-@media (max-width: 768px) {
-    .nav-account {
-        display: none;
     }
 }
