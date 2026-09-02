@@ -1,9 +1,12 @@
-
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import "./Auth.css";
 
 const Register = () => {
   const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
 
   const [form, setForm] = useState({
     name: "",
@@ -12,51 +15,30 @@ const Register = () => {
     confirmPassword: "",
   });
 
-  const [error, setError] = useState("");
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError("");
 
-    // Check passwords
     if (form.password !== form.confirmPassword) {
-      setError("Passwords do not match.");
+      alert("Passwords do not match.");
       return;
     }
 
-    // Check password length
-    if (form.password.length < 6) {
-      setError("Password must be at least 6 characters.");
-      return;
-    }
-
-    // Check whether an account already exists
-    const existingUser = JSON.parse(
-      localStorage.getItem("watchmeUser")
-    );
-
-    if (
-      existingUser &&
-      existingUser.email.toLowerCase() === form.email.toLowerCase()
-    ) {
-      setError("An account with this email already exists.");
-      return;
-    }
-
-    // Save user
-    const user = {
+    // Create the user object
+    const userData = {
       name: form.name,
       email: form.email,
       password: form.password,
     };
 
+    // Save registered user
     localStorage.setItem(
-      "watchmeUser",
-      JSON.stringify(user)
+      "watchmeRegisteredUser",
+      JSON.stringify(userData)
     );
 
     alert("Account created successfully!");
 
+    // Go to login page
     navigate("/login");
   };
 
@@ -77,6 +59,7 @@ const Register = () => {
         </div>
 
         <div className="auth-form-container">
+
           <div className="auth-form">
 
             <p className="section-label">
@@ -89,18 +72,17 @@ const Register = () => {
               Create an account and start your collection.
             </p>
 
-            {error && (
-              <div className="auth-error">
-                {error}
-              </div>
-            )}
-
             <form onSubmit={handleSubmit}>
 
+              {/* NAME */}
+
               <div className="form-group">
-                <label>Full Name</label>
+                <label htmlFor="name">
+                  Full Name
+                </label>
 
                 <input
+                  id="name"
                   type="text"
                   required
                   placeholder="Your full name"
@@ -114,10 +96,15 @@ const Register = () => {
                 />
               </div>
 
+              {/* EMAIL */}
+
               <div className="form-group">
-                <label>Email Address</label>
+                <label htmlFor="email">
+                  Email Address
+                </label>
 
                 <input
+                  id="email"
                   type="email"
                   required
                   placeholder="you@example.com"
@@ -131,13 +118,17 @@ const Register = () => {
                 />
               </div>
 
+              {/* PASSWORD */}
+
               <div className="form-group">
-                <label>Password</label>
+                <label htmlFor="password">
+                  Password
+                </label>
 
                 <input
+                  id="password"
                   type="password"
                   required
-                  minLength="6"
                   placeholder="••••••••"
                   value={form.password}
                   onChange={(e) =>
@@ -149,13 +140,17 @@ const Register = () => {
                 />
               </div>
 
+              {/* CONFIRM PASSWORD */}
+
               <div className="form-group">
-                <label>Confirm Password</label>
+                <label htmlFor="confirmPassword">
+                  Confirm Password
+                </label>
 
                 <input
+                  id="confirmPassword"
                   type="password"
                   required
-                  minLength="6"
                   placeholder="••••••••"
                   value={form.confirmPassword}
                   onChange={(e) =>
@@ -178,10 +173,13 @@ const Register = () => {
 
             <p className="auth-switch">
               Already have an account?{" "}
-              <Link to="/login">Sign In</Link>
+              <Link to="/login">
+                Sign In
+              </Link>
             </p>
 
           </div>
+
         </div>
 
       </div>
