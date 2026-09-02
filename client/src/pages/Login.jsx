@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 const Login = () => {
@@ -14,16 +14,28 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Temporary frontend login
-    // Backend authentication will be connected later.
-    const userData = {
-      email: form.email,
-      name: form.email.split("@")[0],
-    };
+    const savedUser = localStorage.getItem("watchmeRegisteredUser");
 
-    login(userData);
+    if (!savedUser) {
+      alert("No registered account found. Please create an account first.");
+      return;
+    }
 
-    alert("Login successful!");
+    const registeredUser = JSON.parse(savedUser);
+
+    if (
+      form.email !== registeredUser.email ||
+      form.password !== registeredUser.password
+    ) {
+      alert("Invalid email or password.");
+      return;
+    }
+
+    // Store NAME + EMAIL in AuthContext
+    login({
+      name: registeredUser.name,
+      email: registeredUser.email,
+    });
 
     navigate("/");
   };
@@ -31,11 +43,9 @@ const Login = () => {
   return (
     <main className="auth-page">
       <div className="auth-container">
-
         <div className="auth-image">
           <div>
             <p>WATCHME</p>
-
             <h2>
               Time is
               <br />
@@ -46,10 +56,7 @@ const Login = () => {
 
         <div className="auth-form-container">
           <div className="auth-form">
-
-            <p className="section-label">
-              WELCOME BACK
-            </p>
+            <p className="section-label">WELCOME BACK</p>
 
             <h1>Sign In</h1>
 
@@ -58,14 +65,9 @@ const Login = () => {
             </p>
 
             <form onSubmit={handleSubmit}>
-
               <div className="form-group">
-                <label htmlFor="email">
-                  Email Address
-                </label>
-
+                <label>Email Address</label>
                 <input
-                  id="email"
                   type="email"
                   required
                   placeholder="you@example.com"
@@ -80,12 +82,8 @@ const Login = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="password">
-                  Password
-                </label>
-
+                <label>Password</label>
                 <input
-                  id="password"
                   type="password"
                   required
                   placeholder="••••••••"
@@ -100,9 +98,7 @@ const Login = () => {
               </div>
 
               <div className="forgot-password">
-                <a href="#forgot-password">
-                  Forgot password?
-                </a>
+                <a href="#">Forgot password?</a>
               </div>
 
               <button
@@ -111,19 +107,14 @@ const Login = () => {
               >
                 Sign In
               </button>
-
             </form>
 
             <p className="auth-switch">
               Don't have an account?{" "}
-              <Link to="/register">
-                Create Account
-              </Link>
+              <Link to="/register">Create Account</Link>
             </p>
-
           </div>
         </div>
-
       </div>
     </main>
   );
