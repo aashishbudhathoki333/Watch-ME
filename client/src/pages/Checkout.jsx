@@ -42,23 +42,55 @@ setFormData((previous) => ({
 
 
 };
-
 const handleSubmit = (e) => {
-e.preventDefault();
+  e.preventDefault();
 
+  const orderId = `WM-${Math.floor(
+    100000 + Math.random() * 900000
+  )}`;
 
-// Temporary checkout action.
-// Later this will create an order in the backend/database.
-const orderId = `WM-${Math.floor(100000 + Math.random() * 900000)}`;
-
-navigate("/success", {
-  state: {
+  const order = {
     orderId,
-  },
-});
+    customer: {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      address: formData.address,
+      city: formData.city,
+      province: formData.province,
+      postalCode: formData.postalCode,
+    },
+    items: cartItems,
+    subtotal: cartTotal,
+    delivery,
+    total,
+    paymentMethod,
+    date: new Date().toISOString(),
+    status: "Order Placed",
+  };
 
+  // Get existing orders
+  const existingOrders = JSON.parse(
+    localStorage.getItem("watchmeOrders")
+  ) || [];
 
+  // Add new order
+  existingOrders.push(order);
+
+  // Save orders
+  localStorage.setItem(
+    "watchmeOrders",
+    JSON.stringify(existingOrders)
+  );
+
+  navigate("/success", {
+    state: {
+      orderId,
+    },
+  });
 };
+
 
 if (cartItems.length === 0) {
 return ( <main className="checkout-empty"> <div className="checkout-empty-icon">🛍</div>
