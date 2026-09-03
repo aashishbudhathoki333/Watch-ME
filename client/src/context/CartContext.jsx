@@ -3,7 +3,10 @@ import { createContext, useState } from "react";
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+    const savedCart = localStorage.getItem("watchmeCart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
 
   const addToCart = (product) => {
     setCartItems((currentItems) => {
@@ -11,34 +14,60 @@ export const CartProvider = ({ children }) => {
         (item) => item.id === product.id
       );
 
-      if (existingItem) {
-        return currentItems.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
+      const updatedItems = existingItem
+        ? currentItems.map((item) =>
+            item.id === product.id
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          )
+        : [...currentItems, { ...product, quantity: 1 }];
 
-      return [...currentItems, { ...product, quantity: 1 }];
+      localStorage.setItem(
+        "watchmeCart",
+        JSON.stringify(updatedItems)
+      );
+
+      return updatedItems;
     });
   };
 
   const removeFromCart = (id) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
+    setCartItems((items) => {
+      const updatedItems = items.filter(
+        (item) => item.id !== id
+      );
+
+      localStorage.setItem(
+        "watchmeCart",
+        JSON.stringify(updatedItems)
+      );
+
+      return updatedItems;
+    });
   };
 
   const updateQuantity = (id, quantity) => {
     if (quantity < 1) return;
 
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id ? { ...item, quantity } : item
-      )
-    );
+    setCartItems((items) => {
+      const updatedItems = items.map((item) =>
+        item.id === id
+          ? { ...item, quantity }
+          : item
+      );
+
+      localStorage.setItem(
+        "watchmeCart",
+        JSON.stringify(updatedItems)
+      );
+
+      return updatedItems;
+    });
   };
 
   const clearCart = () => {
     setCartItems([]);
+    localStorage.removeItem("watchmeCart");
   };
 
   const cartCount = cartItems.reduce(
