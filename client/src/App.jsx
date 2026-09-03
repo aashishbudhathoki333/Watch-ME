@@ -23,6 +23,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import OrderSuccess from "./pages/OrderSuccess";
 import Orders from "./pages/Orders";
+import OrderDetails from "./pages/OrderDetails";
 
 const App = () => {
   return (
@@ -125,6 +126,14 @@ const App = () => {
   element={
     <ProtectedRoute>
       <Orders />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/orders/:orderId"
+  element={
+    <ProtectedRoute>
+      <OrderDetails />
     </ProtectedRoute>
   }
 />

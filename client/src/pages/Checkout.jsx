@@ -10,10 +10,12 @@ ShieldCheck,
 Truck,
 } from "lucide-react";
 import { CartContext } from "../context/CartContext";
+import { AuthContext } from "../context/AuthContext";
 import "./Checkout.css";
 
 const Checkout = () => {
-const { cartItems, cartTotal } = useContext(CartContext);
+const { cartItems, cartTotal, clearCart } = useContext(CartContext);
+const { user } = useContext(AuthContext);
 const navigate = useNavigate();
 
 const delivery = cartItems.length > 0 ? 100 : 0;
@@ -54,7 +56,7 @@ const handleSubmit = (e) => {
     customer: {
       firstName: formData.firstName,
       lastName: formData.lastName,
-      email: formData.email,
+      email: user?.email || formData.email,
       phone: formData.phone,
       address: formData.address,
       city: formData.city,
@@ -78,17 +80,19 @@ const handleSubmit = (e) => {
   // Add new order
   existingOrders.push(order);
 
-  // Save orders
-  localStorage.setItem(
-    "watchmeOrders",
-    JSON.stringify(existingOrders)
-  );
+ localStorage.setItem(
+  "watchmeOrders",
+  JSON.stringify(existingOrders)
+);
 
-  navigate("/success", {
-    state: {
-      orderId,
-    },
-  });
+// Clear cart after successful order
+clearCart();
+
+navigate("/success", {
+  state: {
+    orderId,
+  },
+});
 };
 
 

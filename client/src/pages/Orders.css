@@ -255,3 +255,18 @@
         gap: 18px;
     }
 }
+.order-view-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: #171717;
+    color: #fff;
+    text-decoration: none;
+    padding: 11px 16px;
+    font-size: 13px;
+    transition: 0.2s ease;
+}
+
+.order-view-btn:hover {
+    background: #333;
+}

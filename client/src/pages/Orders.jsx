@@ -187,7 +187,13 @@ const Orders = () => {
                     : "Card Payment"}
                 </strong>
               </div>
-
+<Link
+  to={`/orders/${order.orderId}`}
+  className="order-view-btn"
+>
+  View Details
+  <ArrowRight size={17} />
+</Link>
             </div>
 
           </div>
