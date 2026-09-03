@@ -142,19 +142,23 @@ const Navbar = () => {
           {isLoggedIn ? (
             <div className="nav-user-area">
 
-              <span className="nav-user">
-                <User size={19} />
+             <Link to="/orders" className="nav-orders">
+  <ShoppingBag size={18} />
+  <span>Orders</span>
+</Link>
 
-                <span>
-                  {user?.name || user?.email || "Account"}
-                </span>
-              </span>
+<span className="nav-user">
+  <User size={19} />
+  <span>
+    {user?.name || user?.email || "Account"}
+  </span>
+</span>
 
-              <button
-                type="button"
-                className="nav-logout"
-                onClick={handleLogout}
-              >
+<button
+  type="button"
+  className="nav-logout"
+  onClick={handleLogout}
+>
                 <LogOut size={17} />
                 <span>Logout</span>
               </button>

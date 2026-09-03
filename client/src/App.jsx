@@ -22,6 +22,7 @@ import Register from "./pages/Register";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import OrderSuccess from "./pages/OrderSuccess";
+import Orders from "./pages/Orders";
 
 const App = () => {
   return (
@@ -119,7 +120,14 @@ const App = () => {
                 path="/success"
                 element={<OrderSuccess />}
               />
-
+<Route
+  path="/orders"
+  element={
+    <ProtectedRoute>
+      <Orders />
+    </ProtectedRoute>
+  }
+/>
               {/* ================= 404 ================= */}
 
               <Route
