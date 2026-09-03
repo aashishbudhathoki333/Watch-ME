@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   Heart,
   Minus,
@@ -21,6 +21,7 @@ import "./ProductDetails.css";
 
 const ProductDetails = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const product = products.find(
     (item) => item.id === Number(id)
@@ -62,6 +63,14 @@ const ProductDetails = () => {
       setAddedToCart(false);
     }, 2500);
   };
+
+  const handleBuyNow = () => {
+  for (let i = 0; i < quantity; i++) {
+    addToCart(product);
+  }
+
+  navigate("/checkout");
+};
 
   const relatedProducts = products
     .filter(
@@ -326,12 +335,13 @@ const ProductDetails = () => {
 
           {/* BUY NOW */}
 
-          <Link
-            to="/checkout"
-            className="buy-now-button"
-          >
-            Buy Now
-          </Link>
+         <button
+  type="button"
+  className="buy-now-button"
+  onClick={handleBuyNow}
+>
+  Buy Now
+</button>
 
           {/* META */}
 

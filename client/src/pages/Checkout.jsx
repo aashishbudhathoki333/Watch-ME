@@ -49,7 +49,13 @@ e.preventDefault();
 
 // Temporary checkout action.
 // Later this will create an order in the backend/database.
-navigate("/success");
+const orderId = `WM-${Math.floor(100000 + Math.random() * 900000)}`;
+
+navigate("/success", {
+  state: {
+    orderId,
+  },
+});
 
 
 };
