@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link } from "react-router-dom";
 import {
   Package,
@@ -6,18 +6,26 @@ import {
   ShoppingBag,
   CalendarDays,
 } from "lucide-react";
+
+import { AuthContext } from "../context/AuthContext";
 import "./Orders.css";
 
 const Orders = () => {
+  const { user } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    const savedOrders = JSON.parse(
-      localStorage.getItem("watchmeOrders")
-    ) || [];
+    const savedOrders =
+      JSON.parse(localStorage.getItem("watchmeOrders")) || [];
 
-    setOrders(savedOrders.reverse());
-  }, []);
+    // Only show orders belonging to the logged-in user
+    const userOrders = savedOrders.filter(
+      (order) =>
+        order.customer?.email === user?.email
+    );
+
+    setOrders(userOrders.reverse());
+  }, [user]);
 
   if (orders.length === 0) {
     return (
@@ -39,7 +47,10 @@ const Orders = () => {
             timepiece.
           </p>
 
-          <Link to="/shop" className="orders-shop-btn">
+          <Link
+            to="/shop"
+            className="orders-shop-btn"
+          >
             <ShoppingBag size={18} />
             Start Shopping
             <ArrowRight size={17} />
@@ -67,7 +78,10 @@ const Orders = () => {
       <section className="orders-container">
 
         {orders.map((order) => (
-          <div className="order-card" key={order.orderId}>
+          <div
+            className="order-card"
+            key={order.orderId}
+          >
 
             <div className="order-card-header">
 
@@ -86,14 +100,13 @@ const Orders = () => {
               <CalendarDays size={16} />
 
               <span>
-                {new Date(order.date).toLocaleDateString(
-                  "en-US",
-                  {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  }
-                )}
+                {new Date(
+                  order.date
+                ).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
               </span>
             </div>
 
@@ -106,6 +119,7 @@ const Orders = () => {
                 >
 
                   <div className="order-product-image">
+
                     {item.image ? (
                       <img
                         src={item.image}
@@ -124,9 +138,11 @@ const Orders = () => {
                         </div>
                       </div>
                     )}
+
                   </div>
 
                   <div className="order-product-info">
+
                     <h3>{item.name}</h3>
 
                     <span>
@@ -136,6 +152,7 @@ const Orders = () => {
                     <p>
                       Quantity: {item.quantity}
                     </p>
+
                   </div>
 
                   <strong>
@@ -156,7 +173,8 @@ const Orders = () => {
                 <span>Total Amount</span>
 
                 <strong>
-                  Rs. {order.total.toLocaleString()}
+                  Rs.{" "}
+                  {order.total.toLocaleString()}
                 </strong>
               </div>
 
