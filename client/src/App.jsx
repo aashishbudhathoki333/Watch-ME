@@ -24,6 +24,7 @@ import Contact from "./pages/Contact";
 import OrderSuccess from "./pages/OrderSuccess";
 import Orders from "./pages/Orders";
 import OrderDetails from "./pages/OrderDetails";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const App = () => {
   return (
@@ -137,6 +138,7 @@ const App = () => {
     </ProtectedRoute>
   }
 />
+<Route path="/admin" element={<AdminDashboard />} />
               {/* ================= 404 ================= */}
 
               <Route

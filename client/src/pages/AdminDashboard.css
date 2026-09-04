@@ -1,0 +1,220 @@
+.admin-page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 55px 24px 80px;
+}
+
+.admin-header {
+    margin-bottom: 35px;
+}
+
+.admin-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: #888;
+}
+
+.admin-header h1 {
+    margin: 8px 0;
+    font-size: 38px;
+    color: #171717;
+}
+
+.admin-header p {
+    margin: 0;
+    color: #777;
+    font-size: 14px;
+}
+
+
+/* ================= STATS ================= */
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 30px;
+}
+
+.admin-stat-card {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 22px;
+    border: 1px solid #e7e7e7;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.admin-stat-icon {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: #f3f3f3;
+    color: #171717;
+}
+
+.admin-stat-card span {
+    display: block;
+    margin-bottom: 6px;
+    color: #888;
+    font-size: 12px;
+}
+
+.admin-stat-card strong {
+    color: #171717;
+    font-size: 21px;
+}
+
+
+/* ================= OVERVIEW ================= */
+
+.admin-overview {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 22px;
+}
+
+.admin-overview-card {
+    padding: 25px;
+    border: 1px solid #e7e7e7;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.admin-card-header {
+    margin-bottom: 25px;
+}
+
+.admin-card-header h2 {
+    margin: 7px 0 0;
+    font-size: 22px;
+    color: #171717;
+}
+
+
+/* ================= ORDER STATUS ================= */
+
+.order-status-grid {
+    display: grid;
+    gap: 12px;
+}
+
+.order-status-item {
+    display: grid;
+    grid-template-columns: 30px 1fr auto;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    border-radius: 8px;
+    background: #f7f7f7;
+}
+
+.order-status-item svg {
+    color: #555;
+}
+
+.order-status-item span {
+    color: #666;
+    font-size: 14px;
+}
+
+.order-status-item strong {
+    color: #171717;
+}
+
+
+/* ================= RECENT ORDERS ================= */
+
+.recent-orders {
+    display: flex;
+    flex-direction: column;
+}
+
+.recent-order {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.recent-order:last-child {
+    border-bottom: none;
+}
+
+.recent-order strong {
+    display: block;
+    color: #171717;
+    font-size: 14px;
+}
+
+.recent-order span {
+    display: block;
+    margin-top: 5px;
+    color: #888;
+    font-size: 12px;
+}
+
+.recent-order-right {
+    text-align: right;
+}
+
+.recent-order-right span {
+    color: #555;
+}
+
+.admin-empty {
+    padding: 35px 10px;
+    text-align: center;
+    color: #999;
+}
+
+.admin-empty p {
+    margin: 10px 0 0;
+}
+
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 900px) {
+
+    .admin-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-overview {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 550px) {
+
+    .admin-page {
+        padding: 40px 16px 60px;
+    }
+
+    .admin-header h1 {
+        font-size: 30px;
+    }
+
+    .admin-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .recent-order {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .recent-order-right {
+        text-align: left;
+    }
+
+}
