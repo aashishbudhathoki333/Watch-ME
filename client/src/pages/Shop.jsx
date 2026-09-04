@@ -1,4 +1,4 @@
-import { useContext, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import {
   Search,
   SlidersHorizontal,
@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-import products from "../data/products";
+import defaultProducts from "../data/products";
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
 
@@ -21,7 +21,21 @@ function Shop() {
   const [sortBy, setSortBy] = useState("featured");
   const [maxPrice, setMaxPrice] = useState(30000);
   const [showFilters, setShowFilters] = useState(false);
+const [productList, setProductList] = useState([]);
 
+useEffect(() => {
+  const savedProducts = localStorage.getItem("watchmeProducts");
+
+  if (savedProducts) {
+    setProductList(JSON.parse(savedProducts));
+  } else {
+    setProductList(defaultProducts);
+    localStorage.setItem(
+      "watchmeProducts",
+      JSON.stringify(defaultProducts)
+    );
+  }
+}, []);
   /* =========================
      CONTEXTS
   ========================= */
@@ -40,7 +54,7 @@ function Shop() {
   ========================= */
 
   const filteredProducts = useMemo(() => {
-    let result = products.filter((product) => {
+    let result = productList.filter((product) => {
       const matchesSearch = product.name
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
@@ -79,6 +93,7 @@ function Shop() {
 
     return result;
   }, [
+      productList,
     searchTerm,
     category,
     maxPrice,
