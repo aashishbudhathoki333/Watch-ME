@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import {
   Heart,
@@ -16,6 +16,7 @@ import {
 import products from "../data/products";
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
+import { AuthContext } from "../context/AuthContext";
 import ProductGrid from "../components/ProductGrid";
 import "./ProductDetails.css";
 
@@ -30,9 +31,81 @@ const ProductDetails = () => {
   const { addToCart } = useContext(CartContext);
   const { toggleWishlist, isInWishlist } =
     useContext(WishlistContext);
-
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
+
+  // ================= REVIEWS =================
+  const { user } = useContext(AuthContext);
+
+  const [reviews, setReviews] = useState([]);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewText, setReviewText] = useState("");
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
+
+  // Load reviews for this product
+  useEffect(() => {
+    const savedReviews =
+      JSON.parse(localStorage.getItem("watchmeReviews")) || {};
+
+    setReviews(savedReviews[product.id] || []);
+  }, [product.id]);
+
+  // Submit review
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+
+    if (!user) {
+      navigate("/login");
+      return;
+    }
+
+    if (!reviewText.trim()) {
+      return;
+    }
+
+    const newReview = {
+      id: Date.now(),
+      name: user.name || user.email || "Customer",
+      rating: reviewRating,
+      text: reviewText.trim(),
+      date: new Date().toISOString(),
+    };
+
+    const allReviews =
+      JSON.parse(localStorage.getItem("watchmeReviews")) || {};
+
+    const updatedReviews = [
+      ...(allReviews[product.id] || []),
+      newReview,
+    ];
+
+    allReviews[product.id] = updatedReviews;
+
+    localStorage.setItem(
+      "watchmeReviews",
+      JSON.stringify(allReviews)
+    );
+
+    setReviews(updatedReviews);
+    setReviewText("");
+    setReviewRating(5);
+    setReviewSubmitted(true);
+
+    setTimeout(() => {
+      setReviewSubmitted(false);
+    }, 2500);
+  };
+
+  // Calculate average rating
+  const reviewAverage =
+    reviews.length > 0
+      ? (
+          reviews.reduce(
+            (sum, review) => sum + review.rating,
+            0
+          ) / reviews.length
+        ).toFixed(1)
+      : product.rating;
 
   if (!product) {
     return (
@@ -415,6 +488,247 @@ const ProductDetails = () => {
             <span>
               Simple and convenient returns
             </span>
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* ================= CUSTOMER REVIEWS ================= */}
+
+      <section className="product-reviews-section">
+
+        <div className="reviews-heading">
+
+          <div>
+            <span className="section-label">
+              CUSTOMER FEEDBACK
+            </span>
+
+            <h2>Reviews & Ratings</h2>
+          </div>
+
+          <div className="reviews-summary">
+
+            <strong>{reviewAverage}</strong>
+
+            <div className="summary-stars">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star
+                  key={star}
+                  size={17}
+                  fill={
+                    star <= Math.round(Number(reviewAverage))
+                      ? "currentColor"
+                      : "none"
+                  }
+                />
+              ))}
+            </div>
+
+            <span>
+              {reviews.length} customer review
+              {reviews.length !== 1 ? "s" : ""}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div className="reviews-layout">
+
+          {/* REVIEWS LIST */}
+
+          <div className="reviews-list">
+
+            {reviews.length === 0 ? (
+
+              <div className="no-reviews">
+
+                <Star size={28} />
+
+                <h3>No reviews yet</h3>
+
+                <p>
+                  Be the first customer to review this watch.
+                </p>
+
+              </div>
+
+            ) : (
+
+              reviews
+                .slice()
+                .reverse()
+                .map((review) => (
+
+                  <article
+                    className="review-card"
+                    key={review.id}
+                  >
+
+                    <div className="review-top">
+
+                      <div>
+
+                        <strong>
+                          {review.name}
+                        </strong>
+
+                        <span>
+                          {new Date(
+                            review.date
+                          ).toLocaleDateString()}
+                        </span>
+
+                      </div>
+
+
+                      <div className="review-stars">
+
+                        {[1, 2, 3, 4, 5].map(
+                          (star) => (
+
+                            <Star
+                              key={star}
+                              size={15}
+                              fill={
+                                star <= review.rating
+                                  ? "currentColor"
+                                  : "none"
+                              }
+                            />
+
+                          )
+                        )}
+
+                      </div>
+
+                    </div>
+
+
+                    <p>
+                      {review.text}
+                    </p>
+
+                  </article>
+
+                ))
+
+            )}
+
+          </div>
+
+
+          {/* REVIEW FORM */}
+
+          <div className="review-form-card">
+
+            <h3>Write a Review</h3>
+
+
+            {!user ? (
+
+              <div className="review-login-message">
+
+                <p>
+                  Please log in to leave a review.
+                </p>
+
+                <Link
+                  to="/login"
+                  className="review-login-button"
+                >
+                  Log In
+                </Link>
+
+              </div>
+
+            ) : (
+
+              <form onSubmit={handleReviewSubmit}>
+
+                <label>
+                  Your Rating
+                </label>
+
+
+                <div className="review-rating-input">
+
+                  {[1, 2, 3, 4, 5].map(
+                    (star) => (
+
+                      <button
+                        key={star}
+                        type="button"
+                        className={
+                          star <= reviewRating
+                            ? "selected"
+                            : ""
+                        }
+                        onClick={() =>
+                          setReviewRating(star)
+                        }
+                        aria-label={`${star} star${
+                          star > 1 ? "s" : ""
+                        }`}
+                      >
+
+                        <Star
+                          size={22}
+                          fill="currentColor"
+                        />
+
+                      </button>
+
+                    )
+                  )}
+
+                </div>
+
+
+                <label htmlFor="review-text">
+                  Your Review
+                </label>
+
+
+                <textarea
+                  id="review-text"
+                  value={reviewText}
+                  onChange={(e) =>
+                    setReviewText(e.target.value)
+                  }
+                  placeholder="Share your experience with this watch..."
+                  rows="5"
+                  required
+                />
+
+
+                <button
+                  type="submit"
+                  className="submit-review-button"
+                >
+                  Submit Review
+                </button>
+
+
+                {reviewSubmitted && (
+
+                  <div className="review-success">
+
+                    <Check size={17} />
+
+                    Review submitted successfully!
+
+                  </div>
+
+                )}
+
+              </form>
+
+            )}
+
           </div>
 
         </div>
