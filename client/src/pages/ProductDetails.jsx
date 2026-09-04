@@ -24,18 +24,39 @@ const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const product = products.find(
-    (item) => item.id === Number(id)
-  );
+  // ================= PRODUCT =================
+
+  const [product, setProduct] = useState(null);
+
+  useEffect(() => {
+    const savedProducts = localStorage.getItem("watchmeProducts");
+
+    const productList = savedProducts
+      ? JSON.parse(savedProducts)
+      : [];
+
+    const foundProduct = productList.find(
+      (item) => item.id === Number(id)
+    );
+
+    setProduct(foundProduct);
+  }, [id]);
+
+  // ================= CONTEXTS =================
 
   const { addToCart } = useContext(CartContext);
+
   const { toggleWishlist, isInWishlist } =
     useContext(WishlistContext);
+
+  const { user } = useContext(AuthContext);
+
+  // ================= CART / WISHLIST =================
+
   const [quantity, setQuantity] = useState(1);
   const [addedToCart, setAddedToCart] = useState(false);
 
   // ================= REVIEWS =================
-  const { user } = useContext(AuthContext);
 
   const [reviews, setReviews] = useState([]);
   const [reviewRating, setReviewRating] = useState(5);
@@ -44,13 +65,16 @@ const ProductDetails = () => {
 
   // Load reviews for this product
   useEffect(() => {
+    if (!product) return;
+
     const savedReviews =
       JSON.parse(localStorage.getItem("watchmeReviews")) || {};
 
     setReviews(savedReviews[product.id] || []);
-  }, [product.id]);
+  }, [product]);
 
-  // Submit review
+  // ================= SUBMIT REVIEW =================
+
   const handleReviewSubmit = (e) => {
     e.preventDefault();
 
@@ -96,22 +120,16 @@ const ProductDetails = () => {
     }, 2500);
   };
 
-  // Calculate average rating
-  const reviewAverage =
-    reviews.length > 0
-      ? (
-          reviews.reduce(
-            (sum, review) => sum + review.rating,
-            0
-          ) / reviews.length
-        ).toFixed(1)
-      : product.rating;
+  // ================= PRODUCT NOT FOUND =================
 
+  // IMPORTANT:
+  // This comes AFTER all hooks.
   if (!product) {
     return (
       <main className="product-not-found">
         <div>
           <h1>Product Not Found</h1>
+
           <p>
             Sorry, we couldn't find the watch you're looking for.
           </p>
@@ -125,6 +143,8 @@ const ProductDetails = () => {
     );
   }
 
+  // ================= CART =================
+
   const handleAddToCart = () => {
     for (let i = 0; i < quantity; i++) {
       addToCart(product);
@@ -137,13 +157,29 @@ const ProductDetails = () => {
     }, 2500);
   };
 
-  const handleBuyNow = () => {
-  for (let i = 0; i < quantity; i++) {
-    addToCart(product);
-  }
+  // ================= BUY NOW =================
 
-  navigate("/checkout");
-};
+  const handleBuyNow = () => {
+    for (let i = 0; i < quantity; i++) {
+      addToCart(product);
+    }
+
+    navigate("/checkout");
+  };
+
+  // ================= RATING =================
+
+  const reviewAverage =
+    reviews.length > 0
+      ? (
+          reviews.reduce(
+            (sum, review) => sum + review.rating,
+            0
+          ) / reviews.length
+        ).toFixed(1)
+      : product.rating;
+
+  // ================= RELATED PRODUCTS =================
 
   const relatedProducts = products
     .filter(
@@ -152,6 +188,8 @@ const ProductDetails = () => {
         item.id !== product.id
     )
     .slice(0, 4);
+
+  // ================= DISCOUNT =================
 
   const discount = Math.round(
     ((product.oldPrice - product.price) /
@@ -408,13 +446,13 @@ const ProductDetails = () => {
 
           {/* BUY NOW */}
 
-         <button
-  type="button"
-  className="buy-now-button"
-  onClick={handleBuyNow}
->
-  Buy Now
-</button>
+          <button
+            type="button"
+            className="buy-now-button"
+            onClick={handleBuyNow}
+          >
+            Buy Now
+          </button>
 
           {/* META */}
 
@@ -513,17 +551,20 @@ const ProductDetails = () => {
             <strong>{reviewAverage}</strong>
 
             <div className="summary-stars">
+
               {[1, 2, 3, 4, 5].map((star) => (
                 <Star
                   key={star}
                   size={17}
                   fill={
-                    star <= Math.round(Number(reviewAverage))
+                    star <=
+                    Math.round(Number(reviewAverage))
                       ? "currentColor"
                       : "none"
                   }
                 />
               ))}
+
             </div>
 
             <span>
@@ -534,7 +575,6 @@ const ProductDetails = () => {
           </div>
 
         </div>
-
 
         <div className="reviews-layout">
 
@@ -584,7 +624,6 @@ const ProductDetails = () => {
 
                       </div>
 
-
                       <div className="review-stars">
 
                         {[1, 2, 3, 4, 5].map(
@@ -607,7 +646,6 @@ const ProductDetails = () => {
 
                     </div>
 
-
                     <p>
                       {review.text}
                     </p>
@@ -620,13 +658,11 @@ const ProductDetails = () => {
 
           </div>
 
-
           {/* REVIEW FORM */}
 
           <div className="review-form-card">
 
             <h3>Write a Review</h3>
-
 
             {!user ? (
 
@@ -652,7 +688,6 @@ const ProductDetails = () => {
                 <label>
                   Your Rating
                 </label>
-
 
                 <div className="review-rating-input">
 
@@ -687,11 +722,9 @@ const ProductDetails = () => {
 
                 </div>
 
-
                 <label htmlFor="review-text">
                   Your Review
                 </label>
-
 
                 <textarea
                   id="review-text"
@@ -704,14 +737,12 @@ const ProductDetails = () => {
                   required
                 />
 
-
                 <button
                   type="submit"
                   className="submit-review-button"
                 >
                   Submit Review
                 </button>
-
 
                 {reviewSubmitted && (
 
@@ -738,26 +769,32 @@ const ProductDetails = () => {
       {/* ================= RELATED PRODUCTS ================= */}
 
       {relatedProducts.length > 0 && (
+
         <section className="related-products-section">
 
           <div className="related-heading">
 
             <div>
+
               <span className="section-label">
                 YOU MAY ALSO LIKE
               </span>
 
               <h2>Related Watches</h2>
+
             </div>
 
             <Link to="/shop">
+
               View All
+
               <ArrowLeft
                 size={16}
                 style={{
                   transform: "rotate(180deg)",
                 }}
               />
+
             </Link>
 
           </div>
@@ -765,6 +802,7 @@ const ProductDetails = () => {
           <ProductGrid products={relatedProducts} />
 
         </section>
+
       )}
 
     </main>
