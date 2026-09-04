@@ -704,3 +704,253 @@
         font-size: 11px;
     }
 }
+/* ================= CUSTOMER REVIEWS ================= */
+
+.product-reviews-section {
+    max-width: 1180px;
+    margin: 80px auto 0;
+    padding: 0 24px;
+}
+
+.reviews-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 35px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid #e7e7e7;
+}
+
+.reviews-heading h2 {
+    margin: 8px 0 0;
+    font-size: 30px;
+    color: #171717;
+}
+
+.reviews-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #666;
+    font-size: 14px;
+}
+
+.reviews-summary strong {
+    font-size: 28px;
+    color: #171717;
+}
+
+.summary-stars,
+.review-stars {
+    display: flex;
+    gap: 2px;
+    color: #171717;
+}
+
+.reviews-layout {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 35px;
+    align-items: start;
+}
+
+.reviews-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.review-card {
+    padding: 22px;
+    border: 1px solid #e7e7e7;
+    border-radius: 12px;
+    background: #fff;
+}
+
+.review-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.review-top strong {
+    display: block;
+    color: #171717;
+    font-size: 15px;
+}
+
+.review-top span {
+    display: block;
+    margin-top: 5px;
+    color: #888;
+    font-size: 12px;
+}
+
+.review-card p {
+    margin: 16px 0 0;
+    color: #555;
+    line-height: 1.7;
+    font-size: 14px;
+}
+
+.no-reviews {
+    padding: 45px 25px;
+    text-align: center;
+    border: 1px dashed #d8d8d8;
+    border-radius: 12px;
+    color: #777;
+}
+
+.no-reviews svg {
+    color: #999;
+}
+
+.no-reviews h3 {
+    margin: 12px 0 7px;
+    color: #222;
+}
+
+.no-reviews p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.review-form-card {
+    padding: 26px;
+    border: 1px solid #e7e7e7;
+    border-radius: 12px;
+    background: #fafafa;
+}
+
+.review-form-card h3 {
+    margin: 0 0 22px;
+    font-size: 20px;
+    color: #171717;
+}
+
+.review-form-card form {
+    display: flex;
+    flex-direction: column;
+}
+
+.review-form-card label {
+    margin-bottom: 9px;
+    color: #333;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.review-rating-input {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 22px;
+}
+
+.review-rating-input button {
+    padding: 2px;
+    border: 0;
+    background: transparent;
+    color: #c7c7c7;
+    cursor: pointer;
+}
+
+.review-rating-input button.selected {
+    color: #171717;
+}
+
+.review-form-card textarea {
+    width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+    padding: 13px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    font: inherit;
+    outline: none;
+}
+
+.review-form-card textarea:focus {
+    border-color: #999;
+}
+
+.submit-review-button,
+.review-login-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 45px;
+    border: 0;
+    border-radius: 7px;
+    background: #171717;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.submit-review-button:hover,
+.review-login-button:hover {
+    background: #333;
+}
+
+.review-login-message {
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+}
+
+.review-login-message p {
+    margin: 0 0 15px;
+}
+
+.review-success {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 14px;
+    color: #287a42;
+    font-size: 13px;
+}
+
+
+/* ================= RESPONSIVE REVIEWS ================= */
+
+@media (max-width: 800px) {
+
+    .reviews-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .reviews-layout {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    .product-reviews-section {
+        padding: 0 16px;
+        margin-top: 55px;
+    }
+
+    .reviews-heading h2 {
+        font-size: 25px;
+    }
+
+    .reviews-summary {
+        flex-wrap: wrap;
+    }
+
+    .review-top {
+        flex-direction: column;
+    }
+
+}
