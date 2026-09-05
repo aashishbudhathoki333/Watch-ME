@@ -16,18 +16,19 @@ const AdminProducts = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const emptyProduct = {
-    name: "",
-    category: "Men",
-    collection: "Classic",
-    price: "",
-    oldPrice: "",
-    rating: "5",
-    reviews: "0",
-    badge: "",
-    color: "black",
-    description: "",
-  };
+ const emptyProduct = {
+  name: "",
+  category: "Men",
+  collection: "Classic",
+  price: "",
+  oldPrice: "",
+  rating: "5",
+  reviews: "0",
+  badge: "",
+  color: "black",
+  image: "",
+  description: "",
+};
 
   const [formData, setFormData] = useState(emptyProduct);
 
@@ -68,18 +69,19 @@ const AdminProducts = () => {
   const handleEditProduct = (product) => {
     setEditingProduct(product);
 
-    setFormData({
-      name: product.name,
-      category: product.category,
-      collection: product.collection,
-      price: product.price,
-      oldPrice: product.oldPrice,
-      rating: product.rating,
-      reviews: product.reviews,
-      badge: product.badge || "",
-      color: product.color || "black",
-      description: product.description,
-    });
+   setFormData({
+  name: product.name,
+  category: product.category,
+  collection: product.collection,
+  price: product.price,
+  oldPrice: product.oldPrice,
+  rating: product.rating,
+  reviews: product.reviews,
+  badge: product.badge || "",
+  color: product.color || "black",
+  image: product.image || "",
+  description: product.description,
+});
 
     setShowForm(true);
   };
@@ -624,6 +626,47 @@ const AdminProducts = () => {
 
               </div>
 
+{/* PRODUCT IMAGE */}
+
+{/* PRODUCT IMAGE */}
+
+<div className="admin-form-group">
+  <label>Product Image</label>
+
+  <input
+    type="file"
+    accept="image/*"
+    onChange={(e) => {
+      const file = e.target.files[0];
+
+      if (!file) return;
+
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setFormData((prev) => ({
+          ...prev,
+          image: reader.result,
+        }));
+      };
+
+      reader.readAsDataURL(file);
+    }}
+  />
+
+  <small className="image-help-text">
+    Choose a watch image from your computer.
+  </small>
+
+  {formData.image && (
+    <div className="image-upload-preview">
+      <img
+        src={formData.image}
+        alt="Product preview"
+      />
+    </div>
+  )}
+</div>
 
               {/* DESCRIPTION */}
 
