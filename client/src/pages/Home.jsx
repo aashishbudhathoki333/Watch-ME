@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
+import defaultProducts from "../data/products";
 import {
   ArrowRight,
   Truck,
@@ -13,48 +14,6 @@ import {
 } from "lucide-react";
 import "./Home.css";
 
-const featuredWatches = [
-  {
-    id: 1,
-    name: "Apex Classic",
-    category: "Men's Collection",
-    price: 12999,
-    oldPrice: 15999,
-    rating: 4.8,
-    badge: "Best Seller",
-    color: "black",
-  },
-  {
-    id: 2,
-    name: "Luna Elegance",
-    category: "Women's Collection",
-    price: 10999,
-    oldPrice: 13999,
-    rating: 4.7,
-    badge: "New",
-    color: "rose",
-  },
-  {
-    id: 3,
-    name: "Chrono Sport",
-    category: "Sports Collection",
-    price: 8999,
-    oldPrice: 11999,
-    rating: 4.6,
-    badge: "Popular",
-    color: "silver",
-  },
-  {
-    id: 4,
-    name: "Royal Elite",
-    category: "Luxury Collection",
-    price: 24999,
-    oldPrice: 29999,
-    rating: 4.9,
-    badge: "Premium",
-    color: "gold",
-  },
-];
 
 const categories = [
   {
@@ -75,6 +34,26 @@ const categories = [
 ];
 
 function Home() {
+  const [productList, setProductList] = useState([]);
+
+  useEffect(() => {
+    const savedProducts =
+      localStorage.getItem("watchmeProducts");
+
+    if (savedProducts) {
+      setProductList(JSON.parse(savedProducts));
+    } else {
+      setProductList(defaultProducts);
+
+      localStorage.setItem(
+        "watchmeProducts",
+        JSON.stringify(defaultProducts)
+      );
+    }
+  }, []);
+
+  const featuredWatches = productList.slice(0, 4);
+
   const { addToCart } = useContext(CartContext);
 
   const {
@@ -265,7 +244,9 @@ function Home() {
                 <div className="rating">
                   <Star size={15} fill="currentColor" />
                   <span>{watch.rating}</span>
-                  <span className="review-count">(24 reviews)</span>
+                  <span className="review-count">
+  ({watch.reviews || 0} reviews)
+</span>
                 </div>
 
                 <div className="product-bottom">
