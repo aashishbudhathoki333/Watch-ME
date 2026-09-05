@@ -185,89 +185,110 @@ function Home() {
           </Link>
         </div>
 
-        <div className="product-grid">
-          {featuredWatches.map((watch) => (
-            <article className="home-product-card" key={watch.id}>
+      <div className="product-grid">
+  {featuredWatches.map((watch) => (
+    <article className="home-product-card" key={watch.id}>
 
-              <div className={`product-image ${watch.color}`}>
-                <span className="product-badge">{watch.badge}</span>
-<button
-  className={`wishlist-button ${
-    isInWishlist(watch.id) ? "active" : ""
-  }`}
-  type="button"
-  aria-label={
-    isInWishlist(watch.id)
-      ? `Remove ${watch.name} from wishlist`
-      : `Add ${watch.name} to wishlist`
-  }
-  onClick={() => toggleWishlist(watch)}
->
-  <Heart
-    size={19}
-    fill={
-      isInWishlist(watch.id)
-        ? "currentColor"
-        : "none"
-    }
-  />
-</button>
+      <div className={`product-image ${watch.color}`}>
 
-                <div className="watch-placeholder">
-                  <div className="mini-watch">
-                    <div className="mini-watch-face">
-                      <span></span>
-                    </div>
-                  </div>
-                </div>
-
-                <Link
-                  to={`/products/${watch.id}`}
-                  className="quick-view"
-                >
-                  Quick View
-                </Link>
+        {watch.image ? (
+          <img
+            src={watch.image}
+            alt={watch.name}
+            className="product-real-image"
+          />
+        ) : (
+          <div className="watch-placeholder">
+            <div className="mini-watch">
+              <div className="mini-watch-face">
+                <span></span>
               </div>
+            </div>
+          </div>
+        )}
 
-              <div className="product-info">
-                <span className="product-category">
-                  {watch.category}
-                </span>
+        <button
+          className={`wishlist-button ${
+            isInWishlist(watch.id) ? "active" : ""
+          }`}
+          type="button"
+          aria-label={
+            isInWishlist(watch.id)
+              ? `Remove ${watch.name} from wishlist`
+              : `Add ${watch.name} to wishlist`
+          }
+          onClick={() => toggleWishlist(watch)}
+        >
+          <Heart
+            size={19}
+            fill={
+              isInWishlist(watch.id)
+                ? "currentColor"
+                : "none"
+            }
+          />
+        </button>
 
-               <Link
-  to={`/products/${watch.id}`}
-  className="product-name"
->
-  {watch.name}
-</Link>
+        <Link
+          to={`/products/${watch.id}`}
+          className="quick-view"
+        >
+          Quick View
+        </Link>
 
-                <div className="rating">
-                  <Star size={15} fill="currentColor" />
-                  <span>{watch.rating}</span>
-                  <span className="review-count">
-  ({watch.reviews || 0} reviews)
-</span>
-                </div>
+      </div>
 
-                <div className="product-bottom">
-                  <div className="price">
-                    <strong>Rs. {watch.price.toLocaleString()}</strong>
-                    <del>Rs. {watch.oldPrice.toLocaleString()}</del>
-                  </div>
-<button
-  className="add-cart"
-  type="button"
-  aria-label={`Add ${watch.name} to cart`}
-  onClick={() => addToCart(watch)}
->
-  <ShoppingBag size={18} />
-</button>
-                </div>
-              </div>
-            </article>
-          ))}
+      <div className="product-info">
+
+        <span className="product-category">
+          {watch.category}
+        </span>
+
+        <Link
+          to={`/products/${watch.id}`}
+          className="product-name"
+        >
+          {watch.name}
+        </Link>
+
+        <div className="rating">
+          <Star size={15} fill="currentColor" />
+          <span>{watch.rating}</span>
+
+          <span className="review-count">
+            ({watch.reviews || 0} reviews)
+          </span>
         </div>
-      </section>
+
+        <div className="product-bottom">
+
+          <div className="price">
+            <strong>
+              Rs. {watch.price.toLocaleString()}
+            </strong>
+
+            <del>
+              Rs. {watch.oldPrice.toLocaleString()}
+            </del>
+          </div>
+
+          <button
+            className="add-cart"
+            type="button"
+            aria-label={`Add ${watch.name} to cart`}
+            onClick={() => addToCart(watch)}
+          >
+            <ShoppingBag size={18} />
+          </button>
+
+        </div>
+
+      </div>
+
+    </article>
+  ))}
+</div>
+</section>
 
       {/* ================= PROMO ================= */}
       <section className="promo-section">
