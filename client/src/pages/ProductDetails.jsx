@@ -235,55 +235,64 @@ const ProductDetails = () => {
               </span>
             )}
 
-            <div className="large-watch">
+       {product.image ? (
+  <img
+    src={product.image}
+    alt={product.name}
+    className="product-details-real-image"
+  />
+) : (
+  <div className="large-watch">
 
-              <div className="large-watch-strap top"></div>
+    <div className="large-watch-strap top"></div>
 
-              <div className="large-watch-case">
+    <div className="large-watch-case">
 
-                <div className="large-watch-face">
+      <div className="large-watch-face">
 
-                  <span className="large-number twelve">
-                    12
-                  </span>
+        <span className="large-number twelve">
+          12
+        </span>
 
-                  <span className="large-number three">
-                    3
-                  </span>
+        <span className="large-number three">
+          3
+        </span>
 
-                  <span className="large-number six">
-                    6
-                  </span>
+        <span className="large-number six">
+          6
+        </span>
 
-                  <span className="large-number nine">
-                    9
-                  </span>
+        <span className="large-number nine">
+          9
+        </span>
 
-                  <div className="large-watch-hand hour"></div>
+        <div className="large-watch-hand hour"></div>
 
-                  <div className="large-watch-hand minute"></div>
+        <div className="large-watch-hand minute"></div>
 
-                  <div className="large-watch-hand second"></div>
+        <div className="large-watch-hand second"></div>
 
-                  <div className="large-watch-center"></div>
+        <div className="large-watch-center"></div>
 
-                  <span className="watch-brand">
-                    WATCHME
-                  </span>
+        <span className="watch-brand">
+          WATCHME
+        </span>
 
-                </div>
+      </div>
 
-              </div>
+    </div>
 
-              <div className="large-watch-strap bottom"></div>
+    <div className="large-watch-strap bottom"></div>
 
-            </div>
-
+  </div>
+)}
           </div>
 
           <div className="image-note">
-            Product images will be added later.
-          </div>
+  {product.image
+    ? "Product image"
+    : "Product images will be added later."}
+</div>
 
         </div>
 
