@@ -649,3 +649,10 @@
         height: 330px;
     }
 }
+.shop-product-real-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    padding: 20px;
+}

@@ -390,35 +390,28 @@ useEffect(() => {
 
                     {/* WATCH PLACEHOLDER */}
 
-                    <div className="shop-watch">
+                    {/* PRODUCT IMAGE */}
 
-                      <div className="shop-watch-face">
+{product.image ? (
+  <img
+    src={product.image}
+    alt={product.name}
+    className="shop-product-real-image"
+  />
+) : (
+  <div className="shop-watch">
+    <div className="shop-watch-face">
+      <span className="watch-number top">12</span>
+      <span className="watch-number right">3</span>
+      <span className="watch-number bottom">6</span>
+      <span className="watch-number left">9</span>
 
-                        <span className="watch-number top">
-                          12
-                        </span>
-
-                        <span className="watch-number right">
-                          3
-                        </span>
-
-                        <span className="watch-number bottom">
-                          6
-                        </span>
-
-                        <span className="watch-number left">
-                          9
-                        </span>
-
-                        <div className="shop-watch-hand hour"></div>
-
-                        <div className="shop-watch-hand minute"></div>
-
-                        <div className="shop-watch-dot"></div>
-
-                      </div>
-
-                    </div>
+      <div className="shop-watch-hand hour"></div>
+      <div className="shop-watch-hand minute"></div>
+      <div className="shop-watch-dot"></div>
+    </div>
+  </div>
+)}
 
                     {/* DISCOUNT */}
 
