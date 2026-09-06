@@ -288,12 +288,6 @@ const ProductDetails = () => {
 )}
           </div>
 
-          <div className="image-note">
-  {product.image
-    ? "Product image"
-    : "Product images will be added later."}
-</div>
-
         </div>
 
         {/* PRODUCT INFORMATION */}

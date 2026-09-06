@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import AdminOrders from "./pages/AdminOrders";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
@@ -145,6 +146,9 @@ const App = () => {
   path="/admin/products"
   element={<AdminProducts />}
 />
+
+<Route path="/admin/orders" element={<AdminOrders />} />
+
               {/* ================= 404 ================= */}
 
               <Route
