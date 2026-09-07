@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Package,
   ShoppingBag,
@@ -46,20 +47,16 @@ const AdminDashboard = () => {
     <main className="admin-page">
 
       {/* HEADER */}
+<div className="admin-header">
+  <div>
+    <h1>Admin Dashboard</h1>
+    <p>Manage your WatchMe store</p>
+  </div>
 
-      <div className="admin-header">
-        <div>
-          <span className="admin-label">
-            WATCHME ADMIN
-          </span>
-
-          <h1>Dashboard</h1>
-
-          <p>
-            Manage your store and monitor your orders.
-          </p>
-        </div>
-      </div>
+  <Link to="/admin/orders" className="admin-orders-button">
+    View Orders
+  </Link>
+</div>
 
 
       {/* STAT CARDS */}
