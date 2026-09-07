@@ -27,6 +27,7 @@ import Orders from "./pages/Orders";
 import OrderDetails from "./pages/OrderDetails";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminProducts from "./pages/AdminProducts";
+import AdminCustomers from "./pages/AdminCustomers";
 
 const App = () => {
   return (
@@ -148,6 +149,11 @@ const App = () => {
 />
 
 <Route path="/admin/orders" element={<AdminOrders />} />
+
+<Route
+  path="/admin/customers"
+  element={<AdminCustomers />}
+/>
 
               {/* ================= 404 ================= */}
 
