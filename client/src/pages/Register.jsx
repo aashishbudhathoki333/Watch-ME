@@ -24,16 +24,44 @@ const Register = () => {
 
     // Create the user object
     const userData = {
+      id: Date.now(),
       name: form.name,
       email: form.email,
       password: form.password,
+      registeredAt: new Date().toISOString(),
     };
 
-    // Save registered user
+    // -----------------------------------
+    // Save the latest registered user
+    // -----------------------------------
     localStorage.setItem(
       "watchmeRegisteredUser",
       JSON.stringify(userData)
     );
+
+    // -----------------------------------
+    // Save user to customer list
+    // -----------------------------------
+    const existingCustomers =
+      JSON.parse(
+        localStorage.getItem("watchmeCustomers")
+      ) || [];
+
+    // Check if email already exists
+    const customerExists = existingCustomers.some(
+      (customer) =>
+        customer.email.toLowerCase() ===
+        userData.email.toLowerCase()
+    );
+
+    if (!customerExists) {
+      existingCustomers.push(userData);
+
+      localStorage.setItem(
+        "watchmeCustomers",
+        JSON.stringify(existingCustomers)
+      );
+    }
 
     alert("Account created successfully!");
 
