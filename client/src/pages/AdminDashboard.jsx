@@ -125,16 +125,24 @@ const AdminDashboard = () => {
 
 
         {/* CUSTOMERS */}
-        <div className="admin-stat-card">
-          <div className="admin-stat-icon">
-            <Users size={22} />
-          </div>
+       <div className="admin-stat-card admin-customer-card">
+  <div className="admin-stat-icon">
+    <Users size={22} />
+  </div>
 
-          <div>
-            <span>Customers</span>
-            <strong>{customers.length}</strong>
-          </div>
-        </div>
+  <div>
+    <span>Customers</span>
+
+    <strong>{customers.length}</strong>
+
+    <Link
+      to="/admin/customers"
+      className="admin-stat-link"
+    >
+      View Customers
+    </Link>
+  </div>
+</div>
 
       </section>
 
