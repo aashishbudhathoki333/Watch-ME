@@ -248,3 +248,51 @@
     color: #111;
     text-decoration: underline;
 }
+.admin-quick-actions {
+    margin-top: 24px;
+}
+
+.quick-action-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.quick-action-button {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    color: #111;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.quick-action-button:hover {
+    border-color: #111;
+    transform: translateY(-2px);
+}
+
+.quick-action-button svg {
+    flex-shrink: 0;
+}
+
+.quick-action-button strong {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.quick-action-button span {
+    display: block;
+    color: #777;
+    font-size: 12px;
+}
+
+@media (max-width: 800px) {
+    .quick-action-grid {
+        grid-template-columns: 1fr;
+    }
+}

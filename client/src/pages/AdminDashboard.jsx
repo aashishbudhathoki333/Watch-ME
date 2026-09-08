@@ -283,6 +283,68 @@ const AdminDashboard = () => {
 
       </section>
 
+      {/* QUICK ACTIONS */}
+
+<section className="admin-quick-actions">
+
+  <div className="admin-overview-card">
+
+    <div className="admin-card-header">
+      <div>
+        <span className="admin-label">
+          QUICK ACTIONS
+        </span>
+
+        <h2>Manage Store</h2>
+      </div>
+    </div>
+
+    <div className="quick-action-grid">
+
+      <Link
+        to="/admin/products"
+        className="quick-action-button"
+      >
+        <Package size={20} />
+
+        <div>
+          <strong>Manage Products</strong>
+          <span>Add, edit or remove products</span>
+        </div>
+      </Link>
+
+
+      <Link
+        to="/admin/orders"
+        className="quick-action-button"
+      >
+        <ShoppingBag size={20} />
+
+        <div>
+          <strong>Manage Orders</strong>
+          <span>View and update customer orders</span>
+        </div>
+      </Link>
+
+
+      <Link
+        to="/admin/customers"
+        className="quick-action-button"
+      >
+        <Users size={20} />
+
+        <div>
+          <strong>Manage Customers</strong>
+          <span>View registered customers</span>
+        </div>
+      </Link>
+
+    </div>
+
+  </div>
+
+</section>
+
     </main>
   );
 };
