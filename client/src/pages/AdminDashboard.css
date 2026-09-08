@@ -296,3 +296,20 @@
         grid-template-columns: 1fr;
     }
 }
+.recent-order {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.recent-order:hover {
+    background: #fafafa;
+}
+
+.recent-order-right {
+    text-align: right;
+}

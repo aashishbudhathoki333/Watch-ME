@@ -18,19 +18,16 @@ const AdminDashboard = () => {
   const [productList, setProductList] = useState([]);
 
   useEffect(() => {
-    // Load orders
     const savedOrders =
       JSON.parse(localStorage.getItem("watchmeOrders")) || [];
 
     setOrders(savedOrders);
 
-    // Load products
     const savedProducts =
       JSON.parse(localStorage.getItem("watchmeProducts")) || products;
 
     setProductList(savedProducts);
 
-    // Load registered customer
     const savedUser = JSON.parse(
       localStorage.getItem("watchmeRegisteredUser")
     );
@@ -42,20 +39,17 @@ const AdminDashboard = () => {
     }
   }, []);
 
-  // Total sales
   const totalSales = orders.reduce(
     (total, order) => total + Number(order.total || 0),
     0
   );
 
-  // Pending orders
   const pendingOrders = orders.filter(
     (order) =>
       order.status === "Order Placed" ||
       order.status === "Processing"
   ).length;
 
-  // Delivered orders
   const completedOrders = orders.filter(
     (order) => order.status === "Delivered"
   ).length;
@@ -78,7 +72,6 @@ const AdminDashboard = () => {
         </Link>
       </div>
 
-
       {/* STAT CARDS */}
       <section className="admin-stats">
 
@@ -94,7 +87,6 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-
         {/* ORDERS */}
         <div className="admin-stat-card">
           <div className="admin-stat-icon">
@@ -107,7 +99,6 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-
         {/* SALES */}
         <div className="admin-stat-card">
           <div className="admin-stat-icon">
@@ -116,40 +107,38 @@ const AdminDashboard = () => {
 
           <div>
             <span>Total Sales</span>
-
             <strong>
               Rs. {totalSales.toLocaleString()}
             </strong>
           </div>
         </div>
 
-
         {/* CUSTOMERS */}
-       <div className="admin-stat-card admin-customer-card">
-  <div className="admin-stat-icon">
-    <Users size={22} />
-  </div>
+        <div className="admin-stat-card admin-customer-card">
+          <div className="admin-stat-icon">
+            <Users size={22} />
+          </div>
 
-  <div>
-    <span>Customers</span>
+          <div>
+            <span>Customers</span>
 
-    <strong>{customers.length}</strong>
+            <strong>{customers.length}</strong>
 
-    <Link
-      to="/admin/customers"
-      className="admin-stat-link"
-    >
-      View Customers
-    </Link>
-  </div>
-</div>
+            <Link
+              to="/admin/customers"
+              className="admin-stat-link"
+            >
+              View Customers
+            </Link>
+          </div>
+        </div>
 
       </section>
-
 
       {/* ORDER OVERVIEW */}
       <section className="admin-overview">
 
+        {/* ORDER STATUS */}
         <div className="admin-overview-card">
 
           <div className="admin-card-header">
@@ -162,54 +151,36 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-
           <div className="order-status-grid">
 
             {/* PENDING */}
             <div className="order-status-item">
               <Clock size={20} />
-
               <span>Pending</span>
-
-              <strong>
-                {pendingOrders}
-              </strong>
+              <strong>{pendingOrders}</strong>
             </div>
-
 
             {/* DELIVERED */}
             <div className="order-status-item">
               <CheckCircle size={20} />
-
               <span>Delivered</span>
-
-              <strong>
-                {completedOrders}
-              </strong>
+              <strong>{completedOrders}</strong>
             </div>
-
 
             {/* ALL ORDERS */}
             <div className="order-status-item">
               <ShoppingBag size={20} />
-
               <span>All Orders</span>
-
-              <strong>
-                {orders.length}
-              </strong>
+              <strong>{orders.length}</strong>
             </div>
 
           </div>
-
         </div>
-
 
         {/* RECENT ORDERS */}
         <div className="admin-overview-card">
 
           <div className="admin-card-header">
-
             <div>
               <span className="admin-label">
                 RECENT ACTIVITY
@@ -217,37 +188,27 @@ const AdminDashboard = () => {
 
               <h2>Recent Orders</h2>
             </div>
-
           </div>
 
-
           {orders.length === 0 ? (
-
             <div className="admin-empty">
               <ShoppingBag size={28} />
-
               <p>No orders yet.</p>
             </div>
-
           ) : (
-
             <div className="recent-orders">
-
               {orders
                 .slice()
                 .reverse()
                 .slice(0, 5)
                 .map((order) => (
-
-                  <div
+                  <Link
+                    to="/admin/orders"
                     className="recent-order"
                     key={order.orderId}
                   >
-
                     <div>
-                      <strong>
-                        {order.orderId}
-                      </strong>
+                      <strong>{order.orderId}</strong>
 
                       <span>
                         {order.customer?.firstName}{" "}
@@ -255,9 +216,7 @@ const AdminDashboard = () => {
                       </span>
                     </div>
 
-
                     <div className="recent-order-right">
-
                       <strong>
                         Rs.{" "}
                         {Number(
@@ -265,18 +224,11 @@ const AdminDashboard = () => {
                         ).toLocaleString()}
                       </strong>
 
-                      <span>
-                        {order.status}
-                      </span>
-
+                      <span>{order.status}</span>
                     </div>
-
-                  </div>
-
+                  </Link>
                 ))}
-
             </div>
-
           )}
 
         </div>
@@ -284,66 +236,63 @@ const AdminDashboard = () => {
       </section>
 
       {/* QUICK ACTIONS */}
+      <section className="admin-quick-actions">
 
-<section className="admin-quick-actions">
+        <div className="admin-overview-card">
 
-  <div className="admin-overview-card">
+          <div className="admin-card-header">
+            <div>
+              <span className="admin-label">
+                QUICK ACTIONS
+              </span>
 
-    <div className="admin-card-header">
-      <div>
-        <span className="admin-label">
-          QUICK ACTIONS
-        </span>
+              <h2>Manage Store</h2>
+            </div>
+          </div>
 
-        <h2>Manage Store</h2>
-      </div>
-    </div>
+          <div className="quick-action-grid">
 
-    <div className="quick-action-grid">
+            <Link
+              to="/admin/products"
+              className="quick-action-button"
+            >
+              <Package size={20} />
 
-      <Link
-        to="/admin/products"
-        className="quick-action-button"
-      >
-        <Package size={20} />
+              <div>
+                <strong>Manage Products</strong>
+                <span>Add, edit or remove products</span>
+              </div>
+            </Link>
 
-        <div>
-          <strong>Manage Products</strong>
-          <span>Add, edit or remove products</span>
+            <Link
+              to="/admin/orders"
+              className="quick-action-button"
+            >
+              <ShoppingBag size={20} />
+
+              <div>
+                <strong>Manage Orders</strong>
+                <span>View and update customer orders</span>
+              </div>
+            </Link>
+
+            <Link
+              to="/admin/customers"
+              className="quick-action-button"
+            >
+              <Users size={20} />
+
+              <div>
+                <strong>Manage Customers</strong>
+                <span>View registered customers</span>
+              </div>
+            </Link>
+
+          </div>
+
         </div>
-      </Link>
 
-
-      <Link
-        to="/admin/orders"
-        className="quick-action-button"
-      >
-        <ShoppingBag size={20} />
-
-        <div>
-          <strong>Manage Orders</strong>
-          <span>View and update customer orders</span>
-        </div>
-      </Link>
-
-
-      <Link
-        to="/admin/customers"
-        className="quick-action-button"
-      >
-        <Users size={20} />
-
-        <div>
-          <strong>Manage Customers</strong>
-          <span>View registered customers</span>
-        </div>
-      </Link>
-
-    </div>
-
-  </div>
-
-</section>
+      </section>
 
     </main>
   );
