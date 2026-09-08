@@ -175,12 +175,14 @@ const AdminDashboard = () => {
             </div>
 
           </div>
+
         </div>
 
         {/* RECENT ORDERS */}
         <div className="admin-overview-card">
 
           <div className="admin-card-header">
+
             <div>
               <span className="admin-label">
                 RECENT ACTIVITY
@@ -188,27 +190,43 @@ const AdminDashboard = () => {
 
               <h2>Recent Orders</h2>
             </div>
+
+            <Link
+              to="/admin/orders"
+              className="view-all-orders-link"
+            >
+              View All Orders
+            </Link>
+
           </div>
 
           {orders.length === 0 ? (
+
             <div className="admin-empty">
               <ShoppingBag size={28} />
               <p>No orders yet.</p>
             </div>
+
           ) : (
+
             <div className="recent-orders">
+
               {orders
                 .slice()
                 .reverse()
                 .slice(0, 5)
                 .map((order) => (
+
                   <Link
                     to="/admin/orders"
                     className="recent-order"
                     key={order.orderId}
                   >
+
                     <div>
-                      <strong>{order.orderId}</strong>
+                      <strong>
+                        {order.orderId}
+                      </strong>
 
                       <span>
                         {order.customer?.firstName}{" "}
@@ -217,6 +235,7 @@ const AdminDashboard = () => {
                     </div>
 
                     <div className="recent-order-right">
+
                       <strong>
                         Rs.{" "}
                         {Number(
@@ -224,11 +243,18 @@ const AdminDashboard = () => {
                         ).toLocaleString()}
                       </strong>
 
-                      <span>{order.status}</span>
+                      <span>
+                        {order.status}
+                      </span>
+
                     </div>
+
                   </Link>
+
                 ))}
+
             </div>
+
           )}
 
         </div>
@@ -241,6 +267,7 @@ const AdminDashboard = () => {
         <div className="admin-overview-card">
 
           <div className="admin-card-header">
+
             <div>
               <span className="admin-label">
                 QUICK ACTIONS
@@ -248,6 +275,7 @@ const AdminDashboard = () => {
 
               <h2>Manage Store</h2>
             </div>
+
           </div>
 
           <div className="quick-action-grid">
@@ -260,7 +288,9 @@ const AdminDashboard = () => {
 
               <div>
                 <strong>Manage Products</strong>
-                <span>Add, edit or remove products</span>
+                <span>
+                  Add, edit or remove products
+                </span>
               </div>
             </Link>
 
@@ -272,7 +302,9 @@ const AdminDashboard = () => {
 
               <div>
                 <strong>Manage Orders</strong>
-                <span>View and update customer orders</span>
+                <span>
+                  View and update customer orders
+                </span>
               </div>
             </Link>
 
@@ -284,7 +316,9 @@ const AdminDashboard = () => {
 
               <div>
                 <strong>Manage Customers</strong>
-                <span>View registered customers</span>
+                <span>
+                  View registered customers
+                </span>
               </div>
             </Link>
 

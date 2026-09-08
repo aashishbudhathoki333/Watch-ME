@@ -313,3 +313,14 @@
 .recent-order-right {
     text-align: right;
 }
+.view-all-orders-link {
+    color: #111;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.view-all-orders-link:hover {
+    text-decoration: underline;
+}
