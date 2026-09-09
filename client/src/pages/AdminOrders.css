@@ -1,74 +1,117 @@
-/* ================= ADMIN ORDERS ================= */
+/* =========================================================
+   WATCHME — PREMIUM ADMIN ORDERS
+========================================================= */
 
 .admin-orders-page {
     min-height: 100vh;
-    padding: 50px 6%;
-    background: #f8f8f8;
+    padding: 56px 6% 90px;
+    background:
+        radial-gradient(circle at 90% 0%, rgba(190, 164, 96, 0.08), transparent 28%),
+        #f5f4f0;
+    color: #171717;
 }
 
-/* ================= HEADER ================= */
+/* =========================================================
+   HEADER
+========================================================= */
 
 .admin-orders-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     gap: 30px;
-    margin-bottom: 35px;
+    margin-bottom: 38px;
 }
 
 .admin-section-label {
-    display: block;
-    margin-bottom: 8px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: #777;
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 12px;
+    color: #a08345;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+}
+
+.admin-section-label::before {
+    content: "";
+    width: 24px;
+    height: 1px;
+    background: #b49a61;
 }
 
 .admin-orders-header h1 {
-    margin: 0 0 8px;
-    font-size: 36px;
-    color: #171717;
+    margin: 0 0 10px;
+    color: #151515;
+    font-size: clamp(38px, 4vw, 52px);
+    line-height: 1;
+    letter-spacing: -2.8px;
+    font-weight: 600;
 }
 
 .admin-orders-header p {
+    max-width: 520px;
     margin: 0;
-    color: #777;
+    color: #85837d;
     font-size: 14px;
+    line-height: 1.7;
 }
+
+/* =========================================================
+   ORDER COUNT
+========================================================= */
 
 .admin-order-count {
     display: flex;
     align-items: center;
-    gap: 9px;
-    padding: 12px 18px;
-    background: #fff;
-    border: 1px solid #e5e5e5;
-    font-size: 14px;
-    font-weight: 600;
+    gap: 11px;
+    padding: 14px 19px;
+    color: #292824;
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid #dfddd6;
+    box-shadow: 0 8px 25px rgba(20, 20, 20, 0.04);
+    font-size: 13px;
+    font-weight: 700;
 }
 
-/* ================= TOOLBAR ================= */
+.admin-order-count svg {
+    color: #a08345;
+}
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
 
 .admin-orders-toolbar {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 20px;
+    align-items: center;
+    margin-bottom: 18px;
 }
 
 .admin-order-search {
-    width: 400px;
+    width: min(440px, 100%);
+    height: 48px;
+    box-sizing: border-box;
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 14px;
-    background: #fff;
-    border: 1px solid #ddd;
+    gap: 11px;
+    padding: 0 14px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #dedcd5;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.025);
+    transition: 0.25s ease;
 }
 
-.admin-order-search svg {
-    color: #777;
+.admin-order-search:focus-within {
+    border-color: #b49a61;
+    box-shadow: 0 0 0 4px rgba(180, 154, 97, 0.09);
+}
+
+.admin-order-search>svg {
     flex-shrink: 0;
+    color: #a49f95;
 }
 
 .admin-order-search input {
@@ -76,184 +119,324 @@
     border: none;
     outline: none;
     background: transparent;
-    font-size: 14px;
+    color: #222;
+    font-size: 13px;
+}
+
+.admin-order-search input::placeholder {
+    color: #aaa69d;
 }
 
 .admin-order-search button {
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
     border: none;
-    background: none;
-    cursor: pointer;
+    border-radius: 50%;
+    background: #f0eee9;
     color: #777;
+    cursor: pointer;
+    transition: 0.2s ease;
 }
 
-/* ================= TABLE ================= */
+.admin-order-search button:hover {
+    background: #171717;
+    color: #fff;
+}
+
+/* =========================================================
+   TABLE CONTAINER
+========================================================= */
 
 .admin-orders-table-wrapper {
+    position: relative;
+    overflow: hidden;
     background: #fff;
-    border: 1px solid #e5e5e5;
-    overflow-x: auto;
+    border: 1px solid #e2e0da;
+    box-shadow:
+        0 20px 55px rgba(28, 27, 24, 0.055),
+        0 2px 5px rgba(28, 27, 24, 0.025);
 }
+
+/* =========================================================
+   TABLE
+========================================================= */
 
 .admin-orders-table {
     width: 100%;
-    min-width: 1050px;
+    min-width: 1080px;
     border-collapse: collapse;
 }
 
 .admin-orders-table th {
-    padding: 16px 18px;
+    padding: 15px 19px;
+    background: #f8f7f4;
+    border-bottom: 1px solid #e5e3dd;
+    color: #88857e;
+    font-size: 9px;
+    font-weight: 800;
     text-align: left;
-    background: #fafafa;
-    border-bottom: 1px solid #e5e5e5;
-    color: #666;
-    font-size: 12px;
-    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.7px;
+    letter-spacing: 1.6px;
+    white-space: nowrap;
 }
 
 .admin-orders-table td {
-    padding: 17px 18px;
-    border-bottom: 1px solid #eee;
-    color: #333;
-    font-size: 14px;
+    padding: 18px 19px;
+    border-bottom: 1px solid #efeee9;
+    color: #55534f;
+    font-size: 13px;
     vertical-align: middle;
+}
+
+.admin-orders-table tbody tr {
+    transition:
+        background 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.admin-orders-table tbody tr:hover {
+    background: #fcfbf8;
+    box-shadow: inset 3px 0 0 #b49a61;
 }
 
 .admin-orders-table tbody tr:last-child td {
     border-bottom: none;
 }
 
-.admin-orders-table tbody tr:hover {
-    background: #fafafa;
-}
+/* =========================================================
+   ORDER ID
+========================================================= */
 
 .admin-order-id {
-    color: #171717;
-    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 10px;
+    color: #292824;
+    background: #f5f3ee;
+    border: 1px solid #e7e4dc;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.7px;
 }
 
-/* ================= CUSTOMER ================= */
+/* =========================================================
+   CUSTOMER
+========================================================= */
 
 .admin-customer {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 11px;
 }
 
 .admin-customer-icon {
-    width: 34px;
-    height: 34px;
+    width: 38px;
+    height: 38px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #f1f1f1;
-    border-radius: 50%;
     flex-shrink: 0;
+    border-radius: 50%;
+    color: #9b8049;
+    background:
+        linear-gradient(135deg, #f3ead8, #e8ddc6);
+    border: 1px solid #e4d8bc;
 }
 
 .admin-customer>div:last-child {
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 3px;
+    gap: 4px;
 }
 
 .admin-customer strong {
-    font-size: 13px;
+    color: #242320;
+    font-size: 12px;
+    font-weight: 700;
 }
 
 .admin-customer span {
-    color: #888;
-    font-size: 11px;
+    max-width: 190px;
+    overflow: hidden;
+    color: #9a978f;
+    font-size: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-/* ================= DATE / PAYMENT ================= */
+/* =========================================================
+   DATE / PAYMENT
+========================================================= */
 
 .admin-order-date,
 .admin-payment {
     display: flex;
     align-items: center;
-    gap: 7px;
-    color: #666;
+    gap: 8px;
+    color: #716e68;
+    font-size: 12px;
     white-space: nowrap;
 }
 
 .admin-order-date svg,
 .admin-payment svg {
-    color: #999;
+    color: #aaa59b;
 }
 
-/* ================= STATUS ================= */
+.admin-orders-table td>strong {
+    color: #272622;
+    font-weight: 700;
+}
+
+/* =========================================================
+   STATUS
+========================================================= */
 
 .admin-status-select {
-    min-width: 130px;
-    padding: 8px 10px;
-    border: 1px solid #ddd;
-    background: #fff;
+    min-width: 135px;
+    appearance: none;
+    padding: 9px 31px 9px 12px;
+    border: 1px solid #dedbd3;
+    border-radius: 30px;
     outline: none;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.admin-status-select:focus {
-    border-color: #999;
-}
-
-/* ================= VIEW BUTTON ================= */
-
-.admin-view-order {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    background: #fff;
-    color: #333;
-    font-size: 12px;
-    font-weight: 600;
+    background:
+        linear-gradient(45deg, transparent 50%, #777 50%) calc(100% - 14px) 50% / 5px 5px no-repeat,
+        linear-gradient(135deg, #777 50%, transparent 50%) calc(100% - 10px) 50% / 5px 5px no-repeat,
+        #faf9f6;
+    color: #555;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.4px;
     cursor: pointer;
     transition: 0.2s ease;
 }
 
-.admin-view-order:hover {
-    background: #171717;
-    color: #fff;
-    border-color: #171717;
+.admin-status-select:hover {
+    border-color: #b8b2a7;
 }
 
-/* ================= NO ORDERS ================= */
+.admin-status-select:focus {
+    border-color: #b49a61;
+    box-shadow: 0 0 0 3px rgba(180, 154, 97, 0.09);
+}
+
+/* status colors */
+
+.admin-status-select.order-placed {
+    color: #876b35;
+    background-color: #fbf6e9;
+    border-color: #eadbb8;
+}
+
+.admin-status-select.processing {
+    color: #765f30;
+    background-color: #f8f0dd;
+    border-color: #e7d5a8;
+}
+
+.admin-status-select.shipped {
+    color: #4e6681;
+    background-color: #eef3f8;
+    border-color: #d4e0ec;
+}
+
+.admin-status-select.delivered {
+    color: #46705b;
+    background-color: #edf6f0;
+    border-color: #d1e7d9;
+}
+
+.admin-status-select.cancelled {
+    color: #934f4f;
+    background-color: #fbefef;
+    border-color: #ecd2d2;
+}
+
+/* =========================================================
+   VIEW BUTTON
+========================================================= */
+
+.admin-view-order {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 9px 13px;
+    border: 1px solid #dedbd4;
+    background: #fff;
+    color: #393733;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.admin-view-order svg {
+    color: #9a804c;
+}
+
+.admin-view-order:hover {
+    border-color: #171717;
+    background: #171717;
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.admin-view-order:hover svg {
+    color: #d8bc7b;
+}
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
 
 .admin-no-orders {
-    min-height: 350px;
+    min-height: 420px;
+    padding: 50px 25px;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    color: #777;
+    background:
+        radial-gradient(circle, rgba(180, 154, 97, 0.07), transparent 40%);
 }
 
 .admin-no-orders svg {
-    margin-bottom: 15px;
-    color: #aaa;
+    width: 52px;
+    height: 52px;
+    margin-bottom: 20px;
+    padding: 15px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    color: #a1844b;
+    background: #f5efe2;
+    border: 1px solid #e6dac0;
 }
 
 .admin-no-orders h2 {
     margin: 0 0 8px;
-    color: #333;
-    font-size: 20px;
+    color: #252421;
+    font-size: 21px;
+    letter-spacing: -0.5px;
 }
 
 .admin-no-orders p {
+    max-width: 350px;
     margin: 0;
-    font-size: 14px;
+    color: #918e86;
+    font-size: 13px;
+    line-height: 1.7;
 }
 
-/* ================= MODAL ================= */
+/* =========================================================
+   MODAL OVERLAY
+========================================================= */
 
 .admin-order-modal-overlay {
     position: fixed;
@@ -262,99 +445,200 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 30px;
-    background: rgba(0, 0, 0, 0.55);
+    padding: 25px;
+    background: rgba(15, 15, 14, 0.72);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
+
+/* =========================================================
+   MODAL
+========================================================= */
 
 .admin-order-modal {
     width: 100%;
-    max-width: 700px;
-    max-height: 90vh;
+    max-width: 760px;
+    max-height: 91vh;
     overflow-y: auto;
     background: #fff;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow:
+        0 40px 100px rgba(0, 0, 0, 0.3),
+        0 10px 30px rgba(0, 0, 0, 0.12);
+    animation: adminModalIn 0.28s ease both;
 }
 
-/* ================= MODAL HEADER ================= */
+@keyframes adminModalIn {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* custom scrollbar */
+
+.admin-order-modal::-webkit-scrollbar {
+    width: 7px;
+}
+
+.admin-order-modal::-webkit-scrollbar-track {
+    background: #f5f4f1;
+}
+
+.admin-order-modal::-webkit-scrollbar-thumb {
+    background: #c8c4bb;
+}
+
+.admin-order-modal::-webkit-scrollbar-thumb:hover {
+    background: #a9a49a;
+}
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
 
 .admin-order-modal-header {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 25px 28px;
-    border-bottom: 1px solid #eee;
+    padding: 29px 30px;
+    color: #fff;
+    background:
+        radial-gradient(circle at 90% 10%, rgba(195, 163, 93, 0.18), transparent 30%),
+        #181817;
+}
+
+.admin-order-modal-header::after {
+    content: "";
+    position: absolute;
+    left: 30px;
+    bottom: 0;
+    width: 45px;
+    height: 2px;
+    background: #b89b5d;
 }
 
 .admin-order-modal-header span {
     display: block;
-    margin-bottom: 6px;
-    color: #888;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+    color: #b9a77f;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 2px;
 }
 
 .admin-order-modal-header h2 {
     margin: 0;
-    font-size: 22px;
+    color: #fff;
+    font-size: 25px;
+    letter-spacing: -1px;
 }
 
 .admin-order-modal-header button {
+    width: 38px;
+    height: 38px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    height: 34px;
-    border: 1px solid #ddd;
-    background: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff;
     cursor: pointer;
+    transition: 0.2s ease;
 }
 
-/* ================= MODAL SECTIONS ================= */
+.admin-order-modal-header button:hover {
+    background: #fff;
+    color: #171717;
+}
+
+/* =========================================================
+   MODAL SECTIONS
+========================================================= */
 
 .admin-modal-section {
-    padding: 24px 28px;
-    border-bottom: 1px solid #eee;
+    padding: 27px 30px;
+    border-bottom: 1px solid #eceae5;
 }
 
 .admin-modal-section h3 {
-    margin: 0 0 16px;
-    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 18px;
+    color: #252421;
+    font-size: 14px;
+    letter-spacing: -0.2px;
 }
 
-/* ================= CUSTOMER DETAILS ================= */
+.admin-modal-section h3::before {
+    content: "";
+    width: 4px;
+    height: 17px;
+    background: #b49a61;
+}
+
+/* =========================================================
+   CUSTOMER DETAILS
+========================================================= */
 
 .admin-customer-details {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px 25px;
+    gap: 1px;
+    overflow: hidden;
+    border: 1px solid #e9e7e1;
+    background: #e9e7e1;
 }
 
 .admin-customer-details p {
+    min-height: 62px;
+    box-sizing: border-box;
     margin: 0;
-    color: #666;
-    font-size: 13px;
+    padding: 14px 16px;
+    background: #fbfaf7;
+    color: #77746e;
+    font-size: 12px;
     line-height: 1.6;
 }
 
 .admin-customer-details strong {
-    color: #333;
+    display: block;
+    margin-bottom: 3px;
+    color: #3a3834;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
 }
 
-/* ================= ORDER ITEMS ================= */
+/* =========================================================
+   ORDER ITEMS
+========================================================= */
 
 .admin-order-items {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
+    overflow: hidden;
+    border: 1px solid #e8e5de;
 }
 
 .admin-order-item {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     gap: 20px;
-    padding: 13px 0;
-    border-bottom: 1px solid #eee;
+    padding: 16px 17px;
+    background: #fff;
+    border-bottom: 1px solid #eeeae3;
+    transition: background 0.2s ease;
+}
+
+.admin-order-item:hover {
+    background: #fcfaf5;
 }
 
 .admin-order-item:last-child {
@@ -364,102 +648,231 @@
 .admin-order-item div {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 5px;
 }
 
 .admin-order-item strong {
+    color: #292824;
     font-size: 13px;
 }
 
-.admin-order-item span {
-    color: #888;
-    font-size: 12px;
+.admin-order-item>strong {
+    color: #a08043;
+    white-space: nowrap;
 }
 
-/* ================= SUMMARY ================= */
+.admin-order-item span {
+    color: #929087;
+    font-size: 11px;
+}
+
+/* =========================================================
+   SUMMARY
+========================================================= */
 
 .admin-order-summary {
-    padding: 24px 28px;
-    border-bottom: 1px solid #eee;
+    margin: 0 30px;
+    padding: 22px 0;
+    border-bottom: 1px solid #e9e7e2;
 }
 
 .admin-order-summary>div {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
-    color: #666;
-    font-size: 13px;
+    align-items: center;
+    margin-bottom: 11px;
+    color: #85827a;
+    font-size: 12px;
+}
+
+.admin-order-summary>div strong {
+    color: #45433f;
+    font-size: 12px;
 }
 
 .admin-order-summary .admin-total-row {
-    margin-top: 16px;
+    margin-top: 17px;
     margin-bottom: 0;
-    padding-top: 16px;
-    border-top: 1px solid #ddd;
-    color: #171717;
-    font-size: 16px;
+    padding-top: 17px;
+    border-top: 1px solid #dedbd4;
+    color: #242320;
 }
 
-/* ================= MODAL STATUS ================= */
+.admin-order-summary .admin-total-row span {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.admin-order-summary .admin-total-row strong {
+    color: #9a783e;
+    font-size: 20px;
+    letter-spacing: -0.5px;
+}
+
+/* =========================================================
+   MODAL STATUS
+========================================================= */
 
 .admin-modal-status {
-    padding: 24px 28px;
+    padding: 25px 30px 30px;
 }
 
 .admin-modal-status label {
     display: block;
     margin-bottom: 9px;
-    font-size: 13px;
-    font-weight: 600;
+    color: #55524c;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .admin-modal-status select {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    background: #fff;
+    appearance: none;
+    padding: 13px 15px;
+    border: 1px solid #dcd9d1;
     outline: none;
-    font-size: 14px;
+    background:
+        linear-gradient(45deg, transparent 50%, #777 50%) calc(100% - 18px) 50% / 6px 6px no-repeat,
+        linear-gradient(135deg, #777 50%, transparent 50%) calc(100% - 13px) 50% / 6px 6px no-repeat,
+        #faf9f6;
+    color: #333;
+    font-size: 13px;
+    font-weight: 600;
     cursor: pointer;
 }
 
-/* ================= RESPONSIVE ================= */
+.admin-modal-status select:focus {
+    border-color: #b49a61;
+    box-shadow: 0 0 0 4px rgba(180, 154, 97, 0.08);
+}
 
-@media (max-width: 768px) {
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 900px) {
     .admin-orders-page {
-        padding: 35px 20px;
+        padding: 45px 4% 70px;
+    }
+
+    .admin-orders-header {
+        align-items: flex-start;
+    }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 700px) {
+    .admin-orders-page {
+        padding: 32px 16px 60px;
     }
 
     .admin-orders-header {
         flex-direction: column;
         align-items: flex-start;
+        gap: 20px;
+        margin-bottom: 28px;
     }
 
     .admin-orders-header h1 {
-        font-size: 30px;
+        font-size: 38px;
+        letter-spacing: -2px;
+    }
+
+    .admin-orders-header p {
+        font-size: 13px;
+    }
+
+    .admin-order-count {
+        width: 100%;
+        box-sizing: border-box;
+        justify-content: center;
+    }
+
+    .admin-orders-toolbar {
+        margin-bottom: 15px;
     }
 
     .admin-order-search {
         width: 100%;
     }
 
-    .admin-orders-toolbar {
-        display: block;
+    /*
+      Keep the table horizontally scrollable on mobile.
+      This is much better for admin data than squeezing
+      seven columns into a tiny screen.
+    */
+    .admin-orders-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .admin-orders-table {
+        min-width: 1050px;
+    }
+
+    .admin-order-modal-overlay {
+        align-items: flex-end;
+        padding: 0;
+    }
+
+    .admin-order-modal {
+        max-height: 94vh;
+    }
+
+    .admin-order-modal-header {
+        padding: 24px 20px;
+    }
+
+    .admin-order-modal-header::after {
+        left: 20px;
+    }
+
+    .admin-modal-section {
+        padding: 23px 20px;
     }
 
     .admin-customer-details {
         grid-template-columns: 1fr;
     }
 
-    .admin-order-modal-overlay {
-        padding: 15px;
+    .admin-order-summary {
+        margin-left: 20px;
+        margin-right: 20px;
     }
 
-    .admin-order-modal-header,
-    .admin-modal-section,
-    .admin-order-summary,
     .admin-modal-status {
-        padding-left: 20px;
-        padding-right: 20px;
+        padding: 22px 20px 25px;
+    }
+
+    .admin-order-item {
+        padding: 14px;
+    }
+}
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 420px) {
+    .admin-orders-header h1 {
+        font-size: 34px;
+    }
+
+    .admin-section-label {
+        font-size: 9px;
+    }
+
+    .admin-order-modal-header h2 {
+        font-size: 21px;
+    }
+
+    .admin-order-modal-header button {
+        width: 34px;
+        height: 34px;
     }
 }

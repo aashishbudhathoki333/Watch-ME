@@ -3,24 +3,42 @@
    PREMIUM LUXURY DESIGN
 ========================================================= */
 
+:root {
+    --navbar-height: 80px;
+}
+
 .categories-page {
     min-height: 100vh;
     background: #fff;
     color: #111;
-    overflow: hidden;
+
+    /*
+     * IMPORTANT:
+     * Your navbar is fixed, so the page needs space at the top.
+     * This prevents "Choose Your Watch" and other content
+     * from being hidden behind the navbar.
+     */
+    padding-top: var(--navbar-height);
+
+    overflow-x: hidden;
 }
 
-.categories-page *,
-.categories-page *::before,
-.categories-page *::after {
+.categories-page * {
     box-sizing: border-box;
 }
+
+
+/* =========================================================
+   COMMON
+========================================================= */
 
 .section-label {
     display: inline-flex;
     align-items: center;
     gap: 10px;
+
     color: #8c7450;
+
     font-size: 10px;
     font-weight: 800;
     letter-spacing: 3px;
@@ -33,7 +51,9 @@
 
 .categories-hero {
     min-height: 600px;
+
     padding: 90px 7%;
+
     background:
         radial-gradient(circle at 75% 50%,
             rgba(190, 163, 116, 0.15),
@@ -44,98 +64,157 @@
 
     display: flex;
     align-items: center;
+
     position: relative;
+
     overflow: hidden;
 }
 
 .categories-hero::before {
     content: "";
+
     position: absolute;
+
     width: 520px;
     height: 520px;
+
     border-radius: 50%;
+
     border: 1px solid rgba(0, 0, 0, 0.05);
+
     right: 7%;
     top: 50%;
+
     transform: translateY(-50%);
 }
 
 .categories-hero::after {
     content: "";
+
     position: absolute;
+
     width: 680px;
     height: 680px;
+
     border-radius: 50%;
+
     border: 1px solid rgba(0, 0, 0, 0.035);
+
     right: 2%;
     top: 50%;
+
     transform: translateY(-50%);
 }
 
+
+/* =========================================================
+   HERO CONTENT
+========================================================= */
+
 .categories-hero-content {
     max-width: 760px;
+
     position: relative;
+
     z-index: 4;
 }
 
 .hero-eyebrow {
     display: flex;
     align-items: center;
+
     gap: 12px;
+
     color: #777;
+
     font-size: 10px;
     font-weight: 800;
+
     letter-spacing: 3px;
+
     margin-bottom: 24px;
 }
 
 .hero-line {
     width: 38px;
     height: 1px;
+
     background: #9c8055;
 }
 
 .categories-hero h1 {
     margin: 0 0 27px;
+
     font-size: clamp(55px, 7vw, 88px);
+
     line-height: 0.94;
+
     letter-spacing: -5px;
+
     font-weight: 800;
+
     color: #111;
 }
 
 .categories-hero h1 span {
     display: block;
+
     font-weight: 300;
+
     font-style: italic;
+
     color: #75664f;
 }
 
 .categories-hero p {
     max-width: 560px;
+
     color: #6e6e6e;
+
     font-size: 16px;
+
     line-height: 1.8;
+
     margin: 0 0 30px;
 }
 
+
+/* =========================================================
+   HERO BUTTON
+========================================================= */
+
 .hero-shop-button {
     display: inline-flex;
+
     align-items: center;
+    justify-content: center;
+
     gap: 10px;
+
     min-height: 52px;
+
     padding: 0 23px;
+
     background: #111;
+
     color: #fff;
+
     text-decoration: none;
+
     font-size: 12px;
+
     font-weight: 700;
+
     letter-spacing: 0.5px;
-    transition: all 0.3s ease;
+
+    transition:
+        background 0.3s ease,
+        transform 0.3s ease;
 }
 
 .hero-shop-button:hover {
     background: #8f734c;
+
     transform: translateY(-3px);
 }
 
@@ -146,17 +225,19 @@
 
 .categories-hero-watch {
     position: absolute;
+
     z-index: 2;
 
-    width: 460px;
-    height: 460px;
+    width: 440px;
+    height: 440px;
 
-    right: 8%;
+    right: 10%;
     top: 50%;
 
     transform: translateY(-50%);
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -165,6 +246,7 @@
 
 .hero-watch-circle {
     position: absolute;
+
     inset: 30px;
 
     border-radius: 50%;
@@ -178,33 +260,26 @@
 
 
 /*
-=========================================================
-IMPORTANT
-
-Do NOT use width:100% + height:100% on the image.
-
-That forces the actual image canvas to become a square.
-
-The image is allowed to keep its natural aspect ratio.
-=========================================================
-*/
-
+ * IMPORTANT:
+ * contain prevents the watch from being cropped.
+ */
 .categories-hero-watch img {
+    position: relative;
+
+    z-index: 2;
+
     display: block;
 
-    width: auto;
-    height: auto;
+    width: 100%;
+    height: 100%;
 
-    max-width: 90%;
-    max-height: 90%;
+    max-width: 100%;
+    max-height: 100%;
 
     object-fit: contain;
     object-position: center;
 
-    padding: 0;
-
-    position: relative;
-    z-index: 2;
+    padding: 25px;
 
     filter:
         drop-shadow(0 30px 25px rgba(0, 0, 0, 0.2));
@@ -224,30 +299,41 @@ The image is allowed to keep its natural aspect ratio.
 
 .main-categories {
     padding: 110px 7%;
+
     background: #fff;
 }
 
 .categories-heading {
     display: flex;
+
     justify-content: space-between;
     align-items: flex-end;
+
     gap: 50px;
+
     margin-bottom: 45px;
 }
 
 .categories-heading h2,
 .collections-heading h2 {
     margin: 10px 0 0;
+
     font-size: clamp(36px, 4vw, 52px);
+
     line-height: 1;
+
     letter-spacing: -2.5px;
 }
 
 .categories-heading>p {
     max-width: 370px;
+
     margin: 0;
+
     color: #777;
+
     font-size: 14px;
+
     line-height: 1.8;
 }
 
@@ -258,18 +344,23 @@ The image is allowed to keep its natural aspect ratio.
 
 .main-category-grid {
     display: grid;
+
     grid-template-columns: repeat(3, 1fr);
+
     gap: 18px;
 }
 
 .main-category-card {
     color: #111;
+
     text-decoration: none;
+
     min-width: 0;
 
     background: #f2f2ef;
 
     overflow: hidden;
+
     position: relative;
 
     transition:
@@ -286,11 +377,23 @@ The image is allowed to keep its natural aspect ratio.
 
 
 /* =========================================================
-   REMOVE DUPLICATE BACKGROUND IMAGE
-
-   Your JSX has a .category-image containing another <img>.
-   We completely disable that image.
+   DUPLICATE BACKGROUND IMAGE
 ========================================================= */
+
+/*
+ * Your JSX contains BOTH:
+ *
+ * .category-image
+ *
+ * and
+ *
+ * .category-image-wrapper
+ *
+ * The first one was using object-fit: cover,
+ * which caused the visible image to be cropped.
+ *
+ * We completely disable it.
+ */
 
 .category-image {
     display: none !important;
@@ -298,18 +401,20 @@ The image is allowed to keep its natural aspect ratio.
 
 
 /* =========================================================
-   CATEGORY IMAGE AREA
+   CATEGORY IMAGE WRAPPER
 ========================================================= */
 
 .category-image-wrapper {
-    width: 100%;
     height: 350px;
+
+    width: 100%;
 
     position: relative;
 
     overflow: hidden;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -340,38 +445,40 @@ The image is allowed to keep its natural aspect ratio.
 
 /* =========================================================
    CATEGORY PRODUCT IMAGE
-
-   THIS IS THE IMPORTANT PART.
-
-   The image keeps its natural proportions.
-   No forced width/height.
-   No padding.
-   No cropping.
 ========================================================= */
 
 .category-product-image {
     display: block;
 
-    width: auto;
-    height: auto;
+    /*
+     * Fill the available box but NEVER crop.
+     */
+    width: 100%;
+    height: 100%;
 
-    max-width: 90%;
-    max-height: 90%;
+    max-width: 100%;
+    max-height: 100%;
 
     object-fit: contain;
-    object-position: center center;
+    object-position: center;
+
+    /*
+     * Creates breathing room around the watch.
+     */
+    padding: 30px;
 
     position: relative;
-    z-index: 2;
 
-    padding: 0;
-    margin: 0;
+    z-index: 2;
 
     filter:
         drop-shadow(0 25px 20px rgba(0, 0, 0, 0.2));
 
     transition:
-        transform 0.6s cubic-bezier(.2, .8, .2, 1),
+        transform 0.6s cubic-bezier(.2,
+            .8,
+            .2,
+            1),
         filter 0.4s ease;
 }
 
@@ -384,7 +491,7 @@ The image is allowed to keep its natural aspect ratio.
 
 
 /* =========================================================
-   PLACEHOLDER
+   CATEGORY PLACEHOLDER
 ========================================================= */
 
 .category-image-placeholder {
@@ -396,22 +503,25 @@ The image is allowed to keep its natural aspect ratio.
     background: rgba(255, 255, 255, 0.5);
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     color: #555;
 
     position: relative;
+
     z-index: 2;
 }
 
 
 /* =========================================================
-   IMAGE OVERLAY
+   CATEGORY OVERLAY
 ========================================================= */
 
 .category-image-overlay {
     position: absolute;
+
     inset: 0;
 
     z-index: 3;
@@ -433,6 +543,7 @@ The image is allowed to keep its natural aspect ratio.
 
 .category-number {
     position: absolute;
+
     z-index: 4;
 
     top: 20px;
@@ -441,9 +552,11 @@ The image is allowed to keep its natural aspect ratio.
     color: rgba(255, 255, 255, 0.8);
 
     font-size: 75px;
+
     line-height: 1;
 
     font-weight: 300;
+
     letter-spacing: -5px;
 
     pointer-events: none;
@@ -470,16 +583,20 @@ The image is allowed to keep its natural aspect ratio.
     backdrop-filter: blur(10px);
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
     color: #111;
 
-    transition: 0.3s ease;
+    transition:
+        background 0.3s ease,
+        color 0.3s ease;
 }
 
 .main-category-card:hover .category-icon-large {
     background: #111;
+
     color: #fff;
 }
 
@@ -499,18 +616,23 @@ The image is allowed to keep its natural aspect ratio.
     color: #fff;
 
     font-size: 9px;
+
     letter-spacing: 2px;
+
     font-weight: 800;
 
     opacity: 0;
 
     transform: translateY(10px);
 
-    transition: 0.3s ease;
+    transition:
+        opacity 0.3s ease,
+        transform 0.3s ease;
 }
 
 .main-category-card:hover .category-view {
     opacity: 1;
+
     transform: translateY(0);
 }
 
@@ -527,6 +649,7 @@ The image is allowed to keep its natural aspect ratio.
     display: flex;
 
     justify-content: space-between;
+
     align-items: flex-end;
 
     gap: 20px;
@@ -534,6 +657,7 @@ The image is allowed to keep its natural aspect ratio.
     background: #fff;
 
     position: relative;
+
     z-index: 2;
 }
 
@@ -545,6 +669,7 @@ The image is allowed to keep its natural aspect ratio.
     color: #9b8058;
 
     font-size: 9px;
+
     font-weight: 800;
 
     letter-spacing: 2px;
@@ -554,6 +679,7 @@ The image is allowed to keep its natural aspect ratio.
     margin: 9px 0 10px;
 
     font-size: 27px;
+
     line-height: 1.05;
 
     letter-spacing: -1px;
@@ -565,6 +691,7 @@ The image is allowed to keep its natural aspect ratio.
     color: #777;
 
     font-size: 13px;
+
     line-height: 1.7;
 }
 
@@ -580,9 +707,11 @@ The image is allowed to keep its natural aspect ratio.
     flex-shrink: 0;
 
     background: #111;
+
     color: #fff;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -593,6 +722,7 @@ The image is allowed to keep its natural aspect ratio.
 
 .main-category-card:hover .category-card-arrow {
     transform: rotate(-45deg);
+
     background: #9b8058;
 }
 
@@ -603,12 +733,15 @@ The image is allowed to keep its natural aspect ratio.
 
 .collections-section {
     padding: 110px 7%;
+
     background: #f6f6f3;
 }
 
 .collections-heading {
     display: flex;
+
     justify-content: space-between;
+
     align-items: flex-end;
 
     gap: 50px;
@@ -622,6 +755,7 @@ The image is allowed to keep its natural aspect ratio.
     color: #777;
 
     line-height: 1.8;
+
     font-size: 14px;
 
     margin: 0;
@@ -676,12 +810,14 @@ The image is allowed to keep its natural aspect ratio.
 ========================================================= */
 
 .collection-image {
-    width: 100%;
     height: 190px;
+
+    width: 100%;
 
     background: #ecece8;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -694,24 +830,23 @@ The image is allowed to keep its natural aspect ratio.
 
 
 /*
-   KEEP NATURAL IMAGE SIZE
-   INSTEAD OF FORCING IT INTO 100% x 100%
-*/
-
+ * contain = entire image visible
+ * cover   = image cropped
+ */
 .collection-image img {
     display: block;
 
-    width: auto;
-    height: auto;
+    width: 100%;
+    height: 100%;
 
-    max-width: 90%;
-    max-height: 90%;
+    max-width: 100%;
+    max-height: 100%;
 
     object-fit: contain;
+
     object-position: center;
 
-    padding: 0;
-    margin: 0;
+    padding: 18px;
 
     filter:
         drop-shadow(0 18px 15px rgba(0, 0, 0, 0.17));
@@ -731,7 +866,10 @@ The image is allowed to keep its natural aspect ratio.
 
 .collection-image-overlay {
     position: absolute;
+
     inset: 0;
+
+    z-index: 2;
 
     background:
         linear-gradient(to bottom,
@@ -739,8 +877,6 @@ The image is allowed to keep its natural aspect ratio.
             transparent);
 
     pointer-events: none;
-
-    z-index: 2;
 }
 
 
@@ -785,6 +921,7 @@ The image is allowed to keep its natural aspect ratio.
     background: #f2f1ed;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -797,6 +934,7 @@ The image is allowed to keep its natural aspect ratio.
 
 .collection-card:hover .collection-icon {
     background: #111;
+
     color: #fff;
 }
 
@@ -804,6 +942,7 @@ The image is allowed to keep its natural aspect ratio.
     color: #9b8058;
 
     font-size: 9px;
+
     font-weight: 800;
 
     letter-spacing: 1.8px;
@@ -825,6 +964,7 @@ The image is allowed to keep its natural aspect ratio.
     color: #777;
 
     font-size: 12px;
+
     line-height: 1.65;
 }
 
@@ -845,6 +985,7 @@ The image is allowed to keep its natural aspect ratio.
     border: 1px solid #ddd;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -856,6 +997,7 @@ The image is allowed to keep its natural aspect ratio.
 
 .collection-card:hover .collection-arrow {
     background: #111;
+
     color: #fff;
 
     transform: rotate(-45deg);
@@ -939,7 +1081,8 @@ The image is allowed to keep its natural aspect ratio.
 }
 
 .statement-link svg {
-    transition: transform 0.25s ease;
+    transition:
+        transform 0.25s ease;
 }
 
 .statement-link:hover svg {
@@ -1027,24 +1170,23 @@ The image is allowed to keep its natural aspect ratio.
 
 
 /*
-   CTA IMAGE
-   NATURAL ASPECT RATIO
-*/
-
+ * IMPORTANT:
+ * Full image stays visible.
+ */
 .cta-watch-decoration img {
     display: block;
 
-    width: auto;
-    height: auto;
+    width: 320px;
+    height: 320px;
 
-    max-width: 90%;
-    max-height: 90%;
+    max-width: 100%;
+    max-height: 100%;
 
     object-fit: contain;
+
     object-position: center;
 
-    padding: 0;
-    margin: 0;
+    padding: 15px;
 
     position: relative;
 
@@ -1227,7 +1369,10 @@ The image is allowed to keep its natural aspect ratio.
 
     font-weight: 800;
 
-    transition: all 0.3s ease;
+    transition:
+        background 0.3s ease,
+        color 0.3s ease,
+        transform 0.3s ease;
 }
 
 .cta-button:hover {
@@ -1244,6 +1389,10 @@ The image is allowed to keep its natural aspect ratio.
 ========================================================= */
 
 @media (max-width: 1100px) {
+
+    :root {
+        --navbar-height: 80px;
+    }
 
     .categories-hero {
         min-height: 540px;
@@ -1288,6 +1437,7 @@ The image is allowed to keep its natural aspect ratio.
 
     .categories-cta-content p {
         margin-left: auto;
+
         margin-right: auto;
     }
 }
@@ -1298,6 +1448,22 @@ The image is allowed to keep its natural aspect ratio.
 ========================================================= */
 
 @media (max-width: 700px) {
+
+    /*
+     * Mobile navbar offset.
+     */
+    :root {
+        --navbar-height: 70px;
+    }
+
+    .categories-page {
+        padding-top: var(--navbar-height);
+    }
+
+
+    /* =====================================================
+       HERO
+    ===================================================== */
 
     .categories-hero {
         min-height: 650px;
@@ -1335,6 +1501,11 @@ The image is allowed to keep its natural aspect ratio.
         font-size: 14px;
     }
 
+
+    /* =====================================================
+       HERO WATCH MOBILE
+    ===================================================== */
+
     .categories-hero-watch {
         width: 300px;
         height: 300px;
@@ -1342,23 +1513,25 @@ The image is allowed to keep its natural aspect ratio.
         right: 50%;
 
         top: auto;
+
         bottom: -30px;
 
         transform: translateX(50%);
     }
 
     .categories-hero-watch img {
-        width: auto;
-        height: auto;
+        width: 100%;
+        height: 100%;
 
-        max-width: 90%;
-        max-height: 90%;
+        padding: 20px;
 
-        padding: 0;
+        object-fit: contain;
     }
 
 
-    /* MAIN */
+    /* =====================================================
+       MAIN CATEGORIES
+    ===================================================== */
 
     .main-categories {
         padding: 75px 5%;
@@ -1390,13 +1563,12 @@ The image is allowed to keep its natural aspect ratio.
     }
 
     .category-product-image {
-        width: auto;
-        height: auto;
+        width: 100%;
+        height: 100%;
 
-        max-width: 90%;
-        max-height: 90%;
+        padding: 20px;
 
-        padding: 0;
+        object-fit: contain;
     }
 
     .category-card-content {
@@ -1410,7 +1582,9 @@ The image is allowed to keep its natural aspect ratio.
     }
 
 
-    /* COLLECTIONS */
+    /* =====================================================
+       COLLECTIONS
+    ===================================================== */
 
     .collections-section {
         padding: 75px 5%;
@@ -1433,13 +1607,12 @@ The image is allowed to keep its natural aspect ratio.
     }
 
     .collection-image img {
-        width: auto;
-        height: auto;
+        width: 100%;
+        height: 100%;
 
-        max-width: 90%;
-        max-height: 90%;
+        padding: 10px;
 
-        padding: 0;
+        object-fit: contain;
     }
 
     .collection-card-body {
@@ -1447,7 +1620,9 @@ The image is allowed to keep its natural aspect ratio.
     }
 
 
-    /* STATEMENT */
+    /* =====================================================
+       STATEMENT
+    ===================================================== */
 
     .category-statement {
         padding: 80px 5%;
@@ -1464,7 +1639,9 @@ The image is allowed to keep its natural aspect ratio.
     }
 
 
-    /* CTA */
+    /* =====================================================
+       CTA
+    ===================================================== */
 
     .categories-cta {
         margin: 0 5% 70px;
@@ -1484,13 +1661,12 @@ The image is allowed to keep its natural aspect ratio.
     }
 
     .cta-watch-decoration img {
-        width: auto;
-        height: auto;
+        width: 235px;
+        height: 235px;
 
-        max-width: 90%;
-        max-height: 90%;
+        padding: 10px;
 
-        padding: 0;
+        object-fit: contain;
     }
 
     .cta-watch-face {
@@ -1516,6 +1692,14 @@ The image is allowed to keep its natural aspect ratio.
 
 @media (max-width: 420px) {
 
+    :root {
+        --navbar-height: 70px;
+    }
+
+    .categories-page {
+        padding-top: var(--navbar-height);
+    }
+
     .categories-hero {
         min-height: 620px;
     }
@@ -1530,8 +1714,7 @@ The image is allowed to keep its natural aspect ratio.
     }
 
     .categories-hero-watch img {
-        max-width: 88%;
-        max-height: 88%;
+        padding: 15px;
     }
 
     .category-image-wrapper {
@@ -1539,10 +1722,9 @@ The image is allowed to keep its natural aspect ratio.
     }
 
     .category-product-image {
-        max-width: 88%;
-        max-height: 88%;
+        padding: 15px;
 
-        padding: 0;
+        object-fit: contain;
     }
 
     .category-number {
@@ -1563,36 +1745,8 @@ The image is allowed to keep its natural aspect ratio.
     }
 
     .collection-image img {
-        max-width: 88%;
-        max-height: 88%;
+        padding: 8px;
 
-        padding: 0;
+        object-fit: contain;
     }
-}
-
-
-/* =========================================================
-   FORCE IMAGE SAFETY
-
-   This overrides common global CSS such as:
-
-   img {
-       width: 100%;
-       height: 100%;
-       object-fit: cover;
-   }
-
-========================================================= */
-
-.categories-page .category-product-image,
-.categories-page .collection-image img,
-.categories-page .categories-hero-watch img,
-.categories-page .cta-watch-decoration img {
-    object-fit: contain !important;
-    object-position: center center !important;
-    width: auto !important;
-    height: auto !important;
-    max-width: 90% !important;
-    max-height: 90% !important;
-    padding: 0 !important;
 }
