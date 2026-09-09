@@ -1,5 +1,5 @@
 import { useContext, useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
   Heart,
   ShoppingBag,
@@ -16,6 +16,8 @@ import { AuthContext } from "../context/AuthContext";
 import "./Navbar.css";
 
 const Navbar = () => {
+  const location = useLocation();
+const isAdminPage = location.pathname.toLowerCase().startsWith("/admin");
   const { cartCount } = useContext(CartContext);
   const { wishlistItems } = useContext(WishlistContext);
   const { user, isLoggedIn, logout } = useContext(AuthContext);
@@ -35,6 +37,27 @@ const Navbar = () => {
     closeMenu();
     navigate("/");
   };
+
+  if (isAdminPage) {
+  return (
+    <nav className="navbar">
+      <div className="navbar-container">
+
+        <Link to="/admin" className="navbar-logo">
+          WATCHME ADMIN
+        </Link>
+
+        <div className="navbar-links">
+          <Link to="/admin">Dashboard</Link>
+          <Link to="/admin/products">Products</Link>
+          <Link to="/admin/orders">Orders</Link>
+          <Link to="/admin/customers">Customers</Link>
+        </div>
+
+      </div>
+    </nav>
+  );
+}
 
   return (
     <header className="navbar">
