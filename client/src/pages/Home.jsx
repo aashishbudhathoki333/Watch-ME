@@ -18,18 +18,18 @@ import "./Home.css";
 const categories = [
   {
     title: "Men's Watches",
-    description: "Bold designs for every occasion",
-    icon: "⌚",
+    description: "Bold designs for every occasion.",
+    type: "men",
   },
   {
     title: "Women's Watches",
-    description: "Elegant timepieces with style",
-    icon: "◉",
+    description: "Elegant timepieces with style.",
+    type: "women",
   },
   {
     title: "Luxury Watches",
-    description: "Premium craftsmanship & detail",
-    icon: "✦",
+    description: "Premium craftsmanship & detail.",
+    type: "luxury",
   },
 ];
 
@@ -53,6 +53,42 @@ function Home() {
   }, []);
 
   const featuredWatches = productList.slice(0, 4);
+
+  const getCategoryImage = (type) => {
+  const product = productList.find((item) => {
+    const category = String(item.category || "").toLowerCase();
+    const collection = String(item.collection || "").toLowerCase();
+    const name = String(item.name || "").toLowerCase();
+
+    if (type === "men") {
+      return (
+        category.includes("men") ||
+        collection.includes("men") ||
+        name.includes("men")
+      );
+    }
+
+    if (type === "women") {
+      return (
+        category.includes("women") ||
+        collection.includes("women") ||
+        name.includes("women")
+      );
+    }
+
+    if (type === "luxury") {
+      return (
+        category.includes("luxury") ||
+        collection.includes("luxury") ||
+        name.includes("luxury")
+      );
+    }
+
+    return false;
+  });
+
+  return product?.image || "";
+};
 
   const { addToCart } = useContext(CartContext);
 
@@ -151,24 +187,48 @@ function Home() {
           </Link>
         </div>
 
-        <div className="category-grid">
-          {categories.map((category) => (
-            <Link
-              to="/shop"
-              className="category-card"
-              key={category.title}
-            >
-              <div className="category-icon">{category.icon}</div>
+       <div className="category-grid">
+  {categories.map((category) => {
+    const image = getCategoryImage(category.type);
 
-              <div>
-                <h3>{category.title}</h3>
-                <p>{category.description}</p>
-              </div>
+    return (
+      <Link
+        to="/shop"
+        className={`category-card category-${category.type}`}
+        key={category.title}
+      >
+        {image ? (
+          <img
+            src={image}
+            alt={category.title}
+            className="category-image"
+          />
+        ) : (
+          <div className="category-image-placeholder">
+            <span>WATCHME</span>
+          </div>
+        )}
 
-              <ArrowRight className="category-arrow" size={20} />
-            </Link>
-          ))}
+        <div className="category-overlay"></div>
+
+        <div className="category-content">
+          <div className="category-icon">
+            {category.type === "luxury" ? "✦" : "⌚"}
+          </div>
+
+          <div className="category-text">
+            <h3>{category.title}</h3>
+            <p>{category.description}</p>
+          </div>
+
+          <div className="category-arrow">
+            <ArrowRight size={21} />
+          </div>
         </div>
+      </Link>
+    );
+  })}
+</div>
       </section>
 
       {/* ================= FEATURED ================= */}
