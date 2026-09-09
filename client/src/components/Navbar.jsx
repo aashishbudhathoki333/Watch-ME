@@ -38,24 +38,24 @@ const isAdminPage = location.pathname.toLowerCase().startsWith("/admin");
     navigate("/");
   };
 
-  if (isAdminPage) {
+ if (isAdminPage) {
   return (
-    <nav className="navbar">
-      <div className="navbar-container">
+    <header className="admin-navbar">
+      <div className="admin-navbar-container">
 
-        <Link to="/admin" className="navbar-logo">
-          WATCHME ADMIN
+        <Link to="/admin" className="admin-navbar-logo">
+          WATCHME <span>ADMIN</span>
         </Link>
 
-        <div className="navbar-links">
+        <nav className="admin-navbar-links">
           <Link to="/admin">Dashboard</Link>
           <Link to="/admin/products">Products</Link>
           <Link to="/admin/orders">Orders</Link>
           <Link to="/admin/customers">Customers</Link>
-        </div>
+        </nav>
 
       </div>
-    </nav>
+    </header>
   );
 }
 
