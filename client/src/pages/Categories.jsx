@@ -8,6 +8,7 @@ import {
   Zap,
   Gem,
 } from "lucide-react";
+
 import products from "../data/products";
 import "./Categories.css";
 
@@ -54,18 +55,40 @@ const collections = [
   {
     name: "Modern Collection",
     value: "Modern",
-    description: "Clean and contemporary designs for today's generation.",
+    description:
+      "Clean and contemporary designs for today's generation.",
     icon: Gem,
   },
   {
     name: "Elegant Collection",
     value: "Elegant",
-    description: "Graceful designs made for sophisticated moments.",
+    description:
+      "Graceful designs made for sophisticated moments.",
     icon: Sparkles,
   },
 ];
 
 function Categories() {
+  /* =========================
+     HELPERS
+  ========================= */
+
+  const getCategoryProducts = (category) => {
+    return products.filter(
+      (product) =>
+        product.category === category &&
+        product.image
+    );
+  };
+
+  const getCollectionProducts = (collection) => {
+    return products.filter(
+      (product) =>
+        product.collection === collection &&
+        product.image
+    );
+  };
+
   const getCategoryCount = (category) => {
     return products.filter(
       (product) => product.category === category
@@ -81,13 +104,20 @@ function Categories() {
   return (
     <main className="categories-page">
 
-      {/* ================= HEADER ================= */}
+      {/* =====================================================
+          HERO
+      ===================================================== */}
 
       <section className="categories-hero">
+
+        <div className="categories-hero-glow"></div>
+
         <div className="categories-hero-content">
-          <span className="section-label">
-            FIND YOUR STYLE
-          </span>
+
+          <div className="hero-eyebrow">
+            <span className="hero-line"></span>
+            WATCHME COLLECTION
+          </div>
 
           <h1>
             Explore the
@@ -99,14 +129,47 @@ function Categories() {
             timepieces, discover a watch that feels uniquely
             yours.
           </p>
+
+          <Link
+            to="/shop"
+            className="hero-shop-button"
+          >
+            Explore Watches
+            <ArrowRight size={17} />
+          </Link>
+
         </div>
+
+        {/* HERO WATCH IMAGE */}
+
+        {products.find((product) => product.image)?.image && (
+          <div className="categories-hero-watch">
+
+            <div className="hero-watch-circle"></div>
+
+            <img
+              src={
+                products.find(
+                  (product) => product.image
+                ).image
+              }
+              alt="WatchMe premium watch"
+            />
+
+          </div>
+        )}
+
       </section>
 
-      {/* ================= MAIN CATEGORIES ================= */}
+
+      {/* =====================================================
+          MAIN CATEGORIES
+      ===================================================== */}
 
       <section className="main-categories">
 
         <div className="categories-heading">
+
           <div>
             <span className="section-label">
               SHOP BY STYLE
@@ -114,13 +177,29 @@ function Categories() {
 
             <h2>Choose Your Watch</h2>
           </div>
+
+          <p>
+            Discover a collection carefully selected for
+            different styles, personalities and occasions.
+          </p>
+
         </div>
+
 
         <div className="main-category-grid">
 
-          {categories.map((category) => {
+          {categories.map((category, index) => {
+
             const Icon = category.icon;
-            const count = getCategoryCount(category.value);
+
+            const categoryProducts =
+              getCategoryProducts(category.value);
+
+            const count =
+              getCategoryCount(category.value);
+
+            const image =
+              categoryProducts[0]?.image;
 
             return (
               <Link
@@ -129,31 +208,64 @@ function Categories() {
                 className={`main-category-card ${category.className}`}
               >
 
-                <div className="category-card-top">
+                {/* IMAGE */}
+
+                <div className="category-image-wrapper">
+
+                  {image ? (
+                    <img
+                      src={image}
+                      alt={category.name}
+                      className="category-product-image"
+                    />
+                  ) : (
+                    <div className="category-image-placeholder">
+                      <Icon size={70} strokeWidth={1} />
+                    </div>
+                  )}
+
+                  <div className="category-image-overlay"></div>
+
                   <span className="category-number">
-                    0{categories.indexOf(category) + 1}
+                    0{index + 1}
                   </span>
 
                   <div className="category-icon-large">
-                    <Icon size={30} />
+                    <Icon size={23} />
                   </div>
+
+                  <span className="category-view">
+                    VIEW COLLECTION
+                  </span>
+
                 </div>
 
+
+                {/* CONTENT */}
+
                 <div className="category-card-content">
-                  <div>
-                    <span>
+
+                  <div className="category-card-text">
+
+                    <span className="category-count">
                       {count}{" "}
-                      {count === 1 ? "WATCH" : "WATCHES"}
+                      {count === 1
+                        ? "TIMEPIECE"
+                        : "TIMEPIECES"}
                     </span>
 
                     <h3>{category.name}</h3>
 
-                    <p>{category.description}</p>
+                    <p>
+                      {category.description}
+                    </p>
+
                   </div>
 
                   <div className="category-card-arrow">
-                    <ArrowRight size={21} />
+                    <ArrowRight size={20} />
                   </div>
+
                 </div>
 
               </Link>
@@ -161,80 +273,214 @@ function Categories() {
           })}
 
         </div>
+
       </section>
 
-      {/* ================= COLLECTIONS ================= */}
+
+      {/* =====================================================
+          COLLECTIONS
+      ===================================================== */}
 
       <section className="collections-section">
 
         <div className="collections-heading">
+
           <div>
             <span className="section-label">
               DISCOVER MORE
             </span>
 
-            <h2>Explore Our Collections</h2>
+            <h2>
+              Explore Our Collections
+            </h2>
           </div>
 
           <p>
             Find the perfect timepiece based on your
             personality and lifestyle.
           </p>
+
         </div>
+
 
         <div className="collections-grid">
 
-          {collections.map((collection) => {
+          {collections.map((collection, index) => {
+
             const Icon = collection.icon;
-            const count = getCollectionCount(collection.value);
+
+            const collectionProducts =
+              getCollectionProducts(
+                collection.value
+              );
+
+            const count =
+              getCollectionCount(
+                collection.value
+              );
+
+            const image =
+              collectionProducts[0]?.image;
 
             return (
               <Link
                 key={collection.name}
-                to="/shop"
+                to={`/shop?collection=${collection.value}`}
                 className="collection-card"
               >
 
-                <div className="collection-icon">
-                  <Icon size={23} />
-                </div>
+                {/* IMAGE */}
 
-                <div className="collection-info">
-                  <span>
-                    {count}{" "}
-                    {count === 1 ? "WATCH" : "WATCHES"}
+                <div className="collection-image">
+
+                  {image ? (
+                    <img
+                      src={image}
+                      alt={collection.name}
+                    />
+                  ) : (
+                    <Icon
+                      size={60}
+                      strokeWidth={1}
+                    />
+                  )}
+
+                  <div className="collection-image-overlay"></div>
+
+                  <span className="collection-number">
+                    0{index + 1}
                   </span>
 
-                  <h3>{collection.name}</h3>
-
-                  <p>{collection.description}</p>
                 </div>
 
-                <ArrowRight
-                  size={18}
-                  className="collection-arrow"
-                />
+
+                {/* CONTENT */}
+
+                <div className="collection-card-body">
+
+                  <div className="collection-icon">
+                    <Icon size={19} />
+                  </div>
+
+                  <div className="collection-info">
+
+                    <span>
+                      {count}{" "}
+                      {count === 1
+                        ? "WATCH"
+                        : "WATCHES"}
+                    </span>
+
+                    <h3>
+                      {collection.name}
+                    </h3>
+
+                    <p>
+                      {collection.description}
+                    </p>
+
+                  </div>
+
+                  <div className="collection-arrow">
+                    <ArrowRight size={18} />
+                  </div>
+
+                </div>
 
               </Link>
             );
           })}
 
         </div>
+
       </section>
 
-      {/* ================= CTA ================= */}
+
+      {/* =====================================================
+          FEATURED STATEMENT
+      ===================================================== */}
+
+      <section className="category-statement">
+
+        <div className="statement-left">
+
+          <span className="section-label">
+            THE WATCHME STANDARD
+          </span>
+
+          <h2>
+            Time is personal.
+            <span> Make yours memorable.</span>
+          </h2>
+
+        </div>
+
+        <div className="statement-right">
+
+          <p>
+            Every WatchMe timepiece is selected with
+            attention to design, character and everyday
+            elegance.
+          </p>
+
+          <Link
+            to="/shop"
+            className="statement-link"
+          >
+            View all watches
+            <ArrowRight size={17} />
+          </Link>
+
+        </div>
+
+      </section>
+
+
+      {/* =====================================================
+          CTA
+      ===================================================== */}
 
       <section className="categories-cta">
 
-        <div className="cta-watch-decoration">
-          <div className="cta-watch-face">
-            <span>WATCHME</span>
-
-            <div className="cta-hand hour"></div>
-            <div className="cta-hand minute"></div>
-            <div className="cta-center"></div>
-          </div>
+        <div className="cta-background-number">
+          TIME
         </div>
+
+        <div className="cta-watch-decoration">
+
+          {products.find(
+            (product) => product.image
+          )?.image ? (
+
+            <img
+              src={
+                products.find(
+                  (product) => product.image
+                ).image
+              }
+              alt="WatchMe timepiece"
+            />
+
+          ) : (
+
+            <div className="cta-watch-face">
+
+              <span>
+                WATCHME
+              </span>
+
+              <div className="cta-hand hour"></div>
+
+              <div className="cta-hand minute"></div>
+
+              <div className="cta-center"></div>
+
+            </div>
+
+          )}
+
+        </div>
+
 
         <div className="categories-cta-content">
 
@@ -253,7 +499,10 @@ function Categories() {
             timepiece that completes your look.
           </p>
 
-          <Link to="/shop" className="cta-button">
+          <Link
+            to="/shop"
+            className="cta-button"
+          >
             Shop All Watches
             <ArrowRight size={18} />
           </Link>
