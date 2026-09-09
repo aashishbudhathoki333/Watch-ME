@@ -10,9 +10,12 @@ const products = [
     reviews: 24,
     badge: "Best Seller",
     color: "black",
+    image:
+      "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&w=900&q=85",
     description:
       "A timeless classic designed for everyday sophistication. Featuring a clean dial and premium-inspired finishing.",
   },
+
   {
     id: 2,
     name: "Luna Elegance",
@@ -24,9 +27,12 @@ const products = [
     reviews: 18,
     badge: "New",
     color: "rose",
+    image:
+      "https://images.unsplash.com/photo-1547996160-81dfa63595aa?auto=format&fit=crop&w=900&q=85",
     description:
       "Elegant and refined, Luna Elegance brings a sophisticated touch to both everyday and special occasions.",
   },
+
   {
     id: 3,
     name: "Chrono Sport",
@@ -38,9 +44,12 @@ const products = [
     reviews: 31,
     badge: "Popular",
     color: "silver",
+    image:
+      "https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=900&q=85",
     description:
       "A sporty timepiece built for an active lifestyle with a bold design and modern appearance.",
   },
+
   {
     id: 4,
     name: "Royal Elite",
@@ -52,9 +61,12 @@ const products = [
     reviews: 42,
     badge: "Premium",
     color: "gold",
+    image:
+      "https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?auto=format&fit=crop&w=900&q=85",
     description:
       "A premium statement piece created for those who appreciate sophisticated design and timeless style.",
   },
+
   {
     id: 5,
     name: "Urban Steel",
@@ -66,9 +78,12 @@ const products = [
     reviews: 16,
     badge: "",
     color: "silver",
+    image:
+      "https://images.unsplash.com/photo-1539874754764-5a96559165b0?auto=format&fit=crop&w=900&q=85",
     description:
       "A modern stainless-inspired design that works perfectly with casual and formal outfits.",
   },
+
   {
     id: 6,
     name: "Velvet Rose",
@@ -80,9 +95,12 @@ const products = [
     reviews: 22,
     badge: "Trending",
     color: "rose",
+    image:
+      "https://images.unsplash.com/photo-1526045431048-f857369baa09?auto=format&fit=crop&w=900&q=85",
     description:
       "A graceful timepiece featuring a soft feminine aesthetic and a sophisticated silhouette.",
   },
+
   {
     id: 7,
     name: "Midnight Pro",
@@ -94,9 +112,12 @@ const products = [
     reviews: 29,
     badge: "Featured",
     color: "black",
+    image:
+      "https://images.unsplash.com/photo-1508057198894-247b23fe5ade?auto=format&fit=crop&w=900&q=85",
     description:
       "A powerful modern watch with a dark aesthetic designed for confident everyday wear.",
   },
+
   {
     id: 8,
     name: "Golden Aura",
@@ -108,6 +129,8 @@ const products = [
     reviews: 35,
     badge: "Premium",
     color: "gold",
+    image:
+      "https://images.unsplash.com/photo-1594534475808-b18fc33b045e?auto=format&fit=crop&w=900&q=85",
     description:
       "A luxurious statement watch designed to add elegance and distinction to your collection.",
   },

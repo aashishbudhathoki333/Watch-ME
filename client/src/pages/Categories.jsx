@@ -69,9 +69,9 @@ const collections = [
 ];
 
 function Categories() {
-  /* =========================
+  /* =====================================================
      HELPERS
-  ========================= */
+  ===================================================== */
 
   const getCategoryProducts = (category) => {
     return products.filter(
@@ -101,6 +101,10 @@ function Categories() {
     ).length;
   };
 
+  const firstProduct = products.find(
+    (product) => product.image
+  );
+
   return (
     <main className="categories-page">
 
@@ -109,8 +113,6 @@ function Categories() {
       ===================================================== */}
 
       <section className="categories-hero">
-
-        <div className="categories-hero-glow"></div>
 
         <div className="categories-hero-content">
 
@@ -140,19 +142,15 @@ function Categories() {
 
         </div>
 
-        {/* HERO WATCH IMAGE */}
+        {/* HERO WATCH */}
 
-        {products.find((product) => product.image)?.image && (
+        {firstProduct?.image && (
           <div className="categories-hero-watch">
 
             <div className="hero-watch-circle"></div>
 
             <img
-              src={
-                products.find(
-                  (product) => product.image
-                ).image
-              }
+              src={firstProduct.image}
               alt="WatchMe premium watch"
             />
 
@@ -212,33 +210,35 @@ function Categories() {
 
                 <div className="category-image-wrapper">
 
-                  {image ? (
-                    <img
-                      src={image}
-                      alt={category.name}
-                      className="category-product-image"
-                    />
-                  ) : (
-                    <div className="category-image-placeholder">
-                      <Icon size={70} strokeWidth={1} />
-                    </div>
-                  )}
+  {image ? (
+    <div className="category-product-image-box">
+      <img
+        src={image}
+        alt={category.name}
+        className="category-product-image"
+      />
+    </div>
+  ) : (
+    <div className="category-image-placeholder">
+      <Icon size={70} strokeWidth={1} />
+    </div>
+  )}
 
-                  <div className="category-image-overlay"></div>
+  <div className="category-image-overlay"></div>
 
-                  <span className="category-number">
-                    0{index + 1}
-                  </span>
+  <span className="category-number">
+    0{index + 1}
+  </span>
 
-                  <div className="category-icon-large">
-                    <Icon size={23} />
-                  </div>
+  <div className="category-icon-large">
+    <Icon size={23} />
+  </div>
 
-                  <span className="category-view">
-                    VIEW COLLECTION
-                  </span>
+  <span className="category-view">
+    VIEW COLLECTION
+  </span>
 
-                </div>
+</div>
 
 
                 {/* CONTENT */}
@@ -339,10 +339,12 @@ function Categories() {
                       alt={collection.name}
                     />
                   ) : (
-                    <Icon
-                      size={60}
-                      strokeWidth={1}
-                    />
+                    <div className="collection-image-placeholder">
+                      <Icon
+                        size={60}
+                        strokeWidth={1}
+                      />
+                    </div>
                   )}
 
                   <div className="collection-image-overlay"></div>
@@ -448,16 +450,10 @@ function Categories() {
 
         <div className="cta-watch-decoration">
 
-          {products.find(
-            (product) => product.image
-          )?.image ? (
+          {firstProduct?.image ? (
 
             <img
-              src={
-                products.find(
-                  (product) => product.image
-                ).image
-              }
+              src={firstProduct.image}
               alt="WatchMe timepiece"
             />
 
