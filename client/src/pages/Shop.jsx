@@ -6,6 +6,11 @@ import {
   ShoppingBag,
   Star,
   X,
+  ArrowRight,
+  Sparkles,
+  ShieldCheck,
+  Truck,
+  RotateCcw,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -21,31 +26,47 @@ function Shop() {
   const [sortBy, setSortBy] = useState("featured");
   const [maxPrice, setMaxPrice] = useState(30000);
   const [showFilters, setShowFilters] = useState(false);
-const [productList, setProductList] = useState([]);
+  const [productList, setProductList] = useState([]);
 
-useEffect(() => {
-  const savedProducts = localStorage.getItem("watchmeProducts");
+  /* =========================
+     LOAD PRODUCTS
+  ========================= */
 
-  if (savedProducts) {
-    setProductList(JSON.parse(savedProducts));
-  } else {
-    setProductList(defaultProducts);
-    localStorage.setItem(
-      "watchmeProducts",
-      JSON.stringify(defaultProducts)
-    );
-  }
-}, []);
+  useEffect(() => {
+    const savedProducts = localStorage.getItem("watchmeProducts");
+
+    if (savedProducts) {
+      try {
+        setProductList(JSON.parse(savedProducts));
+      } catch (error) {
+        setProductList(defaultProducts);
+        localStorage.setItem(
+          "watchmeProducts",
+          JSON.stringify(defaultProducts)
+        );
+      }
+    } else {
+      setProductList(defaultProducts);
+
+      localStorage.setItem(
+        "watchmeProducts",
+        JSON.stringify(defaultProducts)
+      );
+    }
+  }, []);
+
   /* =========================
      CONTEXTS
   ========================= */
 
   const { addToCart } = useContext(CartContext);
 
-  const {
-    toggleWishlist,
-    isInWishlist,
-  } = useContext(WishlistContext);
+  const { toggleWishlist, isInWishlist } =
+    useContext(WishlistContext);
+
+  /* =========================
+     CATEGORIES
+  ========================= */
 
   const categories = ["All", "Men", "Women", "Luxury"];
 
@@ -55,16 +76,31 @@ useEffect(() => {
 
   const filteredProducts = useMemo(() => {
     let result = productList.filter((product) => {
-      const matchesSearch = product.name
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
+      const productName = String(product.name || "").toLowerCase();
+      const productCategory = String(
+        product.category || ""
+      ).toLowerCase();
+      const productCollection = String(
+        product.collection || ""
+      ).toLowerCase();
+
+      const query = searchTerm.toLowerCase().trim();
+
+      const matchesSearch =
+        !query ||
+        productName.includes(query) ||
+        productCategory.includes(query) ||
+        productCollection.includes(query);
+
+      const selectedCategory = category.toLowerCase();
 
       const matchesCategory =
         category === "All" ||
-        product.category === category;
+        productCategory.includes(selectedCategory) ||
+        productCollection.includes(selectedCategory);
 
       const matchesPrice =
-        product.price <= maxPrice;
+        Number(product.price || 0) <= maxPrice;
 
       return (
         matchesSearch &&
@@ -74,26 +110,40 @@ useEffect(() => {
     });
 
     if (sortBy === "price-low") {
-      result.sort((a, b) => a.price - b.price);
+      result.sort(
+        (a, b) =>
+          Number(a.price || 0) -
+          Number(b.price || 0)
+      );
     }
 
     if (sortBy === "price-high") {
-      result.sort((a, b) => b.price - a.price);
+      result.sort(
+        (a, b) =>
+          Number(b.price || 0) -
+          Number(a.price || 0)
+      );
     }
 
     if (sortBy === "rating") {
-      result.sort((a, b) => b.rating - a.rating);
+      result.sort(
+        (a, b) =>
+          Number(b.rating || 0) -
+          Number(a.rating || 0)
+      );
     }
 
     if (sortBy === "name") {
       result.sort((a, b) =>
-        a.name.localeCompare(b.name)
+        String(a.name || "").localeCompare(
+          String(b.name || "")
+        )
       );
     }
 
     return result;
   }, [
-      productList,
+    productList,
     searchTerm,
     category,
     maxPrice,
@@ -112,67 +162,213 @@ useEffect(() => {
   };
 
   /* =========================
-     WISHLIST
+     DISCOUNT
   ========================= */
 
-  const handleWishlist = (product) => {
-    toggleWishlist(product);
+  const getDiscount = (product) => {
+    const oldPrice = Number(product.oldPrice || 0);
+    const price = Number(product.price || 0);
+
+    if (!oldPrice || oldPrice <= price) {
+      return 0;
+    }
+
+    return Math.round(
+      ((oldPrice - price) / oldPrice) * 100
+    );
   };
 
   /* =========================
-     CART
+     RENDER
   ========================= */
-
-  const handleAddToCart = (product) => {
-    addToCart(product);
-  };
 
   return (
     <main className="shop-page">
 
-      {/* ================= HEADER ================= */}
+      {/* =====================================================
+          PREMIUM SHOP HERO
+      ===================================================== */}
 
-      <section className="shop-header">
-        <div>
-          <span className="section-label">
-            WATCHME COLLECTION
-          </span>
+      <section className="shop-hero">
 
-          <h1>Shop Watches</h1>
+        <div className="shop-hero-glow glow-one"></div>
+        <div className="shop-hero-glow glow-two"></div>
+
+        <div className="shop-hero-content">
+
+          <div className="shop-eyebrow">
+            <Sparkles size={14} />
+            WATCHME COLLECTION 2026
+          </div>
+
+          <h1>
+            Find your
+            <span> perfect time.</span>
+          </h1>
 
           <p>
-            Discover timepieces designed to match
-            your style, personality and every moment.
+            Explore our curated collection of
+            sophisticated timepieces crafted for
+            every style, occasion and moment.
           </p>
+
+          <div className="shop-hero-stats">
+
+            <div className="hero-stat">
+              <strong>500+</strong>
+              <span>Timepieces</span>
+            </div>
+
+            <div className="hero-stat">
+              <strong>4.9</strong>
+              <span>Average Rating</span>
+            </div>
+
+            <div className="hero-stat">
+              <strong>10K+</strong>
+              <span>Happy Customers</span>
+            </div>
+
+          </div>
+
         </div>
+
+        {/* Decorative watch */}
+
+        <div className="shop-hero-art">
+
+          <div className="hero-art-circle"></div>
+
+          <div className="decorative-watch">
+
+            <div className="decorative-watch-strap top"></div>
+            <div className="decorative-watch-strap bottom"></div>
+
+            <div className="decorative-watch-face">
+
+              <span className="decorative-number n12">
+                12
+              </span>
+
+              <span className="decorative-number n3">
+                3
+              </span>
+
+              <span className="decorative-number n6">
+                6
+              </span>
+
+              <span className="decorative-number n9">
+                9
+              </span>
+
+              <div className="decorative-hand hand-one"></div>
+              <div className="decorative-hand hand-two"></div>
+              <div className="decorative-dot"></div>
+
+            </div>
+
+          </div>
+
+          <div className="floating-review">
+
+            <div className="review-stars">
+              <Star size={13} fill="currentColor" />
+              <Star size={13} fill="currentColor" />
+              <Star size={13} fill="currentColor" />
+              <Star size={13} fill="currentColor" />
+              <Star size={13} fill="currentColor" />
+            </div>
+
+            <strong>4.9 / 5</strong>
+            <span>Customer rated</span>
+
+          </div>
+
+        </div>
+
       </section>
 
-      {/* ================= SHOP SECTION ================= */}
+      {/* =====================================================
+          SHOP CONTENT
+      ===================================================== */}
 
       <section className="shop-section">
 
-        {/* ================= TOOLBAR ================= */}
+        {/* =================================================
+            TOP BAR
+        ================================================= */}
 
-        <div className="shop-toolbar">
+        <div className="shop-topbar">
+
+          <div className="shop-heading">
+
+            <span className="small-label">
+              THE COLLECTION
+            </span>
+
+            <h2>
+              Explore Watches
+            </h2>
+
+            <p>
+              Designed to make every second count.
+            </p>
+
+          </div>
+
+          <div className="collection-count">
+
+            <strong>
+              {filteredProducts.length}
+            </strong>
+
+            <span>
+              {filteredProducts.length === 1
+                ? "watch available"
+                : "watches available"}
+            </span>
+
+          </div>
+
+        </div>
+
+        {/* =================================================
+            TOOLBAR
+        ================================================= */}
+
+        <div className="premium-toolbar">
 
           <button
             type="button"
-            className="filter-toggle"
+            className={`filter-button ${
+              showFilters ? "active" : ""
+            }`}
             onClick={() =>
               setShowFilters(!showFilters)
             }
           >
-            <SlidersHorizontal size={18} />
-            Filters
+            <SlidersHorizontal size={17} />
+
+            <span>
+              Filters
+            </span>
+
+            <span className="filter-indicator">
+              {category !== "All" ||
+              maxPrice < 30000
+                ? "•"
+                : ""}
+            </span>
           </button>
 
-          <div className="search-box">
+          <div className="premium-search">
 
-            <Search size={18} />
+            <Search size={19} />
 
             <input
               type="text"
-              placeholder="Search watches..."
+              placeholder="Search by watch name, collection..."
               value={searchTerm}
               onChange={(e) =>
                 setSearchTerm(e.target.value)
@@ -182,7 +378,7 @@ useEffect(() => {
             {searchTerm && (
               <button
                 type="button"
-                className="clear-search"
+                className="search-clear"
                 onClick={() =>
                   setSearchTerm("")
                 }
@@ -193,14 +389,11 @@ useEffect(() => {
 
           </div>
 
-          <div className="sort-box">
+          <div className="premium-sort">
 
-            <label htmlFor="sort">
-              Sort:
-            </label>
+            <span>Sort by</span>
 
             <select
-              id="sort"
               value={sortBy}
               onChange={(e) =>
                 setSortBy(e.target.value)
@@ -231,19 +424,23 @@ useEffect(() => {
 
         </div>
 
-        {/* ================= FILTERS ================= */}
+        {/* =================================================
+            FILTER PANEL
+        ================================================= */}
 
         <div
-          className={`filters ${
+          className={`premium-filters ${
             showFilters ? "show" : ""
           }`}
         >
 
-          <div className="filter-group">
+          <div className="filter-column">
 
-            <h3>Category</h3>
+            <span className="filter-title">
+              CATEGORY
+            </span>
 
-            <div className="category-filter">
+            <div className="premium-category-buttons">
 
               {categories.map((item) => (
                 <button
@@ -266,16 +463,17 @@ useEffect(() => {
 
           </div>
 
-          <div className="filter-group price-filter">
+          <div className="filter-column price-column">
 
-            <div className="price-heading">
+            <div className="price-filter-heading">
 
-              <h3>Maximum Price</h3>
-
-              <span>
-                Rs.{" "}
-                {maxPrice.toLocaleString()}
+              <span className="filter-title">
+                MAXIMUM PRICE
               </span>
+
+              <strong>
+                Rs. {maxPrice.toLocaleString()}
+              </strong>
 
             </div>
 
@@ -292,79 +490,138 @@ useEffect(() => {
               }
             />
 
-            <div className="price-range">
-              <span>Rs. 5,000</span>
-              <span>Rs. 30,000</span>
+            <div className="range-labels">
+              <span>
+                Rs. 5,000
+              </span>
+
+              <span>
+                Rs. 30,000
+              </span>
             </div>
 
           </div>
 
           <button
             type="button"
-            className="clear-filters"
+            className="clear-filter-button"
             onClick={clearFilters}
           >
-            Clear Filters
+            Reset
           </button>
 
         </div>
 
-        {/* ================= RESULTS ================= */}
+        {/* =================================================
+            ACTIVE FILTERS
+        ================================================= */}
 
-        <div className="results-header">
+        {(category !== "All" ||
+          maxPrice < 30000 ||
+          searchTerm) && (
+          <div className="active-filters">
 
-          <span>
-            {filteredProducts.length}{" "}
-            {filteredProducts.length === 1
-              ? "watch"
-              : "watches"}
-          </span>
+            <span>
+              Active filters:
+            </span>
 
-        </div>
+            {searchTerm && (
+              <button
+                type="button"
+                onClick={() =>
+                  setSearchTerm("")
+                }
+              >
+                "{searchTerm}"
+                <X size={12} />
+              </button>
+            )}
 
-        {/* ================= PRODUCTS ================= */}
+            {category !== "All" && (
+              <button
+                type="button"
+                onClick={() =>
+                  setCategory("All")
+                }
+              >
+                {category}
+                <X size={12} />
+              </button>
+            )}
+
+            {maxPrice < 30000 && (
+              <button
+                type="button"
+                onClick={() =>
+                  setMaxPrice(30000)
+                }
+              >
+                Under Rs.{" "}
+                {maxPrice.toLocaleString()}
+                <X size={12} />
+              </button>
+            )}
+
+            <button
+              type="button"
+              className="remove-all"
+              onClick={clearFilters}
+            >
+              Clear all
+            </button>
+
+          </div>
+        )}
+
+        {/* =================================================
+            PRODUCT GRID
+        ================================================= */}
 
         {filteredProducts.length > 0 ? (
 
-          <div className="shop-product-grid">
+          <div className="premium-product-grid">
 
             {filteredProducts.map((product) => {
 
               const wishlistActive =
                 isInWishlist(product.id);
 
-              const discount = Math.round(
-                ((product.oldPrice -
-                  product.price) /
-                  product.oldPrice) *
-                  100
-              );
+              const discount =
+                getDiscount(product);
 
               return (
                 <article
-                  className="shop-product-card"
+                  className="premium-product-card"
                   key={product.id}
                 >
 
-                  {/* ================= IMAGE ================= */}
+                  {/* IMAGE AREA */}
 
                   <div
-                    className={`shop-product-image ${
-                      product.color
+                    className={`premium-product-image ${
+                      product.color || ""
                     }`}
                   >
 
+                    {/* Product badge */}
+
                     {product.badge && (
-                      <span className="shop-product-badge">
+                      <span className="premium-badge">
                         {product.badge}
                       </span>
                     )}
 
-                    {/* WISHLIST */}
+                    {discount > 0 && (
+                      <span className="sale-badge">
+                        -{discount}%
+                      </span>
+                    )}
+
+                    {/* Wishlist */}
 
                     <button
                       type="button"
-                      className={`shop-wishlist ${
+                      className={`premium-wishlist ${
                         wishlistActive
                           ? "active"
                           : ""
@@ -375,11 +632,11 @@ useEffect(() => {
                           : `Add ${product.name} to wishlist`
                       }
                       onClick={() =>
-                        handleWishlist(product)
+                        toggleWishlist(product)
                       }
                     >
                       <Heart
-                        size={19}
+                        size={18}
                         fill={
                           wishlistActive
                             ? "currentColor"
@@ -388,110 +645,182 @@ useEffect(() => {
                       />
                     </button>
 
-                    {/* WATCH PLACEHOLDER */}
+                    {/* Image */}
 
-                    {/* PRODUCT IMAGE */}
+                    {product.image ? (
 
-{product.image ? (
-  <img
-    src={product.image}
-    alt={product.name}
-    className="shop-product-real-image"
-  />
-) : (
-  <div className="shop-watch">
-    <div className="shop-watch-face">
-      <span className="watch-number top">12</span>
-      <span className="watch-number right">3</span>
-      <span className="watch-number bottom">6</span>
-      <span className="watch-number left">9</span>
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="premium-product-real-image"
+                      />
 
-      <div className="shop-watch-hand hour"></div>
-      <div className="shop-watch-hand minute"></div>
-      <div className="shop-watch-dot"></div>
-    </div>
-  </div>
-)}
+                    ) : (
 
-                    {/* DISCOUNT */}
+                      <div className="premium-watch-placeholder">
 
-                    <span className="discount-badge">
-                      -{discount}%
-                    </span>
+                        <div className="placeholder-watch">
 
-                    {/* VIEW DETAILS */}
+                          <div className="placeholder-strap top"></div>
 
-                    <Link
-                      to={`/products/${product.id}`}
-                      className="shop-quick-view"
-                    >
-                      View Details
-                    </Link>
+                          <div className="placeholder-body">
+
+                            <div className="placeholder-face">
+
+                              <span className="placeholder-12">
+                                12
+                              </span>
+
+                              <span className="placeholder-3">
+                                3
+                              </span>
+
+                              <span className="placeholder-6">
+                                6
+                              </span>
+
+                              <span className="placeholder-9">
+                                9
+                              </span>
+
+                              <div className="placeholder-hour"></div>
+                              <div className="placeholder-minute"></div>
+                              <div className="placeholder-center"></div>
+
+                            </div>
+
+                          </div>
+
+                          <div className="placeholder-strap bottom"></div>
+
+                        </div>
+
+                      </div>
+
+                    )}
+
+                    {/* Hover overlay */}
+
+                    <div className="product-hover-overlay">
+
+                      <Link
+                        to={`/products/${product.id}`}
+                        className="view-product-button"
+                      >
+                        View Details
+                        <ArrowRight size={16} />
+                      </Link>
+
+                    </div>
 
                   </div>
 
-                  {/* ================= PRODUCT INFO ================= */}
+                  {/* PRODUCT INFO */}
 
-                  <div className="shop-product-info">
+                  <div className="premium-product-info">
 
-                    <span className="shop-product-category">
-                      {product.category} ·{" "}
-                      {product.collection}
-                    </span>
+                    <div className="product-meta-row">
+
+                      <span className="premium-product-category">
+                        {product.category}
+                      </span>
+
+                      {product.collection && (
+                        <span className="product-collection">
+                          {product.collection}
+                        </span>
+                      )}
+
+                    </div>
 
                     <Link
                       to={`/products/${product.id}`}
-                      className="shop-product-name"
+                      className="premium-product-name"
                     >
                       {product.name}
                     </Link>
 
-                    {/* RATING */}
+                    {/* Rating */}
 
-                    <div className="shop-rating">
+                    <div className="premium-rating">
 
-                      <Star
-                        size={14}
-                        fill="currentColor"
-                      />
+                      <div className="rating-stars">
+
+                        <Star
+                          size={13}
+                          fill="currentColor"
+                        />
+
+                        <Star
+                          size={13}
+                          fill="currentColor"
+                        />
+
+                        <Star
+                          size={13}
+                          fill="currentColor"
+                        />
+
+                        <Star
+                          size={13}
+                          fill="currentColor"
+                        />
+
+                        <Star
+                          size={13}
+                          fill="currentColor"
+                        />
+
+                      </div>
 
                       <strong>
                         {product.rating}
                       </strong>
 
                       <span>
-                        ({product.reviews})
+                        ({product.reviews || 0})
                       </span>
 
                     </div>
 
-                    {/* PRICE + CART */}
+                    {/* Price */}
 
-                    <div className="shop-product-bottom">
+                    <div className="premium-product-bottom">
 
-                      <div className="shop-price">
+                      <div className="premium-price">
 
                         <strong>
                           Rs.{" "}
-                          {product.price.toLocaleString()}
+                          {Number(
+                            product.price || 0
+                          ).toLocaleString()}
                         </strong>
 
-                        <del>
-                          Rs.{" "}
-                          {product.oldPrice.toLocaleString()}
-                        </del>
+                        {product.oldPrice &&
+                          product.oldPrice >
+                            product.price && (
+                            <del>
+                              Rs.{" "}
+                              {Number(
+                                product.oldPrice
+                              ).toLocaleString()}
+                            </del>
+                          )}
 
                       </div>
 
                       <button
                         type="button"
-                        className="shop-add-cart"
+                        className="premium-cart-button"
                         aria-label={`Add ${product.name} to cart`}
                         onClick={() =>
-                          handleAddToCart(product)
+                          addToCart(product)
                         }
                       >
-                        <ShoppingBag size={18} />
+                        <ShoppingBag size={17} />
+                        <span>
+                          Add
+                        </span>
                       </button>
 
                     </div>
@@ -506,30 +835,103 @@ useEffect(() => {
 
         ) : (
 
+          /* =================================================
+             EMPTY STATE
+          ================================================= */
 
-          <div className="empty-shop">
+          <div className="premium-empty">
 
-            <div className="empty-shop-icon">
+            <div className="empty-icon">
               <Search size={28} />
             </div>
 
-            <h2>No watches found</h2>
+            <span className="small-label">
+              NOTHING FOUND
+            </span>
+
+            <h2>
+              No watches match your search
+            </h2>
 
             <p>
-              We couldn't find any watches
-              matching your current filters.
+              Try changing your search or
+              adjusting the filters to discover
+              more timepieces.
             </p>
 
             <button
               type="button"
-              className="empty-shop-button"
               onClick={clearFilters}
             >
               Clear Filters
+              <ArrowRight size={16} />
             </button>
 
           </div>
+
         )}
+
+        {/* =================================================
+            TRUST STRIP
+        ================================================= */}
+
+        <div className="shop-trust-strip">
+
+          <div className="trust-item">
+
+            <div className="trust-icon">
+              <Truck size={20} />
+            </div>
+
+            <div>
+              <strong>
+                Fast Delivery
+              </strong>
+
+              <span>
+                Delivered safely to your door
+              </span>
+            </div>
+
+          </div>
+
+          <div className="trust-item">
+
+            <div className="trust-icon">
+              <ShieldCheck size={20} />
+            </div>
+
+            <div>
+              <strong>
+                Authentic Watches
+              </strong>
+
+              <span>
+                Quality checked timepieces
+              </span>
+            </div>
+
+          </div>
+
+          <div className="trust-item">
+
+            <div className="trust-icon">
+              <RotateCcw size={20} />
+            </div>
+
+            <div>
+              <strong>
+                Easy Returns
+              </strong>
+
+              <span>
+                Shop with complete confidence
+              </span>
+            </div>
+
+          </div>
+
+        </div>
 
       </section>
 
