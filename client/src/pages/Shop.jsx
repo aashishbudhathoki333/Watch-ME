@@ -179,11 +179,12 @@ const [category, setCategory] = useState(
   ========================= */
 
   const clearFilters = () => {
-    setSearchTerm("");
-    setCategory("All");
-    setMaxPrice(30000);
-    setSortBy("featured");
-  };
+  setSearchTerm("");
+  setCategory("All");
+  setMaxPrice(30000);
+  setSortBy("featured");
+  setSearchParams({});
+};
 
   /* =========================
      DISCOUNT
