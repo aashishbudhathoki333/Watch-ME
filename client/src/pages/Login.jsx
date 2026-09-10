@@ -32,11 +32,14 @@ const Login = () => {
     }
 
     // Store NAME + EMAIL in AuthContext
-    login({
-      name: registeredUser.name,
-      email: registeredUser.email,
-    });
-
+   login({
+  name: registeredUser.name,
+  email: registeredUser.email,
+  role:
+    registeredUser.email === "admin@watchme.com"
+      ? "admin"
+      : "user",
+});
     navigate("/");
   };
 
