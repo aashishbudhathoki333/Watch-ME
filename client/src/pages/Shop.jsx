@@ -12,7 +12,7 @@ import {
   Truck,
   RotateCcw,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 import defaultProducts from "../data/products";
 import { CartContext } from "../context/CartContext";
@@ -22,7 +22,15 @@ import "./Shop.css";
 
 function Shop() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [category, setCategory] = useState("All");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+const urlCategory = searchParams.get("category");
+
+const [category, setCategory] = useState(
+  urlCategory
+    ? urlCategory.charAt(0).toUpperCase() + urlCategory.slice(1).toLowerCase()
+    : "All"
+);
   const [sortBy, setSortBy] = useState("featured");
   const [maxPrice, setMaxPrice] = useState(30000);
   const [showFilters, setShowFilters] = useState(false);
@@ -54,6 +62,22 @@ function Shop() {
       );
     }
   }, []);
+
+  useEffect(() => {
+  const urlCategory = searchParams.get("category");
+
+  if (urlCategory) {
+    const formattedCategory =
+      urlCategory.charAt(0).toUpperCase() +
+      urlCategory.slice(1).toLowerCase();
+
+    if (["Men", "Women", "Luxury"].includes(formattedCategory)) {
+      setCategory(formattedCategory);
+    }
+  } else {
+    setCategory("All");
+  }
+}, [searchParams]);
 
   /* =========================
      CONTEXTS
@@ -451,9 +475,17 @@ function Shop() {
                       ? "active"
                       : ""
                   }
-                  onClick={() =>
-                    setCategory(item)
-                  }
+                 onClick={() => {
+  setCategory(item);
+
+  if (item === "All") {
+    setSearchParams({});
+  } else {
+    setSearchParams({
+      category: item,
+    });
+  }
+}}
                 >
                   {item}
                 </button>
