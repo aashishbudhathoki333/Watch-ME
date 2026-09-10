@@ -410,11 +410,17 @@ function Home() {
 
             return (
 
-              <Link
-                to="/shop"
-                className={`category-card category-${category.type}`}
-                key={category.title}
-              >
+             <Link
+  to={
+    category.type === "men"
+      ? "/shop?category=Men"
+      : category.type === "women"
+      ? "/shop?category=Women"
+      : "/shop?category=Luxury"
+  }
+  className={`category-card category-${category.type}`}
+  key={category.title}
+>
 
                 {image ? (
 
