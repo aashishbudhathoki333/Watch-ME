@@ -28,6 +28,7 @@ import OrderDetails from "./pages/OrderDetails";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminProducts from "./pages/AdminProducts";
 import AdminCustomers from "./pages/AdminCustomers";
+import AdminProtectedRoute from "./components/AdminProtectedRoute";
 
 const App = () => {
   return (
@@ -141,18 +142,40 @@ const App = () => {
     </ProtectedRoute>
   }
 />
-<Route path="/admin" element={<AdminDashboard />} />
+<Route
+  path="/admin"
+  element={
+    <AdminProtectedRoute>
+      <AdminDashboard />
+    </AdminProtectedRoute>
+  }
+/>
 
 <Route
   path="/admin/products"
-  element={<AdminProducts />}
+  element={
+    <AdminProtectedRoute>
+      <AdminProducts />
+    </AdminProtectedRoute>
+  }
 />
 
-<Route path="/admin/orders" element={<AdminOrders />} />
+<Route
+  path="/admin/orders"
+  element={
+    <AdminProtectedRoute>
+      <AdminOrders />
+    </AdminProtectedRoute>
+  }
+/>
 
 <Route
   path="/admin/customers"
-  element={<AdminCustomers />}
+  element={
+    <AdminProtectedRoute>
+      <AdminCustomers />
+    </AdminProtectedRoute>
+  }
 />
 
               {/* ================= 404 ================= */}
