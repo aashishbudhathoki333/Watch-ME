@@ -21,16 +21,22 @@ import { WishlistContext } from "../context/WishlistContext";
 import "./Shop.css";
 
 function Shop() {
-  const [searchTerm, setSearchTerm] = useState("");
   const [searchParams, setSearchParams] = useSearchParams();
 
-const urlCategory = searchParams.get("category");
+  const urlCategory = searchParams.get("category");
 
-const [category, setCategory] = useState(
-  urlCategory
-    ? urlCategory.charAt(0).toUpperCase() + urlCategory.slice(1).toLowerCase()
-    : "All"
-);
+  const [category, setCategory] = useState(
+    urlCategory
+      ? urlCategory.charAt(0).toUpperCase() +
+          urlCategory.slice(1).toLowerCase()
+      : "All"
+  );
+
+  // Read search from URL before initializing searchTerm
+  const urlSearch = searchParams.get("search") || "";
+
+  const [searchTerm, setSearchTerm] = useState(urlSearch);
+
   const [sortBy, setSortBy] = useState("featured");
   const [maxPrice, setMaxPrice] = useState(30000);
   const [showFilters, setShowFilters] = useState(false);
@@ -63,21 +69,30 @@ const [category, setCategory] = useState(
     }
   }, []);
 
+  /* =========================
+     SYNC URL PARAMETERS
+  ========================= */
+
   useEffect(() => {
-  const urlCategory = searchParams.get("category");
+    const urlCategory = searchParams.get("category");
 
-  if (urlCategory) {
-    const formattedCategory =
-      urlCategory.charAt(0).toUpperCase() +
-      urlCategory.slice(1).toLowerCase();
+    // Sync search term from URL
+    setSearchTerm(searchParams.get("search") || "");
 
-    if (["Men", "Women", "Luxury"].includes(formattedCategory)) {
-      setCategory(formattedCategory);
+    if (urlCategory) {
+      const formattedCategory =
+        urlCategory.charAt(0).toUpperCase() +
+        urlCategory.slice(1).toLowerCase();
+
+      if (["Men", "Women", "Luxury"].includes(formattedCategory)) {
+        setCategory(formattedCategory);
+      } else {
+        setCategory("All");
+      }
+    } else {
+      setCategory("All");
     }
-  } else {
-    setCategory("All");
-  }
-}, [searchParams]);
+  }, [searchParams]);
 
   /* =========================
      CONTEXTS
@@ -101,9 +116,11 @@ const [category, setCategory] = useState(
   const filteredProducts = useMemo(() => {
     let result = productList.filter((product) => {
       const productName = String(product.name || "").toLowerCase();
+
       const productCategory = String(
         product.category || ""
       ).toLowerCase();
+
       const productCollection = String(
         product.collection || ""
       ).toLowerCase();
@@ -179,12 +196,12 @@ const [category, setCategory] = useState(
   ========================= */
 
   const clearFilters = () => {
-  setSearchTerm("");
-  setCategory("All");
-  setMaxPrice(30000);
-  setSortBy("featured");
-  setSearchParams({});
-};
+    setSearchTerm("");
+    setCategory("All");
+    setMaxPrice(30000);
+    setSortBy("featured");
+    setSearchParams({});
+  };
 
   /* =========================
      DISCOUNT
@@ -258,8 +275,6 @@ const [category, setCategory] = useState(
 
         </div>
 
-        {/* Decorative watch */}
-
         <div className="shop-hero-art">
 
           <div className="hero-art-circle"></div>
@@ -319,10 +334,6 @@ const [category, setCategory] = useState(
       ===================================================== */}
 
       <section className="shop-section">
-
-        {/* =================================================
-            TOP BAR
-        ================================================= */}
 
         <div className="shop-topbar">
 
@@ -476,17 +487,36 @@ const [category, setCategory] = useState(
                       ? "active"
                       : ""
                   }
-                 onClick={() => {
-  setCategory(item);
+                  onClick={() => {
+                    setCategory(item);
 
-  if (item === "All") {
-    setSearchParams({});
-  } else {
-    setSearchParams({
-      category: item,
-    });
-  }
-}}
+                    if (item === "All") {
+                      const search =
+                        searchParams.get("search");
+
+                      if (search) {
+                        setSearchParams({
+                          search,
+                        });
+                      } else {
+                        setSearchParams({});
+                      }
+                    } else {
+                      const search =
+                        searchParams.get("search");
+
+                      if (search) {
+                        setSearchParams({
+                          category: item,
+                          search,
+                        });
+                      } else {
+                        setSearchParams({
+                          category: item,
+                        });
+                      }
+                    }
+                  }}
                 >
                   {item}
                 </button>
@@ -628,15 +658,11 @@ const [category, setCategory] = useState(
                   key={product.id}
                 >
 
-                  {/* IMAGE AREA */}
-
                   <div
                     className={`premium-product-image ${
                       product.color || ""
                     }`}
                   >
-
-                    {/* Product badge */}
 
                     {product.badge && (
                       <span className="premium-badge">
@@ -649,8 +675,6 @@ const [category, setCategory] = useState(
                         -{discount}%
                       </span>
                     )}
-
-                    {/* Wishlist */}
 
                     <button
                       type="button"
@@ -677,8 +701,6 @@ const [category, setCategory] = useState(
                         }
                       />
                     </button>
-
-                    {/* Image */}
 
                     {product.image ? (
 
@@ -732,8 +754,6 @@ const [category, setCategory] = useState(
 
                     )}
 
-                    {/* Hover overlay */}
-
                     <div className="product-hover-overlay">
 
                       <Link
@@ -747,8 +767,6 @@ const [category, setCategory] = useState(
                     </div>
 
                   </div>
-
-                  {/* PRODUCT INFO */}
 
                   <div className="premium-product-info">
 
@@ -772,8 +790,6 @@ const [category, setCategory] = useState(
                     >
                       {product.name}
                     </Link>
-
-                    {/* Rating */}
 
                     <div className="premium-rating">
 
@@ -815,8 +831,6 @@ const [category, setCategory] = useState(
                       </span>
 
                     </div>
-
-                    {/* Price */}
 
                     <div className="premium-product-bottom">
 
@@ -867,10 +881,6 @@ const [category, setCategory] = useState(
           </div>
 
         ) : (
-
-          /* =================================================
-             EMPTY STATE
-          ================================================= */
 
           <div className="premium-empty">
 
