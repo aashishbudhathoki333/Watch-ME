@@ -7,6 +7,7 @@ import {
   X,
   User,
   LogOut,
+  Search,
 } from "lucide-react";
 
 import { CartContext } from "../context/CartContext";
@@ -23,6 +24,7 @@ const isAdminPage = location.pathname.toLowerCase().startsWith("/admin");
   const { user, isLoggedIn, logout } = useContext(AuthContext);
 
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const navigate = useNavigate();
 
@@ -37,6 +39,18 @@ const isAdminPage = location.pathname.toLowerCase().startsWith("/admin");
     closeMenu();
     navigate("/");
   };
+
+const handleSearch = (e) => {
+  e.preventDefault();
+
+  const query = searchTerm.trim();
+
+  if (!query) return;
+
+  closeMenu();
+  navigate(`/shop?search=${encodeURIComponent(query)}`);
+  setSearchTerm("");
+};
 
  if (isAdminPage) {
   return (
