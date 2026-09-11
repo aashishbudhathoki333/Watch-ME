@@ -113,95 +113,55 @@ function Shop() {
      FILTER PRODUCTS
   ========================= */
 
-  const filteredProducts = useMemo(() => {
-    let result = productList.filter((product) => {
-      const productName = String(product.name || "").toLowerCase();
+const filteredProducts = useMemo(() => {
+  let result = productList.filter((product) => {
+    const productName = String(product.name || "").toLowerCase();
 
-      const productCategory = String(
-        product.category || ""
-      ).toLowerCase();
+    const productCategory = String(
+      product.category || ""
+    ).toLowerCase();
 
-      const productCollection = String(
-        product.collection || ""
-      ).toLowerCase();
+    const productCollection = String(
+      product.collection || ""
+    ).toLowerCase();
 
-      const query = searchTerm.toLowerCase().trim();
+    const productDescription = String(
+      product.description || ""
+    ).toLowerCase();
 
-      const matchesSearch =
-        !query ||
-        productName.includes(query) ||
-        productCategory.includes(query) ||
-        productCollection.includes(query);
+    const query = searchTerm.toLowerCase().trim();
 
-      const selectedCategory = category.toLowerCase();
+    const matchesSearch =
+      !query ||
+      productName.includes(query) ||
+      productCategory.includes(query) ||
+      productCollection.includes(query) ||
+      productDescription.includes(query);
 
-      const matchesCategory =
-        category === "All" ||
-        productCategory.includes(selectedCategory) ||
-        productCollection.includes(selectedCategory);
+    const selectedCategory = category.toLowerCase();
 
-      const matchesPrice =
-        Number(product.price || 0) <= maxPrice;
+    const matchesCategory =
+      category === "All" ||
+      productCategory.includes(selectedCategory) ||
+      productCollection.includes(selectedCategory);
 
-      return (
-        matchesSearch &&
-        matchesCategory &&
-        matchesPrice
-      );
-    });
+    const matchesPrice =
+      Number(product.price || 0) <= maxPrice;
 
-    if (sortBy === "price-low") {
-      result.sort(
-        (a, b) =>
-          Number(a.price || 0) -
-          Number(b.price || 0)
-      );
-    }
+    return (
+      matchesSearch &&
+      matchesCategory &&
+      matchesPrice
+    );
+  });
 
-    if (sortBy === "price-high") {
-      result.sort(
-        (a, b) =>
-          Number(b.price || 0) -
-          Number(a.price || 0)
-      );
-    }
-
-    if (sortBy === "rating") {
-      result.sort(
-        (a, b) =>
-          Number(b.rating || 0) -
-          Number(a.rating || 0)
-      );
-    }
-
-    if (sortBy === "name") {
-      result.sort((a, b) =>
-        String(a.name || "").localeCompare(
-          String(b.name || "")
-        )
-      );
-    }
-
-    return result;
-  }, [
-    productList,
-    searchTerm,
-    category,
-    maxPrice,
-    sortBy,
-  ]);
-
-  /* =========================
-     CLEAR FILTERS
-  ========================= */
-
-  const clearFilters = () => {
-    setSearchTerm("");
-    setCategory("All");
-    setMaxPrice(30000);
-    setSortBy("featured");
-    setSearchParams({});
-  };
+  return result;
+}, [
+  productList,
+  searchTerm,
+  category,
+  maxPrice,
+]);
 
   /* =========================
      DISCOUNT
