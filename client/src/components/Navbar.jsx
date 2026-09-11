@@ -47,8 +47,22 @@ const handleSearch = (e) => {
 
   if (!query) return;
 
+  const lowerQuery = query.toLowerCase();
+
+  if (lowerQuery === "men" || lowerQuery === "men's") {
+    navigate("/shop?category=Men");
+  } else if (
+    lowerQuery === "women" ||
+    lowerQuery === "women's"
+  ) {
+    navigate("/shop?category=Women");
+  } else if (lowerQuery === "luxury") {
+    navigate("/shop?category=Luxury");
+  } else {
+    navigate(`/shop?search=${encodeURIComponent(query)}`);
+  }
+
   closeMenu();
-  navigate(`/shop?search=${encodeURIComponent(query)}`);
   setSearchTerm("");
 };
 

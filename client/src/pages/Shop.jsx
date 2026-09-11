@@ -113,55 +113,86 @@ function Shop() {
      FILTER PRODUCTS
   ========================= */
 
-const filteredProducts = useMemo(() => {
-  let result = productList.filter((product) => {
-    const productName = String(product.name || "").toLowerCase();
+  const filteredProducts = useMemo(() => {
+    let result = productList.filter((product) => {
+      const productName = String(product.name || "").toLowerCase();
 
-    const productCategory = String(
-      product.category || ""
-    ).toLowerCase();
+      const productCategory = String(
+        product.category || ""
+      ).toLowerCase();
 
-    const productCollection = String(
-      product.collection || ""
-    ).toLowerCase();
+      const productCollection = String(
+        product.collection || ""
+      ).toLowerCase();
 
-    const productDescription = String(
-      product.description || ""
-    ).toLowerCase();
+      const productDescription = String(
+        product.description || ""
+      ).toLowerCase();
 
-    const query = searchTerm.toLowerCase().trim();
+      const query = searchTerm.toLowerCase().trim();
 
-    const matchesSearch =
-      !query ||
-      productName.includes(query) ||
-      productCategory.includes(query) ||
-      productCollection.includes(query) ||
-      productDescription.includes(query);
+      const matchesSearch =
+        !query ||
+        productName.includes(query) ||
+        productCategory.includes(query) ||
+        productCollection.includes(query) ||
+        productDescription.includes(query);
 
-    const selectedCategory = category.toLowerCase();
+      const selectedCategory = category.toLowerCase();
 
-    const matchesCategory =
-      category === "All" ||
-      productCategory.includes(selectedCategory) ||
-      productCollection.includes(selectedCategory);
+      const matchesCategory =
+        category === "All" ||
+        productCategory.includes(selectedCategory) ||
+        productCollection.includes(selectedCategory);
 
-    const matchesPrice =
-      Number(product.price || 0) <= maxPrice;
+      const matchesPrice =
+        Number(product.price || 0) <= maxPrice;
 
-    return (
-      matchesSearch &&
-      matchesCategory &&
-      matchesPrice
-    );
-  });
+      return (
+        matchesSearch &&
+        matchesCategory &&
+        matchesPrice
+      );
+    });
 
-  return result;
-}, [
-  productList,
-  searchTerm,
-  category,
-  maxPrice,
-]);
+    // Apply sorting
+    if (sortBy === "price-low") {
+      result.sort(
+        (a, b) =>
+          Number(a.price || 0) - Number(b.price || 0)
+      );
+    }
+
+    if (sortBy === "price-high") {
+      result.sort(
+        (a, b) =>
+          Number(b.price || 0) - Number(a.price || 0)
+      );
+    }
+
+    if (sortBy === "rating") {
+      result.sort(
+        (a, b) =>
+          Number(b.rating || 0) - Number(a.rating || 0)
+      );
+    }
+
+    if (sortBy === "name") {
+      result.sort((a, b) =>
+        String(a.name || "").localeCompare(
+          String(b.name || "")
+        )
+      );
+    }
+
+    return result;
+  }, [
+    productList,
+    searchTerm,
+    category,
+    maxPrice,
+    sortBy,
+  ]);
 
   /* =========================
      DISCOUNT
@@ -178,6 +209,18 @@ const filteredProducts = useMemo(() => {
     return Math.round(
       ((oldPrice - price) / oldPrice) * 100
     );
+  };
+
+  /* =========================
+     CLEAR FILTERS
+  ========================= */
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setCategory("All");
+    setMaxPrice(30000);
+    setSortBy("featured");
+    setSearchParams({});
   };
 
   /* =========================
@@ -414,6 +457,7 @@ const filteredProducts = useMemo(() => {
               <option value="name">
                 Name: A-Z
               </option>
+
             </select>
 
           </div>
@@ -514,6 +558,7 @@ const filteredProducts = useMemo(() => {
             />
 
             <div className="range-labels">
+
               <span>
                 Rs. 5,000
               </span>
@@ -521,6 +566,7 @@ const filteredProducts = useMemo(() => {
               <span>
                 Rs. 30,000
               </span>
+
             </div>
 
           </div>
