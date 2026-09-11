@@ -138,6 +138,18 @@ const handleSearch = (e) => {
 
         </nav>
 
+        <form className="navbar-search" onSubmit={handleSearch}>
+  <Search size={18} />
+
+  <input
+    type="text"
+    placeholder="Search watches..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    aria-label="Search watches"
+  />
+</form>
+
         {/* ================= ACTIONS ================= */}
 
         <div className="navbar-actions">
