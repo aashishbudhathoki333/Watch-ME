@@ -1,710 +1,682 @@
 import { useContext, useEffect, useState } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
-
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
+  ArrowLeft,
   Heart,
   Minus,
   Plus,
   ShoppingBag,
   Star,
-  ArrowLeft,
-  Truck,
-  ShieldCheck,
-  RotateCcw,
-  Check,
 } from "lucide-react";
 
-import products from "../data/products";
+import defaultProducts from "../data/products";
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
-import { ReviewsContext } from "../context/ReviewsContext";
 import { AuthContext } from "../context/AuthContext";
-import ProductGrid from "../components/ProductGrid";
+import { ReviewsContext } from "../context/ReviewsContext";
+
 import "./ProductDetails.css";
 
 const ProductDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // ================= PRODUCT =================
-
-  const [product, setProduct] = useState(null);
-
-  // ================= CONTEXTS =================
-
   const { addToCart } = useContext(CartContext);
 
-  const { toggleWishlist, isInWishlist } =
-    useContext(WishlistContext);
+  const {
+    toggleWishlist,
+    isInWishlist,
+  } = useContext(WishlistContext);
 
-  const { user } = useContext(AuthContext);
+  const { user, isLoggedIn } = useContext(AuthContext);
 
   const {
-    addReview,
     getProductReviews,
+    addReview,
     deleteReview,
   } = useContext(ReviewsContext);
 
-  // ================= PRODUCT LOAD =================
+  const [product, setProduct] = useState(null);
+  const [quantity, setQuantity] = useState(1);
+
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState("");
+  const [reviewMessage, setReviewMessage] = useState("");
+
+  // ================= LOAD PRODUCT =================
 
   useEffect(() => {
     const savedProducts =
       localStorage.getItem("watchmeProducts");
 
-    const productList = savedProducts
-      ? JSON.parse(savedProducts)
-      : products;
+    let productList = defaultProducts;
+
+    if (savedProducts) {
+      try {
+        productList = JSON.parse(savedProducts);
+      } catch (error) {
+        console.error(
+          "Failed to load saved products:",
+          error
+        );
+      }
+    }
 
     const foundProduct = productList.find(
       (item) => item.id === Number(id)
     );
 
     setProduct(foundProduct || null);
+
+    // Reset quantity whenever product changes
+    setQuantity(1);
   }, [id]);
-
-  // ================= CART / WISHLIST =================
-
-  const [quantity, setQuantity] = useState(1);
-  const [addedToCart, setAddedToCart] = useState(false);
-
-  // ================= REVIEWS =================
-
-  const [reviews, setReviews] = useState([]);
-  const [reviewRating, setReviewRating] = useState(5);
-  const [reviewText, setReviewText] = useState("");
-  const [reviewMessage, setReviewMessage] = useState("");
-
-  // ================= LOAD REVIEWS =================
-
-  useEffect(() => {
-    if (!product) return;
-
-    const productReviews =
-      getProductReviews(product.id) || [];
-
-    setReviews(productReviews);
-  }, [product, getProductReviews]);
-
-  // ================= SUBMIT REVIEW =================
-
-  const handleReviewSubmit = (e) => {
-    e.preventDefault();
-
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-
-    if (!reviewText.trim()) {
-      setReviewMessage("Please write a review.");
-      return;
-    }
-
-    const alreadyReviewed = reviews.some(
-      (review) => review.email === user.email
-    );
-
-    if (alreadyReviewed) {
-      setReviewMessage(
-        "You have already reviewed this watch."
-      );
-      return;
-    }
-
-    addReview(product.id, {
-      name:
-        user.name ||
-        user.email ||
-        "WatchMe Customer",
-
-      email: user.email,
-
-      rating: reviewRating,
-
-      comment: reviewText.trim(),
-    });
-
-    setReviewText("");
-    setReviewRating(5);
-
-    setReviewMessage(
-      "Your review has been submitted!"
-    );
-
-    setTimeout(() => {
-      const updatedReviews =
-        getProductReviews(product.id) || [];
-
-      setReviews(updatedReviews);
-    }, 0);
-  };
-
-  // ================= DELETE REVIEW =================
-
-  const handleDeleteReview = (reviewId) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete your review?"
-    );
-
-    if (!confirmed) return;
-
-    deleteReview(reviewId);
-
-    const updatedReviews =
-      getProductReviews(product.id) || [];
-
-    setReviews(updatedReviews);
-
-    setReviewMessage(
-      "Your review has been deleted."
-    );
-  };
 
   // ================= PRODUCT NOT FOUND =================
 
   if (!product) {
     return (
       <main className="product-not-found">
-        <div>
-          <h1>Product Not Found</h1>
+        <h1>Product Not Found</h1>
 
-          <p>
-            Sorry, we couldn't find the watch you're
-            looking for.
-          </p>
+        <p>
+          Sorry, the watch you're looking for does not
+          exist.
+        </p>
 
-          <Link
-            to="/shop"
-            className="details-back-button"
-          >
-            <ArrowLeft size={17} />
-            Back to Shop
-          </Link>
-        </div>
+        <Link to="/shop" className="btn btn-dark">
+          Back to Shop
+        </Link>
       </main>
     );
   }
 
-  // ================= CART =================
+  // ================= STOCK =================
 
-  const handleAddToCart = () => {
-    for (let i = 0; i < quantity; i++) {
-      addToCart(product);
-    }
+  const stock = Number(product.stock ?? 0);
 
-    setAddedToCart(true);
+  const isOutOfStock = stock <= 0;
 
-    setTimeout(() => {
-      setAddedToCart(false);
-    }, 2500);
-  };
+  const isLowStock =
+    stock > 0 && stock <= 5;
 
-  // ================= BUY NOW =================
-
-  const handleBuyNow = () => {
-    for (let i = 0; i < quantity; i++) {
-      addToCart(product);
-    }
-
-    navigate("/checkout");
-  };
-
-  // ================= RATING =================
-
-  const reviewAverage =
-    reviews.length > 0
-      ? (
-          reviews.reduce(
-            (sum, review) =>
-              sum + Number(review.rating || 0),
-            0
-          ) / reviews.length
-        ).toFixed(1)
-      : Number(product.rating || 0).toFixed(1);
-
-  // ================= RELATED PRODUCTS =================
-
-  const relatedProducts = products
-    .filter(
-      (item) =>
-        item.category === product.category &&
-        item.id !== product.id
-    )
-    .slice(0, 4);
+  const isMaxQuantity =
+    quantity >= stock;
 
   // ================= DISCOUNT =================
 
-  const discount =
-    product.oldPrice && product.price
-      ? Math.round(
-          ((product.oldPrice - product.price) /
-            product.oldPrice) *
-            100
-        )
-      : 0;
+  const discount = product.oldPrice
+    ? Math.round(
+        ((product.oldPrice - product.price) /
+          product.oldPrice) *
+          100
+      )
+    : 0;
 
-  const wishlistActive = isInWishlist(product.id);
+  // ================= REVIEWS =================
+
+  const productReviews =
+    getProductReviews(product.id);
+
+  // ================= ADD TO CART =================
+
+  const handleAddToCart = () => {
+    if (isOutOfStock) {
+      return;
+    }
+
+    const safeQuantity = Math.min(
+      quantity,
+      stock
+    );
+
+    for (let i = 0; i < safeQuantity; i++) {
+      addToCart(product);
+    }
+
+    navigate("/cart");
+  };
+
+  // ================= WISHLIST =================
+
+  const handleWishlist = () => {
+    toggleWishlist(product);
+  };
+
+  // ================= REVIEW =================
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault();
+
+    if (!isLoggedIn) {
+      navigate("/login", {
+        state: {
+          from: `/products/${product.id}`,
+        },
+      });
+
+      return;
+    }
+
+    if (!reviewComment.trim()) {
+      setReviewMessage(
+        "Please write a review before submitting."
+      );
+
+      return;
+    }
+
+    const alreadyReviewed =
+      productReviews.some(
+        (review) =>
+          review.email === user?.email
+      );
+
+    if (alreadyReviewed) {
+      setReviewMessage(
+        "You have already reviewed this product."
+      );
+
+      return;
+    }
+
+    addReview({
+      productId: product.id,
+      name:
+        user?.name ||
+        user?.email ||
+        "Customer",
+      email: user?.email || "",
+      rating: reviewRating,
+      comment: reviewComment.trim(),
+      date: new Date().toLocaleDateString(),
+    });
+
+    setReviewComment("");
+    setReviewRating(5);
+    setReviewMessage(
+      "Review submitted successfully."
+    );
+  };
+
+  // ================= DELETE REVIEW =================
+
+  const handleDeleteReview = (review) => {
+    if (review.email !== user?.email) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your review?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    deleteReview(review.id);
+
+    setReviewMessage(
+      "Review deleted successfully."
+    );
+  };
 
   return (
     <main className="product-details-page">
 
-      {/* ================= BREADCRUMB ================= */}
+      <div className="product-details-container">
 
-      <div className="details-breadcrumb">
-        <Link to="/shop">
-          <ArrowLeft size={16} />
+        {/* ================= BACK ================= */}
+
+        <Link
+          to="/shop"
+          className="back-to-shop"
+        >
+          <ArrowLeft size={17} />
           Back to Shop
         </Link>
 
-        <span>/</span>
+        {/* ================= PRODUCT ================= */}
 
-        <span>{product.category}</span>
+        <section className="product-details">
 
-        <span>/</span>
+          {/* IMAGE */}
 
-        <strong>{product.name}</strong>
-      </div>
-
-      {/* ================= PRODUCT ================= */}
-
-      <section className="product-details-container">
-
-        {/* IMAGE AREA */}
-
-        <div className="details-image-section">
-
-          <div className="details-image">
+          <div className="product-details-image">
 
             {product.badge && (
-              <span className="details-badge">
+              <span className="product-details-badge">
                 {product.badge}
               </span>
             )}
 
-            {product.image ? (
-              <img
-                src={product.image}
-                alt={product.name}
-                className="product-details-real-image"
-              />
-            ) : (
-              <div className="large-watch">
+            <span className="product-details-discount">
+              -{discount}%
+            </span>
 
-                <div className="large-watch-strap top"></div>
-
-                <div className="large-watch-case">
-
-                  <div className="large-watch-face">
-
-                    <span className="large-number twelve">
-                      12
-                    </span>
-
-                    <span className="large-number three">
-                      3
-                    </span>
-
-                    <span className="large-number six">
-                      6
-                    </span>
-
-                    <span className="large-number nine">
-                      9
-                    </span>
-
-                    <div className="large-watch-hand hour"></div>
-
-                    <div className="large-watch-hand minute"></div>
-
-                    <div className="large-watch-hand second"></div>
-
-                    <div className="large-watch-center"></div>
-
-                    <span className="watch-brand">
-                      WATCHME
-                    </span>
-
-                  </div>
-
-                </div>
-
-                <div className="large-watch-strap bottom"></div>
-
-              </div>
-            )}
+            <img
+              src={product.image}
+              alt={product.name}
+            />
 
           </div>
 
-        </div>
+          {/* INFO */}
 
-        {/* PRODUCT INFORMATION */}
+          <div className="product-details-info">
 
-        <div className="details-content">
+            <p className="product-details-category">
+              {product.category}
+            </p>
 
-          <span className="details-category">
-            {product.category} · {product.collection}
-          </span>
+            <h1>{product.name}</h1>
 
-          <h1>{product.name}</h1>
+            {/* RATING */}
 
-          {/* RATING */}
+            <div className="product-details-rating">
 
-          <div className="details-rating">
+              <div className="rating-stars">
 
-            <div className="rating-stars">
+                {[1, 2, 3, 4, 5].map(
+                  (star) => (
+                    <Star
+                      key={star}
+                      size={16}
+                      fill={
+                        star <=
+                        Math.round(
+                          product.rating
+                        )
+                          ? "currentColor"
+                          : "none"
+                      }
+                    />
+                  )
+                )}
 
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star
-                  key={star}
-                  size={17}
+              </div>
+
+              <span>
+                {product.rating}
+              </span>
+
+              <small>
+                ({product.reviews} reviews)
+              </small>
+
+            </div>
+
+            {/* PRICE */}
+
+            <div className="product-details-price">
+
+              <strong>
+                Rs.{" "}
+                {product.price.toLocaleString()}
+              </strong>
+
+              {product.oldPrice && (
+                <del>
+                  Rs.{" "}
+                  {product.oldPrice.toLocaleString()}
+                </del>
+              )}
+
+            </div>
+
+            {/* DESCRIPTION */}
+
+            <p className="product-details-description">
+              {product.description}
+            </p>
+
+            {/* ================= STOCK ================= */}
+
+            <div
+              className={`product-stock-status ${
+                isOutOfStock
+                  ? "out-of-stock"
+                  : isLowStock
+                  ? "low-stock"
+                  : "in-stock"
+              }`}
+            >
+              {isOutOfStock
+                ? "Out of Stock"
+                : isLowStock
+                ? `Only ${stock} left in stock`
+                : `${stock} available in stock`}
+            </div>
+
+            {/* ================= QUANTITY ================= */}
+
+            <div className="product-quantity">
+
+              <span>Quantity</span>
+
+              <div className="quantity-controls">
+
+                {/* MINUS */}
+
+                <button
+                  type="button"
+                  disabled={
+                    isOutOfStock ||
+                    quantity <= 1
+                  }
+                  onClick={() =>
+                    setQuantity(
+                      (prev) =>
+                        Math.max(
+                          1,
+                          prev - 1
+                        )
+                    )
+                  }
+                  aria-label="Decrease quantity"
+                >
+                  <Minus size={16} />
+                </button>
+
+                {/* NUMBER */}
+
+                <span>{quantity}</span>
+
+                {/* PLUS */}
+
+                <button
+                  type="button"
+                  disabled={
+                    isOutOfStock ||
+                    isMaxQuantity
+                  }
+                  onClick={() => {
+                    if (
+                      quantity < stock
+                    ) {
+                      setQuantity(
+                        (prev) =>
+                          prev + 1
+                      );
+                    }
+                  }}
+                  aria-label="Increase quantity"
+                >
+                  <Plus size={16} />
+                </button>
+
+              </div>
+
+            </div>
+
+            {/* ================= ACTIONS ================= */}
+
+            <div className="product-details-actions">
+
+              {/* ADD TO CART */}
+
+              <button
+                type="button"
+                className="product-add-cart"
+                disabled={isOutOfStock}
+                onClick={handleAddToCart}
+              >
+                <ShoppingBag size={19} />
+
+                {isOutOfStock
+                  ? "Out of Stock"
+                  : "Add to Cart"}
+              </button>
+
+              {/* WISHLIST */}
+
+              <button
+                type="button"
+                className={`product-wishlist-button ${
+                  isInWishlist(
+                    product.id
+                  )
+                    ? "active"
+                    : ""
+                }`}
+                onClick={handleWishlist}
+                aria-label="Add to wishlist"
+              >
+                <Heart
+                  size={20}
                   fill={
-                    star <=
-                    Math.round(
-                      Number(reviewAverage)
+                    isInWishlist(
+                      product.id
                     )
                       ? "currentColor"
                       : "none"
                   }
                 />
-              ))}
+              </button>
 
             </div>
 
-            <strong>{reviewAverage}</strong>
+            {/* ================= FEATURES ================= */}
 
-            <span>
-              {reviews.length} customer review
-              {reviews.length !== 1 ? "s" : ""}
-            </span>
+            <div className="product-details-features">
 
-          </div>
+              <div>
+                <strong>
+                  Premium Quality
+                </strong>
 
-          {/* PRICE */}
+                <span>
+                  Carefully selected materials
+                </span>
+              </div>
 
-          <div className="details-price">
+              <div>
+                <strong>
+                  Fast Delivery
+                </strong>
 
-            <div className="current-price">
-              Rs.{" "}
-              {Number(
-                product.price || 0
-              ).toLocaleString()}
-            </div>
+                <span>
+                  Quick delivery across Nepal
+                </span>
+              </div>
 
-            {product.oldPrice && (
-              <del>
-                Rs.{" "}
-                {Number(
-                  product.oldPrice
-                ).toLocaleString()}
-              </del>
-            )}
+              <div>
+                <strong>
+                  Easy Returns
+                </strong>
 
-            {discount > 0 && (
-              <span className="discount">
-                {discount}% OFF
-              </span>
-            )}
+                <span>
+                  Simple return policy
+                </span>
+              </div>
 
-          </div>
-
-          <div className="details-divider"></div>
-
-          {/* DESCRIPTION */}
-
-          <p className="details-description">
-            {product.description}
-          </p>
-
-          {/* FEATURES */}
-
-          <div className="product-features">
-
-            <div>
-              <Check size={16} />
-              Premium quality design
-            </div>
-
-            <div>
-              <Check size={16} />
-              Comfortable everyday wear
-            </div>
-
-            <div>
-              <Check size={16} />
-              Carefully selected by WatchMe
             </div>
 
           </div>
 
-          {/* QUANTITY */}
+        </section>
 
-          <div className="quantity-section">
+        {/* ================= REVIEWS ================= */}
 
-            <span>Quantity</span>
+        <section className="product-reviews-section">
 
-            <div className="quantity-control">
+          <div className="reviews-header">
 
-              <button
-                type="button"
-                onClick={() =>
-                  setQuantity(
-                    Math.max(
-                      1,
-                      quantity - 1
+            <div>
+              <p className="section-label">
+                CUSTOMER FEEDBACK
+              </p>
+
+              <h2>
+                Customer Reviews
+              </h2>
+            </div>
+
+            <div className="overall-rating">
+
+              <strong>
+                {product.rating}
+              </strong>
+
+              <div>
+
+                <div className="rating-stars">
+
+                  {[1, 2, 3, 4, 5].map(
+                    (star) => (
+                      <Star
+                        key={star}
+                        size={15}
+                        fill={
+                          star <=
+                          Math.round(
+                            product.rating
+                          )
+                            ? "currentColor"
+                            : "none"
+                        }
+                      />
                     )
-                  )
-                }
-                aria-label="Decrease quantity"
-              >
-                <Minus size={16} />
-              </button>
+                  )}
 
-              <span>{quantity}</span>
+                </div>
 
-              <button
-                type="button"
-                onClick={() =>
-                  setQuantity(quantity + 1)
-                }
-                aria-label="Increase quantity"
-              >
-                <Plus size={16} />
-              </button>
-
-            </div>
-
-          </div>
-
-          {/* ACTIONS */}
-
-          <div className="details-actions">
-
-            <button
-              type="button"
-              className={`details-add-cart ${
-                addedToCart ? "added" : ""
-              }`}
-              onClick={handleAddToCart}
-            >
-              {addedToCart ? (
-                <>
-                  <Check size={19} />
-                  Added to Cart
-                </>
-              ) : (
-                <>
-                  <ShoppingBag size={19} />
-                  Add to Cart
-                </>
-              )}
-            </button>
-
-            <button
-              type="button"
-              className={`details-wishlist ${
-                wishlistActive ? "active" : ""
-              }`}
-              onClick={() =>
-                toggleWishlist(product)
-              }
-              aria-label="Add to wishlist"
-            >
-              <Heart
-                size={21}
-                fill={
-                  wishlistActive
-                    ? "currentColor"
-                    : "none"
-                }
-              />
-            </button>
-
-          </div>
-
-          {/* BUY NOW */}
-
-          <button
-            type="button"
-            className="buy-now-button"
-            onClick={handleBuyNow}
-          >
-            Buy Now
-          </button>
-
-          {/* META */}
-
-          <div className="product-meta">
-
-            <div>
-              <span>Category</span>
-
-              <strong>
-                {product.category}
-              </strong>
-            </div>
-
-            <div>
-              <span>Collection</span>
-
-              <strong>
-                {product.collection}
-              </strong>
-            </div>
-
-            <div>
-              <span>Availability</span>
-
-              <strong className="in-stock">
-                In Stock
-              </strong>
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-      {/* ================= SERVICE BENEFITS ================= */}
-
-      <section className="details-benefits">
-
-        <div className="details-benefit">
-
-          <div className="benefit-symbol">
-            <Truck size={21} />
-          </div>
-
-          <div>
-            <strong>Fast Delivery</strong>
-
-            <span>
-              Delivered safely to your doorstep
-            </span>
-          </div>
-
-        </div>
-
-        <div className="details-benefit">
-
-          <div className="benefit-symbol">
-            <ShieldCheck size={21} />
-          </div>
-
-          <div>
-            <strong>Quality Guaranteed</strong>
-
-            <span>
-              Carefully selected products
-            </span>
-          </div>
-
-        </div>
-
-        <div className="details-benefit">
-
-          <div className="benefit-symbol">
-            <RotateCcw size={21} />
-          </div>
-
-          <div>
-            <strong>Easy Returns</strong>
-
-            <span>
-              Simple and convenient returns
-            </span>
-          </div>
-
-        </div>
-
-      </section>
-
-      {/* ================= CUSTOMER REVIEWS ================= */}
-
-      <section className="product-reviews-section">
-
-        <div className="reviews-heading">
-
-          <div>
-
-            <span className="section-label">
-              CUSTOMER FEEDBACK
-            </span>
-
-            <h2>Reviews & Ratings</h2>
-
-          </div>
-
-          <div className="reviews-summary">
-
-            <strong>{reviewAverage}</strong>
-
-            <div className="summary-stars">
-
-              {[1, 2, 3, 4, 5].map(
-                (star) => (
-                  <Star
-                    key={star}
-                    size={17}
-                    fill={
-                      star <=
-                      Math.round(
-                        Number(reviewAverage)
-                      )
-                        ? "currentColor"
-                        : "none"
-                    }
-                  />
-                )
-              )}
-
-            </div>
-
-            <span>
-              {reviews.length} customer review
-              {reviews.length !== 1
-                ? "s"
-                : ""}
-            </span>
-
-          </div>
-
-        </div>
-
-        <div className="reviews-layout">
-
-          {/* ================= REVIEWS LIST ================= */}
-
-          <div className="reviews-list">
-
-            {reviews.length === 0 ? (
-
-              <div className="no-reviews">
-
-                <Star size={28} />
-
-                <h3>No reviews yet</h3>
-
-                <p>
-                  Be the first customer to review
-                  this watch.
-                </p>
+                <span>
+                  {productReviews.length}{" "}
+                  customer reviews
+                </span>
 
               </div>
 
+            </div>
+
+          </div>
+
+          {/* ================= REVIEW FORM ================= */}
+
+          <div className="review-form-container">
+
+            <h3>
+              {isLoggedIn
+                ? "Write a Review"
+                : "Login to Write a Review"}
+            </h3>
+
+            {!isLoggedIn ? (
+              <button
+                type="button"
+                className="btn btn-dark"
+                onClick={() =>
+                  navigate("/login", {
+                    state: {
+                      from: `/products/${product.id}`,
+                    },
+                  })
+                }
+              >
+                Login to Review
+              </button>
             ) : (
+              <form
+                className="review-form"
+                onSubmit={
+                  handleReviewSubmit
+                }
+              >
 
-              reviews
-                .slice()
-                .reverse()
-                .map((review) => (
+                <div className="review-rating-input">
 
+                  <label>
+                    Rating
+                  </label>
+
+                  <div className="review-stars">
+
+                    {[1, 2, 3, 4, 5].map(
+                      (star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() =>
+                            setReviewRating(
+                              star
+                            )
+                          }
+                          aria-label={`Rate ${star} stars`}
+                        >
+                          <Star
+                            size={21}
+                            fill={
+                              star <=
+                              reviewRating
+                                ? "currentColor"
+                                : "none"
+                            }
+                          />
+                        </button>
+                      )
+                    )}
+
+                  </div>
+
+                </div>
+
+                <textarea
+                  value={reviewComment}
+                  onChange={(e) =>
+                    setReviewComment(
+                      e.target.value
+                    )
+                  }
+                  placeholder="Share your experience with this watch..."
+                  rows={4}
+                />
+
+                <button
+                  type="submit"
+                  className="btn btn-dark"
+                >
+                  Submit Review
+                </button>
+
+              </form>
+            )}
+
+            {reviewMessage && (
+              <p className="review-message">
+                {reviewMessage}
+              </p>
+            )}
+
+          </div>
+
+          {/* ================= REVIEW LIST ================= */}
+
+          <div className="reviews-list">
+
+            {productReviews.length ===
+            0 ? (
+              <div className="no-reviews">
+
+                <p>
+                  No reviews yet.
+                </p>
+
+                <span>
+                  Be the first to review
+                  this watch.
+                </span>
+
+              </div>
+            ) : (
+              productReviews.map(
+                (review) => (
                   <article
                     className="review-card"
                     key={review.id}
                   >
 
-                    <div className="review-top">
+                    <div className="review-card-header">
 
                       <div>
 
@@ -712,222 +684,62 @@ const ProductDetails = () => {
                           {review.name}
                         </strong>
 
-                        <span>
-                          {review.date
-                            ? new Date(
-                                review.date
-                              ).toLocaleDateString()
-                            : ""}
-                        </span>
-
-                      </div>
-
-                      <div className="review-actions">
-
                         <div className="review-stars">
 
                           {[1, 2, 3, 4, 5].map(
                             (star) => (
-
                               <Star
                                 key={star}
-                                size={15}
+                                size={14}
                                 fill={
                                   star <=
-                                  Number(
-                                    review.rating
-                                  )
+                                  review.rating
                                     ? "currentColor"
                                     : "none"
                                 }
                               />
-
                             )
                           )}
 
                         </div>
 
-                        {user &&
-                          review.email ===
-                            user.email && (
-                            <button
-                              type="button"
-                              className="delete-review-button"
-                              onClick={() =>
-                                handleDeleteReview(
-                                  review.id
-                                )
-                              }
-                            >
-                              Delete
-                            </button>
-                          )}
-
                       </div>
+
+                      <small>
+                        {review.date}
+                      </small>
 
                     </div>
 
                     <p>
-                      {review.comment ||
-                        review.text}
+                      {review.comment}
                     </p>
 
-                  </article>
-
-                ))
-
-            )}
-
-          </div>
-
-          {/* ================= REVIEW FORM ================= */}
-
-          <div className="review-form-card">
-
-            <h3>Write a Review</h3>
-
-            {!user ? (
-
-              <div className="review-login-message">
-
-                <p>
-                  Please log in to leave a review.
-                </p>
-
-                <Link
-                  to="/login"
-                  className="review-login-button"
-                >
-                  Log In
-                </Link>
-
-              </div>
-
-            ) : (
-
-              <form
-                onSubmit={handleReviewSubmit}
-              >
-
-                <label>
-                  Your Rating
-                </label>
-
-                <div className="review-rating-input">
-
-                  {[1, 2, 3, 4, 5].map(
-                    (star) => (
-
+                    {review.email ===
+                      user?.email && (
                       <button
-                        key={star}
                         type="button"
-                        className={
-                          star <= reviewRating
-                            ? "selected"
-                            : ""
-                        }
+                        className="delete-review"
                         onClick={() =>
-                          setReviewRating(star)
+                          handleDeleteReview(
+                            review
+                          )
                         }
-                        aria-label={`${star} star${
-                          star > 1
-                            ? "s"
-                            : ""
-                        }`}
                       >
-
-                        <Star
-                          size={22}
-                          fill="currentColor"
-                        />
-
+                        Delete Review
                       </button>
+                    )}
 
-                    )
-                  )}
-
-                </div>
-
-                <label htmlFor="review-text">
-                  Your Review
-                </label>
-
-                <textarea
-                  id="review-text"
-                  value={reviewText}
-                  onChange={(e) =>
-                    setReviewText(
-                      e.target.value
-                    )
-                  }
-                  placeholder="Share your experience with this watch..."
-                  rows="5"
-                />
-
-                {reviewMessage && (
-                  <p className="review-message">
-                    {reviewMessage}
-                  </p>
-                )}
-
-                <button
-                  type="submit"
-                  className="submit-review-button"
-                >
-                  Submit Review
-                </button>
-
-              </form>
-
+                  </article>
+                )
+              )
             )}
 
           </div>
-
-        </div>
-
-      </section>
-
-      {/* ================= RELATED PRODUCTS ================= */}
-
-      {relatedProducts.length > 0 && (
-
-        <section className="related-products-section">
-
-          <div className="related-heading">
-
-            <div>
-
-              <span className="section-label">
-                YOU MAY ALSO LIKE
-              </span>
-
-              <h2>Related Watches</h2>
-
-            </div>
-
-            <Link to="/shop">
-
-              View All
-
-              <ArrowLeft
-                size={16}
-                style={{
-                  transform:
-                    "rotate(180deg)",
-                }}
-              />
-
-            </Link>
-
-          </div>
-
-          <ProductGrid
-            products={relatedProducts}
-          />
 
         </section>
 
-      )}
+      </div>
 
     </main>
   );
