@@ -29,12 +29,14 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminProducts from "./pages/AdminProducts";
 import AdminCustomers from "./pages/AdminCustomers";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
+import { ReviewsProvider } from "./context/ReviewsContext";
 
 const App = () => {
   return (
     <AuthProvider>
       <CartProvider>
         <WishlistProvider>
+            <ReviewsProvider>
 
           <BrowserRouter>
             <ScrollToTop />
@@ -196,6 +198,7 @@ const App = () => {
 
           </BrowserRouter>
 
+    </ReviewsProvider>
         </WishlistProvider>
       </CartProvider>
     </AuthProvider>
