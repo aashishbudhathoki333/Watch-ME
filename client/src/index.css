@@ -1949,3 +1949,29 @@ em {
     font-size: 43px;
   }
 }
+/* ================= STOCK STATUS ================= */
+
+.product-stock {
+  margin-top: 8px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.product-stock.in-stock {
+  color: #16794c;
+}
+
+.product-stock.low-stock {
+  color: #a15c00;
+}
+
+.product-stock.out-of-stock {
+  color: #b42318;
+}
+
+/* Disabled Add to Cart */
+
+.quick-cart.disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}

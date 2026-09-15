@@ -16,19 +16,20 @@ const AdminProducts = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
 
- const emptyProduct = {
-  name: "",
-  category: "Men",
-  collection: "Classic",
-  price: "",
-  oldPrice: "",
-  rating: "5",
-  reviews: "0",
-  badge: "",
-  color: "black",
-  image: "",
-  description: "",
-};
+  const emptyProduct = {
+    name: "",
+    category: "Men",
+    collection: "Classic",
+    price: "",
+    oldPrice: "",
+    rating: "5",
+    reviews: "0",
+    stock: "0",
+    badge: "",
+    color: "black",
+    image: "",
+    description: "",
+  };
 
   const [formData, setFormData] = useState(emptyProduct);
 
@@ -69,19 +70,20 @@ const AdminProducts = () => {
   const handleEditProduct = (product) => {
     setEditingProduct(product);
 
-   setFormData({
-  name: product.name,
-  category: product.category,
-  collection: product.collection,
-  price: product.price,
-  oldPrice: product.oldPrice,
-  rating: product.rating,
-  reviews: product.reviews,
-  badge: product.badge || "",
-  color: product.color || "black",
-  image: product.image || "",
-  description: product.description,
-});
+    setFormData({
+      name: product.name,
+      category: product.category,
+      collection: product.collection,
+      price: product.price,
+      oldPrice: product.oldPrice,
+      rating: product.rating,
+      reviews: product.reviews,
+      stock: product.stock ?? 0,
+      badge: product.badge || "",
+      color: product.color || "black",
+      image: product.image || "",
+      description: product.description || "",
+    });
 
     setShowForm(true);
   };
@@ -107,6 +109,7 @@ const AdminProducts = () => {
       oldPrice: Number(formData.oldPrice),
       rating: Number(formData.rating),
       reviews: Number(formData.reviews),
+      stock: Number(formData.stock),
     };
 
     if (editingProduct) {
@@ -152,6 +155,30 @@ const AdminProducts = () => {
     saveProducts(updatedProducts);
   };
 
+  // Stock status
+  const getStockStatus = (stock) => {
+    const quantity = Number(stock || 0);
+
+    if (quantity === 0) {
+      return {
+        label: "Out of Stock",
+        className: "out-of-stock",
+      };
+    }
+
+    if (quantity <= 5) {
+      return {
+        label: "Low Stock",
+        className: "low-stock",
+      };
+    }
+
+    return {
+      label: "In Stock",
+      className: "in-stock",
+    };
+  };
+
   // Search
   const filteredProducts = productList.filter(
     (product) =>
@@ -193,7 +220,6 @@ const AdminProducts = () => {
 
       </div>
 
-
       {/* SEARCH */}
 
       <div className="admin-product-toolbar">
@@ -217,7 +243,6 @@ const AdminProducts = () => {
         </span>
 
       </div>
-
 
       {/* PRODUCT TABLE */}
 
@@ -245,6 +270,7 @@ const AdminProducts = () => {
                   <th>Category</th>
                   <th>Collection</th>
                   <th>Price</th>
+                  <th>Stock</th>
                   <th>Rating</th>
                   <th>Actions</th>
                 </tr>
@@ -253,94 +279,112 @@ const AdminProducts = () => {
               <tbody>
 
                 {filteredProducts.map(
-                  (product) => (
+                  (product) => {
 
-                    <tr key={product.id}>
+                    const stockStatus =
+                      getStockStatus(product.stock);
 
-                      <td>
-                        <div className="admin-product-name">
+                    return (
+                      <tr key={product.id}>
 
-                          <div
-                            className={`admin-product-preview ${product.color}`}
-                          >
-                            WATCHME
+                        <td>
+                          <div className="admin-product-name">
+
+                            <div
+                              className={`admin-product-preview ${product.color}`}
+                            >
+                              WATCHME
+                            </div>
+
+                            <div>
+                              <strong>
+                                {product.name}
+                              </strong>
+
+                              {product.badge && (
+                                <span>
+                                  {product.badge}
+                                </span>
+                              )}
+                            </div>
+
                           </div>
+                        </td>
 
-                          <div>
+                        <td>
+                          {product.category}
+                        </td>
+
+                        <td>
+                          {product.collection}
+                        </td>
+
+                        <td>
+                          <strong>
+                            Rs.{" "}
+                            {Number(
+                              product.price || 0
+                            ).toLocaleString()}
+                          </strong>
+                        </td>
+
+                        <td>
+                          <div className="admin-stock-info">
+
                             <strong>
-                              {product.name}
+                              {Number(
+                                product.stock || 0
+                              )}
                             </strong>
 
-                            {product.badge && (
-                              <span>
-                                {product.badge}
-                              </span>
-                            )}
+                            <span
+                              className={`stock-status ${stockStatus.className}`}
+                            >
+                              {stockStatus.label}
+                            </span>
+
+                          </div>
+                        </td>
+
+                        <td>
+                          ⭐ {product.rating}
+                        </td>
+
+                        <td>
+
+                          <div className="admin-product-actions">
+
+                            <button
+                              type="button"
+                              className="edit-product-button"
+                              onClick={() =>
+                                handleEditProduct(product)
+                              }
+                              aria-label="Edit product"
+                            >
+                              <Pencil size={16} />
+                            </button>
+
+                            <button
+                              type="button"
+                              className="delete-product-button"
+                              onClick={() =>
+                                handleDeleteProduct(
+                                  product.id
+                                )
+                              }
+                              aria-label="Delete product"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+
                           </div>
 
-                        </div>
-                      </td>
+                        </td>
 
-
-                      <td>
-                        {product.category}
-                      </td>
-
-
-                      <td>
-                        {product.collection}
-                      </td>
-
-
-                      <td>
-                        <strong>
-                          Rs.{" "}
-                          {product.price.toLocaleString()}
-                        </strong>
-                      </td>
-
-
-                      <td>
-                        ⭐ {product.rating}
-                      </td>
-
-
-                      <td>
-
-                        <div className="admin-product-actions">
-
-                          <button
-                            type="button"
-                            className="edit-product-button"
-                            onClick={() =>
-                              handleEditProduct(product)
-                            }
-                            aria-label="Edit product"
-                          >
-                            <Pencil size={16} />
-                          </button>
-
-
-                          <button
-                            type="button"
-                            className="delete-product-button"
-                            onClick={() =>
-                              handleDeleteProduct(
-                                product.id
-                              )
-                            }
-                            aria-label="Delete product"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-
-                        </div>
-
-                      </td>
-
-                    </tr>
-
-                  )
+                      </tr>
+                    );
+                  }
                 )}
 
               </tbody>
@@ -352,7 +396,6 @@ const AdminProducts = () => {
         )}
 
       </section>
-
 
       {/* PRODUCT FORM MODAL */}
 
@@ -388,7 +431,6 @@ const AdminProducts = () => {
 
             </div>
 
-
             <form
               className="admin-product-form"
               onSubmit={handleSubmit}
@@ -412,7 +454,6 @@ const AdminProducts = () => {
                 />
 
               </div>
-
 
               {/* CATEGORY + COLLECTION */}
 
@@ -444,7 +485,6 @@ const AdminProducts = () => {
                   </select>
 
                 </div>
-
 
                 <div className="admin-form-group">
 
@@ -483,7 +523,6 @@ const AdminProducts = () => {
 
               </div>
 
-
               {/* PRICES */}
 
               <div className="admin-form-row">
@@ -506,7 +545,6 @@ const AdminProducts = () => {
 
                 </div>
 
-
                 <div className="admin-form-group">
 
                   <label>
@@ -526,7 +564,6 @@ const AdminProducts = () => {
                 </div>
 
               </div>
-
 
               {/* RATING + REVIEWS */}
 
@@ -551,7 +588,6 @@ const AdminProducts = () => {
 
                 </div>
 
-
                 <div className="admin-form-group">
 
                   <label>
@@ -571,6 +607,29 @@ const AdminProducts = () => {
 
               </div>
 
+              {/* STOCK */}
+
+              <div className="admin-form-group">
+
+                <label>
+                  Stock Quantity
+                </label>
+
+                <input
+                  type="number"
+                  name="stock"
+                  value={formData.stock}
+                  onChange={handleChange}
+                  min="0"
+                  placeholder="20"
+                  required
+                />
+
+                <small className="stock-help-text">
+                  Set the number of watches currently available.
+                </small>
+
+              </div>
 
               {/* BADGE + COLOR */}
 
@@ -591,7 +650,6 @@ const AdminProducts = () => {
                   />
 
                 </div>
-
 
                 <div className="admin-form-group">
 
@@ -626,47 +684,51 @@ const AdminProducts = () => {
 
               </div>
 
-{/* PRODUCT IMAGE */}
+              {/* PRODUCT IMAGE */}
 
-{/* PRODUCT IMAGE */}
+              <div className="admin-form-group">
 
-<div className="admin-form-group">
-  <label>Product Image</label>
+                <label>
+                  Product Image
+                </label>
 
-  <input
-    type="file"
-    accept="image/*"
-    onChange={(e) => {
-      const file = e.target.files[0];
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file =
+                      e.target.files[0];
 
-      if (!file) return;
+                    if (!file) return;
 
-      const reader = new FileReader();
+                    const reader =
+                      new FileReader();
 
-      reader.onloadend = () => {
-        setFormData((prev) => ({
-          ...prev,
-          image: reader.result,
-        }));
-      };
+                    reader.onloadend = () => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        image: reader.result,
+                      }));
+                    };
 
-      reader.readAsDataURL(file);
-    }}
-  />
+                    reader.readAsDataURL(file);
+                  }}
+                />
 
-  <small className="image-help-text">
-    Choose a watch image from your computer.
-  </small>
+                <small className="image-help-text">
+                  Choose a watch image from your computer.
+                </small>
 
-  {formData.image && (
-    <div className="image-upload-preview">
-      <img
-        src={formData.image}
-        alt="Product preview"
-      />
-    </div>
-  )}
-</div>
+                {formData.image && (
+                  <div className="image-upload-preview">
+                    <img
+                      src={formData.image}
+                      alt="Product preview"
+                    />
+                  </div>
+                )}
+
+              </div>
 
               {/* DESCRIPTION */}
 
@@ -687,7 +749,6 @@ const AdminProducts = () => {
 
               </div>
 
-
               {/* ACTIONS */}
 
               <div className="admin-form-actions">
@@ -701,7 +762,6 @@ const AdminProducts = () => {
                 >
                   Cancel
                 </button>
-
 
                 <button
                   type="submit"

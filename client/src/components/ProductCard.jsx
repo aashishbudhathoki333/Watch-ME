@@ -9,9 +9,40 @@ const ProductCard = ({ product }) => {
   const { toggleWishlist, isInWishlist } =
     useContext(WishlistContext);
 
+  const stock = Number(product.stock ?? 0);
+
   const discount = Math.round(
     ((product.oldPrice - product.price) / product.oldPrice) * 100
   );
+
+  const getStockStatus = () => {
+    if (stock === 0) {
+      return {
+        text: "Out of Stock",
+        className: "out-of-stock",
+      };
+    }
+
+    if (stock <= 5) {
+      return {
+        text: `Only ${stock} left`,
+        className: "low-stock",
+      };
+    }
+
+    return {
+      text: "In Stock",
+      className: "in-stock",
+    };
+  };
+
+  const stockStatus = getStockStatus();
+
+  const handleAddToCart = () => {
+    if (stock === 0) return;
+
+    addToCart(product);
+  };
 
   return (
     <article className="product-card">
@@ -48,16 +79,22 @@ const ProductCard = ({ product }) => {
 
         <button
           type="button"
-          className="quick-cart"
-          onClick={() => addToCart(product)}
+          className={`quick-cart ${
+            stock === 0 ? "disabled" : ""
+          }`}
+          onClick={handleAddToCart}
+          disabled={stock === 0}
         >
           <ShoppingBag size={17} />
-          Add to Cart
+
+          {stock === 0 ? "Out of Stock" : "Add to Cart"}
         </button>
       </div>
 
       <div className="product-info">
-        <p className="product-brand">{product.brand}</p>
+        <p className="product-brand">
+          {product.brand}
+        </p>
 
         <Link
           to={`/products/${product.id}`}
@@ -80,6 +117,13 @@ const ProductCard = ({ product }) => {
           <del>
             Rs. {product.oldPrice.toLocaleString()}
           </del>
+        </div>
+
+        {/* STOCK STATUS */}
+        <div
+          className={`product-stock ${stockStatus.className}`}
+        >
+          {stockStatus.text}
         </div>
       </div>
     </article>

@@ -1029,3 +1029,45 @@
         transition-duration: 0.01ms !important;
     }
 }
+/* ================= STOCK MANAGEMENT ================= */
+
+.admin-stock-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.admin-stock-info strong {
+    font-size: 14px;
+    color: #222;
+}
+
+.stock-status {
+    display: inline-flex;
+    width: fit-content;
+    padding: 3px 7px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.stock-status.in-stock {
+    background: #e8f7ee;
+    color: #16794c;
+}
+
+.stock-status.low-stock {
+    background: #fff4df;
+    color: #a15c00;
+}
+
+.stock-status.out-of-stock {
+    background: #fdecec;
+    color: #b42318;
+}
+
+.stock-help-text {
+    margin-top: 4px;
+    color: #888;
+    font-size: 12px;
+}

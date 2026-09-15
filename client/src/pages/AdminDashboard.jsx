@@ -25,6 +25,8 @@ const AdminDashboard = () => {
   const [customers, setCustomers] = useState([]);
   const [productList, setProductList] = useState([]);
   const [chartPeriod, setChartPeriod] = useState("30D");
+  const [reviewCount, setReviewCount] = useState(0);
+const [recentReviews, setRecentReviews] = useState([]);
 
   useEffect(() => {
     const savedOrders =
@@ -56,6 +58,23 @@ const AdminDashboard = () => {
     } else {
       setCustomers([]);
     }
+    const recentReviewsData =
+  localStorage.getItem("watchmeReviews");
+
+if (recentReviewsData) {
+  const reviewData = JSON.parse(recentReviewsData);
+
+  setRecentReviews(
+    reviewData
+      .sort(
+        (a, b) =>
+          new Date(b.date) - new Date(a.date)
+      )
+      .slice(0, 5)
+  );
+} else {
+  setRecentReviews([]);
+}
   }, []);
 
   /* =========================================================
@@ -1004,6 +1023,85 @@ const AdminDashboard = () => {
 
       </section>
 
+<section className="admin-recent-reviews">
+
+  <div className="admin-section-header">
+    <div>
+      <h2>Recent Reviews</h2>
+      <p>Latest customer feedback</p>
+    </div>
+
+    <Link to="/admin/reviews">
+      View All Reviews →
+    </Link>
+  </div>
+
+  {recentReviews.length === 0 ? (
+    <div className="no-recent-reviews">
+      <p>No reviews yet.</p>
+    </div>
+  ) : (
+    <div className="recent-reviews-list">
+
+      {recentReviews.map((review) => (
+        <div
+          className="recent-review-item"
+          key={review.id}
+        >
+
+          <div className="recent-review-info">
+
+            <div className="recent-review-avatar">
+              {String(review.name || "C")
+                .charAt(0)
+                .toUpperCase()}
+            </div>
+
+            <div>
+              <strong>
+                {review.name || "WatchMe Customer"}
+              </strong>
+
+              <span>
+                {review.date
+                  ? new Date(
+                      review.date
+                    ).toLocaleDateString()
+                  : ""}
+              </span>
+            </div>
+
+          </div>
+
+          <div className="recent-review-content">
+
+            <strong>
+              {review.productName || "Product Review"}
+            </strong>
+
+            <div className="recent-review-stars">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <span key={star}>
+                  {star <= Number(review.rating)
+                    ? "★"
+                    : "☆"}
+                </span>
+              ))}
+            </div>
+
+            <p>
+              {review.comment}
+            </p>
+
+          </div>
+
+        </div>
+      ))}
+
+    </div>
+  )}
+
+</section>
 
       {/* =====================================================
           SECONDARY STATS
@@ -1033,7 +1131,16 @@ const AdminDashboard = () => {
             </small>
 
           </div>
+<div className="admin-stat-card">
+  <div className="admin-stat-info">
+    <span>Total Reviews</span>
+    <h2>{reviewCount}</h2>
+  </div>
 
+  <div className="admin-stat-icon">
+    ⭐
+  </div>
+</div>
         </div>
 
 
