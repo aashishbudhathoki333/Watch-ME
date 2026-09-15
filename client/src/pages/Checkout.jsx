@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
 ArrowLeft,
@@ -15,8 +15,18 @@ import "./Checkout.css";
 
 const Checkout = () => {
 const { cartItems, cartTotal, clearCart } = useContext(CartContext);
-const { user } = useContext(AuthContext);
+const { user, isLoggedIn } = useContext(AuthContext);
 const navigate = useNavigate();
+useEffect(() => {
+  if (!isLoggedIn) {
+    navigate("/login", {
+      state: {
+        from: "/checkout",
+      },
+      replace: true,
+    });
+  }
+}, [isLoggedIn, navigate]);
 
 const delivery = cartItems.length > 0 ? 100 : 0;
 const total = cartTotal + delivery;
