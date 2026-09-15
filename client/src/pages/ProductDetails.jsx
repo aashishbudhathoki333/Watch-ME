@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
+
 import {
   Heart,
   Minus,
@@ -44,17 +45,18 @@ const ProductDetails = () => {
   // ================= PRODUCT LOAD =================
 
   useEffect(() => {
-    const savedProducts = localStorage.getItem("watchmeProducts");
+    const savedProducts =
+      localStorage.getItem("watchmeProducts");
 
     const productList = savedProducts
       ? JSON.parse(savedProducts)
-      : [];
+      : products;
 
     const foundProduct = productList.find(
       (item) => item.id === Number(id)
     );
 
-    setProduct(foundProduct);
+    setProduct(foundProduct || null);
   }, [id]);
 
   // ================= CART / WISHLIST =================
@@ -69,11 +71,13 @@ const ProductDetails = () => {
   const [reviewText, setReviewText] = useState("");
   const [reviewMessage, setReviewMessage] = useState("");
 
-  // Load reviews for this product
+  // ================= LOAD REVIEWS =================
+
   useEffect(() => {
     if (!product) return;
 
-    const productReviews = getProductReviews(product.id) || [];
+    const productReviews =
+      getProductReviews(product.id) || [];
 
     setReviews(productReviews);
   }, [product, getProductReviews]);
@@ -94,20 +98,27 @@ const ProductDetails = () => {
     }
 
     addReview(product.id, {
-      name: user.name || user.email || "WatchMe Customer",
+      name:
+        user.name ||
+        user.email ||
+        "WatchMe Customer",
       rating: reviewRating,
       comment: reviewText.trim(),
     });
 
-    // Refresh reviews after submitting
-    const updatedReviews =
-      getProductReviews(product.id) || [];
-
-    setReviews(updatedReviews);
-
     setReviewText("");
     setReviewRating(5);
-    setReviewMessage("Your review has been submitted!");
+    setReviewMessage(
+      "Your review has been submitted!"
+    );
+
+    // Reload reviews from localStorage
+    setTimeout(() => {
+      const updatedReviews =
+        getProductReviews(product.id) || [];
+
+      setReviews(updatedReviews);
+    }, 0);
   };
 
   // ================= PRODUCT NOT FOUND =================
@@ -121,10 +132,14 @@ const ProductDetails = () => {
           <h1>Product Not Found</h1>
 
           <p>
-            Sorry, we couldn't find the watch you're looking for.
+            Sorry, we couldn't find the watch you're
+            looking for.
           </p>
 
-          <Link to="/shop" className="details-back-button">
+          <Link
+            to="/shop"
+            className="details-back-button"
+          >
             <ArrowLeft size={17} />
             Back to Shop
           </Link>
@@ -163,11 +178,12 @@ const ProductDetails = () => {
     reviews.length > 0
       ? (
           reviews.reduce(
-            (sum, review) => sum + review.rating,
+            (sum, review) =>
+              sum + Number(review.rating || 0),
             0
           ) / reviews.length
         ).toFixed(1)
-      : product.rating;
+      : Number(product.rating || 0).toFixed(1);
 
   // ================= RELATED PRODUCTS =================
 
@@ -181,11 +197,14 @@ const ProductDetails = () => {
 
   // ================= DISCOUNT =================
 
-  const discount = Math.round(
-    ((product.oldPrice - product.price) /
-      product.oldPrice) *
-      100
-  );
+  const discount =
+    product.oldPrice && product.price
+      ? Math.round(
+          ((product.oldPrice - product.price) /
+            product.oldPrice) *
+            100
+        )
+      : 0;
 
   const wishlistActive = isInWishlist(product.id);
 
@@ -296,11 +315,22 @@ const ProductDetails = () => {
           <div className="details-rating">
 
             <div className="rating-stars">
-              <Star size={17} fill="currentColor" />
-              <Star size={17} fill="currentColor" />
-              <Star size={17} fill="currentColor" />
-              <Star size={17} fill="currentColor" />
-              <Star size={17} fill="currentColor" />
+
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star
+                  key={star}
+                  size={17}
+                  fill={
+                    star <=
+                    Math.round(
+                      Number(reviewAverage)
+                    )
+                      ? "currentColor"
+                      : "none"
+                  }
+                />
+              ))}
+
             </div>
 
             <strong>{reviewAverage}</strong>
@@ -317,16 +347,26 @@ const ProductDetails = () => {
           <div className="details-price">
 
             <div className="current-price">
-              Rs. {product.price.toLocaleString()}
+              Rs.{" "}
+              {Number(
+                product.price || 0
+              ).toLocaleString()}
             </div>
 
-            <del>
-              Rs. {product.oldPrice.toLocaleString()}
-            </del>
+            {product.oldPrice && (
+              <del>
+                Rs.{" "}
+                {Number(
+                  product.oldPrice
+                ).toLocaleString()}
+              </del>
+            )}
 
-            <span className="discount">
-              {discount}% OFF
-            </span>
+            {discount > 0 && (
+              <span className="discount">
+                {discount}% OFF
+              </span>
+            )}
 
           </div>
 
@@ -371,7 +411,10 @@ const ProductDetails = () => {
                 type="button"
                 onClick={() =>
                   setQuantity(
-                    Math.max(1, quantity - 1)
+                    Math.max(
+                      1,
+                      quantity - 1
+                    )
                   )
                 }
                 aria-label="Decrease quantity"
@@ -424,7 +467,9 @@ const ProductDetails = () => {
               className={`details-wishlist ${
                 wishlistActive ? "active" : ""
               }`}
-              onClick={() => toggleWishlist(product)}
+              onClick={() =>
+                toggleWishlist(product)
+              }
               aria-label="Add to wishlist"
             >
               <Heart
@@ -455,12 +500,16 @@ const ProductDetails = () => {
 
             <div>
               <span>Category</span>
-              <strong>{product.category}</strong>
+              <strong>
+                {product.category}
+              </strong>
             </div>
 
             <div>
               <span>Collection</span>
-              <strong>{product.collection}</strong>
+              <strong>
+                {product.collection}
+              </strong>
             </div>
 
             <div>
@@ -488,6 +537,7 @@ const ProductDetails = () => {
 
           <div>
             <strong>Fast Delivery</strong>
+
             <span>
               Delivered safely to your doorstep
             </span>
@@ -503,6 +553,7 @@ const ProductDetails = () => {
 
           <div>
             <strong>Quality Guaranteed</strong>
+
             <span>
               Carefully selected products
             </span>
@@ -518,6 +569,7 @@ const ProductDetails = () => {
 
           <div>
             <strong>Easy Returns</strong>
+
             <span>
               Simple and convenient returns
             </span>
@@ -534,11 +586,13 @@ const ProductDetails = () => {
         <div className="reviews-heading">
 
           <div>
+
             <span className="section-label">
               CUSTOMER FEEDBACK
             </span>
 
             <h2>Reviews & Ratings</h2>
+
           </div>
 
           <div className="reviews-summary">
@@ -547,24 +601,30 @@ const ProductDetails = () => {
 
             <div className="summary-stars">
 
-              {[1, 2, 3, 4, 5].map((star) => (
-                <Star
-                  key={star}
-                  size={17}
-                  fill={
-                    star <=
-                    Math.round(Number(reviewAverage))
-                      ? "currentColor"
-                      : "none"
-                  }
-                />
-              ))}
+              {[1, 2, 3, 4, 5].map(
+                (star) => (
+                  <Star
+                    key={star}
+                    size={17}
+                    fill={
+                      star <=
+                      Math.round(
+                        Number(reviewAverage)
+                      )
+                        ? "currentColor"
+                        : "none"
+                    }
+                  />
+                )
+              )}
 
             </div>
 
             <span>
               {reviews.length} customer review
-              {reviews.length !== 1 ? "s" : ""}
+              {reviews.length !== 1
+                ? "s"
+                : ""}
             </span>
 
           </div>
@@ -573,7 +633,7 @@ const ProductDetails = () => {
 
         <div className="reviews-layout">
 
-          {/* REVIEWS LIST */}
+          {/* ================= REVIEWS LIST ================= */}
 
           <div className="reviews-list">
 
@@ -586,7 +646,8 @@ const ProductDetails = () => {
                 <h3>No reviews yet</h3>
 
                 <p>
-                  Be the first customer to review this watch.
+                  Be the first customer to review
+                  this watch.
                 </p>
 
               </div>
@@ -630,7 +691,10 @@ const ProductDetails = () => {
                               key={star}
                               size={15}
                               fill={
-                                star <= review.rating
+                                star <=
+                                Number(
+                                  review.rating
+                                )
                                   ? "currentColor"
                                   : "none"
                               }
@@ -644,7 +708,8 @@ const ProductDetails = () => {
                     </div>
 
                     <p>
-                      {review.comment || review.text}
+                      {review.comment ||
+                        review.text}
                     </p>
 
                   </article>
@@ -655,7 +720,7 @@ const ProductDetails = () => {
 
           </div>
 
-          {/* REVIEW FORM */}
+          {/* ================= REVIEW FORM ================= */}
 
           <div className="review-form-card">
 
@@ -680,7 +745,9 @@ const ProductDetails = () => {
 
             ) : (
 
-              <form onSubmit={handleReviewSubmit}>
+              <form
+                onSubmit={handleReviewSubmit}
+              >
 
                 <label>
                   Your Rating
@@ -703,7 +770,9 @@ const ProductDetails = () => {
                           setReviewRating(star)
                         }
                         aria-label={`${star} star${
-                          star > 1 ? "s" : ""
+                          star > 1
+                            ? "s"
+                            : ""
                         }`}
                       >
 
@@ -727,7 +796,9 @@ const ProductDetails = () => {
                   id="review-text"
                   value={reviewText}
                   onChange={(e) =>
-                    setReviewText(e.target.value)
+                    setReviewText(
+                      e.target.value
+                    )
                   }
                   placeholder="Share your experience with this watch..."
                   rows="5"
@@ -781,7 +852,8 @@ const ProductDetails = () => {
               <ArrowLeft
                 size={16}
                 style={{
-                  transform: "rotate(180deg)",
+                  transform:
+                    "rotate(180deg)",
                 }}
               />
 
@@ -789,7 +861,9 @@ const ProductDetails = () => {
 
           </div>
 
-          <ProductGrid products={relatedProducts} />
+          <ProductGrid
+            products={relatedProducts}
+          />
 
         </section>
 
