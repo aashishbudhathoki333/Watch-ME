@@ -959,4 +959,126 @@
     height: 100%;
     object-fit: contain;
     display: block;
-}
+} 
+ /* =========================
+   PRODUCT REVIEWS
+========================= */
+
+ .product-reviews {
+     margin-top: 70px;
+     padding: 50px 0;
+     border-top: 1px solid #e8e8e8;
+ }
+
+ .reviews-header {
+     margin-bottom: 30px;
+ }
+
+ .reviews-header h2 {
+     margin: 8px 0;
+     font-size: 32px;
+     color: #111;
+ }
+
+ .reviews-header p {
+     color: #777;
+     margin: 0;
+ }
+
+ .review-form {
+     max-width: 700px;
+     padding: 30px;
+     border: 1px solid #e5e5e5;
+     border-radius: 12px;
+     background: #fff;
+ }
+
+ .review-rating-input,
+ .review-text-input {
+     margin-bottom: 22px;
+ }
+
+ .review-rating-input label,
+ .review-text-input label {
+     display: block;
+     margin-bottom: 10px;
+     font-weight: 600;
+     color: #222;
+ }
+
+ .rating-stars {
+     display: flex;
+     gap: 6px;
+ }
+
+ .rating-star {
+     border: none;
+     background: transparent;
+     padding: 0;
+     font-size: 28px;
+     color: #ccc;
+     cursor: pointer;
+     transition: transform 0.2s ease;
+ }
+
+ .rating-star:hover {
+     transform: scale(1.1);
+ }
+
+ .rating-star.active {
+     color: #f5b301;
+ }
+
+ .review-text-input textarea {
+     width: 100%;
+     min-height: 130px;
+     padding: 14px;
+     border: 1px solid #ddd;
+     border-radius: 8px;
+     resize: vertical;
+     outline: none;
+     font-family: inherit;
+     font-size: 14px;
+     box-sizing: border-box;
+ }
+
+ .review-text-input textarea:focus {
+     border-color: #111;
+ }
+
+ .review-message {
+     margin: 0 0 18px;
+     color: #555;
+     font-size: 14px;
+ }
+
+ .submit-review-btn {
+     border: none;
+     padding: 13px 24px;
+     border-radius: 6px;
+     background: #111;
+     color: #fff;
+     font-size: 14px;
+     font-weight: 600;
+     cursor: pointer;
+     transition: opacity 0.2s ease;
+ }
+
+ .submit-review-btn:hover {
+     opacity: 0.85;
+ }
+
+ @media (max-width: 600px) {
+     .product-reviews {
+         margin-top: 45px;
+         padding: 35px 0;
+     }
+
+     .reviews-header h2 {
+         font-size: 26px;
+     }
+
+     .review-form {
+         padding: 20px;
+     }
+ }

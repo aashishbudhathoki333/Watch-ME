@@ -9,6 +9,7 @@ import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import { AuthProvider } from "./context/AuthContext";
 
+
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import Home from "./pages/Home";

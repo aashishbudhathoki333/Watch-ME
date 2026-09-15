@@ -16,6 +16,7 @@ import {
 import products from "../data/products";
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
+import { ReviewsContext } from "../context/ReviewsContext";
 import { AuthContext } from "../context/AuthContext";
 import ProductGrid from "../components/ProductGrid";
 import "./ProductDetails.css";
@@ -27,6 +28,20 @@ const ProductDetails = () => {
   // ================= PRODUCT =================
 
   const [product, setProduct] = useState(null);
+
+  // ================= CONTEXTS =================
+
+  const { addToCart } = useContext(CartContext);
+
+  const { toggleWishlist, isInWishlist } =
+    useContext(WishlistContext);
+
+  const { user } = useContext(AuthContext);
+
+  const { addReview, getProductReviews } =
+    useContext(ReviewsContext);
+
+  // ================= PRODUCT LOAD =================
 
   useEffect(() => {
     const savedProducts = localStorage.getItem("watchmeProducts");
@@ -42,15 +57,6 @@ const ProductDetails = () => {
     setProduct(foundProduct);
   }, [id]);
 
-  // ================= CONTEXTS =================
-
-  const { addToCart } = useContext(CartContext);
-
-  const { toggleWishlist, isInWishlist } =
-    useContext(WishlistContext);
-
-  const { user } = useContext(AuthContext);
-
   // ================= CART / WISHLIST =================
 
   const [quantity, setQuantity] = useState(1);
@@ -61,17 +67,16 @@ const ProductDetails = () => {
   const [reviews, setReviews] = useState([]);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewText, setReviewText] = useState("");
-  const [reviewSubmitted, setReviewSubmitted] = useState(false);
+  const [reviewMessage, setReviewMessage] = useState("");
 
   // Load reviews for this product
   useEffect(() => {
     if (!product) return;
 
-    const savedReviews =
-      JSON.parse(localStorage.getItem("watchmeReviews")) || {};
+    const productReviews = getProductReviews(product.id) || [];
 
-    setReviews(savedReviews[product.id] || []);
-  }, [product]);
+    setReviews(productReviews);
+  }, [product, getProductReviews]);
 
   // ================= SUBMIT REVIEW =================
 
@@ -84,40 +89,25 @@ const ProductDetails = () => {
     }
 
     if (!reviewText.trim()) {
+      setReviewMessage("Please write a review.");
       return;
     }
 
-    const newReview = {
-      id: Date.now(),
-      name: user.name || user.email || "Customer",
+    addReview(product.id, {
+      name: user.name || user.email || "WatchMe Customer",
       rating: reviewRating,
-      text: reviewText.trim(),
-      date: new Date().toISOString(),
-    };
+      comment: reviewText.trim(),
+    });
 
-    const allReviews =
-      JSON.parse(localStorage.getItem("watchmeReviews")) || {};
-
-    const updatedReviews = [
-      ...(allReviews[product.id] || []),
-      newReview,
-    ];
-
-    allReviews[product.id] = updatedReviews;
-
-    localStorage.setItem(
-      "watchmeReviews",
-      JSON.stringify(allReviews)
-    );
+    // Refresh reviews after submitting
+    const updatedReviews =
+      getProductReviews(product.id) || [];
 
     setReviews(updatedReviews);
+
     setReviewText("");
     setReviewRating(5);
-    setReviewSubmitted(true);
-
-    setTimeout(() => {
-      setReviewSubmitted(false);
-    }, 2500);
+    setReviewMessage("Your review has been submitted!");
   };
 
   // ================= PRODUCT NOT FOUND =================
@@ -235,57 +225,58 @@ const ProductDetails = () => {
               </span>
             )}
 
-       {product.image ? (
-  <img
-    src={product.image}
-    alt={product.name}
-    className="product-details-real-image"
-  />
-) : (
-  <div className="large-watch">
+            {product.image ? (
+              <img
+                src={product.image}
+                alt={product.name}
+                className="product-details-real-image"
+              />
+            ) : (
+              <div className="large-watch">
 
-    <div className="large-watch-strap top"></div>
+                <div className="large-watch-strap top"></div>
 
-    <div className="large-watch-case">
+                <div className="large-watch-case">
 
-      <div className="large-watch-face">
+                  <div className="large-watch-face">
 
-        <span className="large-number twelve">
-          12
-        </span>
+                    <span className="large-number twelve">
+                      12
+                    </span>
 
-        <span className="large-number three">
-          3
-        </span>
+                    <span className="large-number three">
+                      3
+                    </span>
 
-        <span className="large-number six">
-          6
-        </span>
+                    <span className="large-number six">
+                      6
+                    </span>
 
-        <span className="large-number nine">
-          9
-        </span>
+                    <span className="large-number nine">
+                      9
+                    </span>
 
-        <div className="large-watch-hand hour"></div>
+                    <div className="large-watch-hand hour"></div>
 
-        <div className="large-watch-hand minute"></div>
+                    <div className="large-watch-hand minute"></div>
 
-        <div className="large-watch-hand second"></div>
+                    <div className="large-watch-hand second"></div>
 
-        <div className="large-watch-center"></div>
+                    <div className="large-watch-center"></div>
 
-        <span className="watch-brand">
-          WATCHME
-        </span>
+                    <span className="watch-brand">
+                      WATCHME
+                    </span>
 
-      </div>
+                  </div>
 
-    </div>
+                </div>
 
-    <div className="large-watch-strap bottom"></div>
+                <div className="large-watch-strap bottom"></div>
 
-  </div>
-)}
+              </div>
+            )}
+
           </div>
 
         </div>
@@ -312,10 +303,11 @@ const ProductDetails = () => {
               <Star size={17} fill="currentColor" />
             </div>
 
-            <strong>{product.rating}</strong>
+            <strong>{reviewAverage}</strong>
 
             <span>
-              {product.reviews} customer reviews
+              {reviews.length} customer review
+              {reviews.length !== 1 ? "s" : ""}
             </span>
 
           </div>
@@ -620,9 +612,11 @@ const ProductDetails = () => {
                         </strong>
 
                         <span>
-                          {new Date(
-                            review.date
-                          ).toLocaleDateString()}
+                          {review.date
+                            ? new Date(
+                                review.date
+                              ).toLocaleDateString()
+                            : ""}
                         </span>
 
                       </div>
@@ -650,7 +644,7 @@ const ProductDetails = () => {
                     </div>
 
                     <p>
-                      {review.text}
+                      {review.comment || review.text}
                     </p>
 
                   </article>
@@ -737,8 +731,13 @@ const ProductDetails = () => {
                   }
                   placeholder="Share your experience with this watch..."
                   rows="5"
-                  required
                 />
+
+                {reviewMessage && (
+                  <p className="review-message">
+                    {reviewMessage}
+                  </p>
+                )}
 
                 <button
                   type="submit"
@@ -746,18 +745,6 @@ const ProductDetails = () => {
                 >
                   Submit Review
                 </button>
-
-                {reviewSubmitted && (
-
-                  <div className="review-success">
-
-                    <Check size={17} />
-
-                    Review submitted successfully!
-
-                  </div>
-
-                )}
 
               </form>
 
