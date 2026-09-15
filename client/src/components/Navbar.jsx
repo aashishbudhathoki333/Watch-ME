@@ -80,6 +80,7 @@ const handleSearch = (e) => {
           <Link to="/admin/products">Products</Link>
           <Link to="/admin/orders">Orders</Link>
           <Link to="/admin/customers">Customers</Link>
+          <Link to="/admin/reviews">Reviews</Link>
         </nav>
 
       </div>

@@ -39,8 +39,11 @@ const ProductDetails = () => {
 
   const { user } = useContext(AuthContext);
 
-  const { addReview, getProductReviews } =
-    useContext(ReviewsContext);
+  const {
+    addReview,
+    getProductReviews,
+    deleteReview,
+  } = useContext(ReviewsContext);
 
   // ================= PRODUCT LOAD =================
 
@@ -97,22 +100,37 @@ const ProductDetails = () => {
       return;
     }
 
+    const alreadyReviewed = reviews.some(
+      (review) => review.email === user.email
+    );
+
+    if (alreadyReviewed) {
+      setReviewMessage(
+        "You have already reviewed this watch."
+      );
+      return;
+    }
+
     addReview(product.id, {
       name:
         user.name ||
         user.email ||
         "WatchMe Customer",
+
+      email: user.email,
+
       rating: reviewRating,
+
       comment: reviewText.trim(),
     });
 
     setReviewText("");
     setReviewRating(5);
+
     setReviewMessage(
       "Your review has been submitted!"
     );
 
-    // Reload reviews from localStorage
     setTimeout(() => {
       const updatedReviews =
         getProductReviews(product.id) || [];
@@ -121,10 +139,29 @@ const ProductDetails = () => {
     }, 0);
   };
 
+  // ================= DELETE REVIEW =================
+
+  const handleDeleteReview = (reviewId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your review?"
+    );
+
+    if (!confirmed) return;
+
+    deleteReview(reviewId);
+
+    const updatedReviews =
+      getProductReviews(product.id) || [];
+
+    setReviews(updatedReviews);
+
+    setReviewMessage(
+      "Your review has been deleted."
+    );
+  };
+
   // ================= PRODUCT NOT FOUND =================
 
-  // IMPORTANT:
-  // This comes AFTER all hooks.
   if (!product) {
     return (
       <main className="product-not-found">
@@ -500,6 +537,7 @@ const ProductDetails = () => {
 
             <div>
               <span>Category</span>
+
               <strong>
                 {product.category}
               </strong>
@@ -507,6 +545,7 @@ const ProductDetails = () => {
 
             <div>
               <span>Collection</span>
+
               <strong>
                 {product.collection}
               </strong>
@@ -514,6 +553,7 @@ const ProductDetails = () => {
 
             <div>
               <span>Availability</span>
+
               <strong className="in-stock">
                 In Stock
               </strong>
@@ -682,26 +722,46 @@ const ProductDetails = () => {
 
                       </div>
 
-                      <div className="review-stars">
+                      <div className="review-actions">
 
-                        {[1, 2, 3, 4, 5].map(
-                          (star) => (
+                        <div className="review-stars">
 
-                            <Star
-                              key={star}
-                              size={15}
-                              fill={
-                                star <=
-                                Number(
-                                  review.rating
+                          {[1, 2, 3, 4, 5].map(
+                            (star) => (
+
+                              <Star
+                                key={star}
+                                size={15}
+                                fill={
+                                  star <=
+                                  Number(
+                                    review.rating
+                                  )
+                                    ? "currentColor"
+                                    : "none"
+                                }
+                              />
+
+                            )
+                          )}
+
+                        </div>
+
+                        {user &&
+                          review.email ===
+                            user.email && (
+                            <button
+                              type="button"
+                              className="delete-review-button"
+                              onClick={() =>
+                                handleDeleteReview(
+                                  review.id
                                 )
-                                  ? "currentColor"
-                                  : "none"
                               }
-                            />
-
-                          )
-                        )}
+                            >
+                              Delete
+                            </button>
+                          )}
 
                       </div>
 

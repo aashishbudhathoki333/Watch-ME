@@ -8,7 +8,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import { AuthProvider } from "./context/AuthContext";
-
+import { ReviewsProvider } from "./context/ReviewsContext";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -30,7 +30,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminProducts from "./pages/AdminProducts";
 import AdminCustomers from "./pages/AdminCustomers";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
-import { ReviewsProvider } from "./context/ReviewsContext";
+import AdminReviews from "./pages/AdminReviews";
 
 const App = () => {
   return (
@@ -177,6 +177,15 @@ const App = () => {
   element={
     <AdminProtectedRoute>
       <AdminCustomers />
+    </AdminProtectedRoute>
+  }
+/>
+
+<Route
+  path="/admin/reviews"
+  element={
+    <AdminProtectedRoute>
+      <AdminReviews />
     </AdminProtectedRoute>
   }
 />
