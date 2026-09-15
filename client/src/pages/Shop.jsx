@@ -862,19 +862,45 @@ function Shop() {
 
                       </div>
 
-                      <button
-                        type="button"
-                        className="premium-cart-button"
-                        aria-label={`Add ${product.name} to cart`}
-                        onClick={() =>
-                          addToCart(product)
-                        }
-                      >
-                        <ShoppingBag size={17} />
-                        <span>
-                          Add
-                        </span>
-                      </button>
+                     {/* STOCK STATUS */}
+
+<div
+  className={`shop-stock-status ${
+    Number(product.stock || 0) === 0
+      ? "out-of-stock"
+      : Number(product.stock || 0) <= 5
+      ? "low-stock"
+      : "in-stock"
+  }`}
+>
+  {Number(product.stock || 0) === 0
+    ? "Out of Stock"
+    : Number(product.stock || 0) <= 5
+    ? `Only ${Number(product.stock)} left`
+    : "In Stock"}
+</div>
+
+{/* ADD TO CART */}
+
+<button
+  type="button"
+  className={`premium-cart-button ${
+    Number(product.stock || 0) === 0
+      ? "disabled"
+      : ""
+  }`}
+  aria-label={`Add ${product.name} to cart`}
+  onClick={() => addToCart(product)}
+  disabled={Number(product.stock || 0) === 0}
+>
+  <ShoppingBag size={17} />
+
+  <span>
+    {Number(product.stock || 0) === 0
+      ? "Out of Stock"
+      : "Add"}
+  </span>
+</button>
 
                     </div>
 

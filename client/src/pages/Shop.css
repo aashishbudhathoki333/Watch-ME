@@ -2061,3 +2061,27 @@
         transition: none;
     }
 }
+/* ================= SHOP STOCK STATUS ================= */
+
+.shop-stock-status {
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.shop-stock-status.in-stock {
+    color: #16794c;
+}
+
+.shop-stock-status.low-stock {
+    color: #a15c00;
+}
+
+.shop-stock-status.out-of-stock {
+    color: #b42318;
+}
+
+.premium-cart-button.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
