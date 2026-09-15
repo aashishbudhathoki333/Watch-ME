@@ -77,9 +77,61 @@ const OrderDetails = () => {
             </div>
           </div>
 
-          <div className="order-details-status">
-            {order.status}
+         <div className="order-details-status">
+  {order.status}
+</div>
+
+<div className="order-tracking">
+  {["Order Placed", "Processing", "Shipped", "Delivered"].map(
+    (status, index) => {
+      const statuses = [
+        "Order Placed",
+        "Processing",
+        "Shipped",
+        "Delivered",
+      ];
+
+      const currentIndex = statuses.indexOf(order.status);
+
+      const isCompleted =
+        index <= currentIndex && order.status !== "Cancelled";
+
+      const isCurrent = index === currentIndex;
+
+      return (
+        <div
+          className={`tracking-step ${
+            isCompleted ? "completed" : ""
+          } ${isCurrent ? "current" : ""}`}
+          key={status}
+        >
+          <div className="tracking-dot">
+            {isCompleted ? "✓" : index + 1}
           </div>
+
+          <div className="tracking-info">
+            <strong>{status}</strong>
+
+            {isCurrent && (
+              <span>Current status</span>
+            )}
+          </div>
+
+          {index < statuses.length - 1 && (
+            <div
+              className={`tracking-line ${
+                index < currentIndex &&
+                order.status !== "Cancelled"
+                  ? "completed"
+                  : ""
+              }`}
+            />
+          )}
+        </div>
+      );
+    }
+  )}
+</div>
         </div>
 
         <section className="details-section">
