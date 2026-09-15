@@ -436,3 +436,31 @@
         font-size: 34px;
     }
 }
+/* ================= STOCK ================= */
+
+.cart-stock-info {
+    display: block;
+    margin-top: 5px;
+    font-size: 12px;
+    color: #777;
+}
+
+/* Stock notification */
+
+.cart-stock-message {
+    width: fit-content;
+    margin: 0 auto 20px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    background: #fff4df;
+    color: #a15c00;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Disabled quantity buttons */
+
+.cart-quantity button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
