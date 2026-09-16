@@ -1,623 +1,973 @@
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
-ArrowLeft,
-ArrowRight,
-Check,
-CreditCard,
-MapPin,
-ShieldCheck,
-Truck,
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  CreditCard,
+  MapPin,
+  ShieldCheck,
+  Truck,
 } from "lucide-react";
+
 import { CartContext } from "../context/CartContext";
 import { AuthContext } from "../context/AuthContext";
+
 import "./Checkout.css";
 
 const Checkout = () => {
-const { cartItems, cartTotal, clearCart } = useContext(CartContext);
-const { user, isLoggedIn } = useContext(AuthContext);
-const navigate = useNavigate();
-useEffect(() => {
-  if (!isLoggedIn) {
-    navigate("/login", {
-      state: {
-        from: "/checkout",
-      },
-      replace: true,
-    });
-  }
-}, [isLoggedIn, navigate]);
+  const {
+    cartItems,
+    cartTotal,
+    clearCart,
+  } = useContext(CartContext);
 
-const delivery = cartItems.length > 0 ? 100 : 0;
-const total = cartTotal + delivery;
+  const { user, isLoggedIn } =
+    useContext(AuthContext);
 
-const [paymentMethod, setPaymentMethod] = useState("cod");
+  const navigate = useNavigate();
 
-const [formData, setFormData] = useState({
-firstName: "",
-lastName: "",
-email: "",
-phone: "",
-address: "",
-city: "",
-province: "",
-postalCode: "",
-});
+  // ================= LOGIN CHECK =================
 
-const handleChange = (e) => {
-const { name, value } = e.target;
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/login", {
+        state: {
+          from: "/checkout",
+        },
+        replace: true,
+      });
+    }
+  }, [isLoggedIn, navigate]);
 
-setFormData((previous) => ({
-  ...previous,
-  [name]: value,
-}));
+  // ================= TOTALS =================
 
+  const delivery =
+    cartItems.length > 0 ? 100 : 0;
 
-};
-const handleSubmit = (e) => {
-  e.preventDefault();
+  const total = cartTotal + delivery;
 
-  const orderId = `WM-${Math.floor(
-    100000 + Math.random() * 900000
-  )}`;
+  // ================= PAYMENT =================
 
-  const order = {
-    orderId,
-    customer: {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: user?.email || formData.email,
-      phone: formData.phone,
-      address: formData.address,
-      city: formData.city,
-      province: formData.province,
-      postalCode: formData.postalCode,
-    },
-    items: cartItems,
-    subtotal: cartTotal,
-    delivery,
-    total,
-    paymentMethod,
-    date: new Date().toISOString(),
-    status: "Order Placed",
+  const [paymentMethod, setPaymentMethod] =
+    useState("cod");
+
+  // ================= FORM =================
+
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    address: "",
+    city: "",
+    province: "",
+    postalCode: "",
+  });
+
+  // ================= HANDLE CHANGE =================
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((previous) => ({
+      ...previous,
+      [name]: value,
+    }));
   };
 
-  // Get existing orders
-  const existingOrders = JSON.parse(
-    localStorage.getItem("watchmeOrders")
-  ) || [];
+  // ================= PLACE ORDER =================
 
-  // Add new order
-  existingOrders.push(order);
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
- localStorage.setItem(
-  "watchmeOrders",
-  JSON.stringify(existingOrders)
-);
+    // -------------------------------------------------
+    // 1. GET LATEST PRODUCTS
+    // -------------------------------------------------
 
-// Clear cart after successful order
-clearCart();
+    const savedProducts =
+      localStorage.getItem("watchmeProducts");
 
-navigate("/success", {
-  state: {
-    orderId,
-  },
-});
-};
+    let productList = [];
 
+    if (savedProducts) {
+      try {
+        productList = JSON.parse(savedProducts);
+      } catch (error) {
+        console.error(
+          "Failed to load products:",
+          error
+        );
 
-if (cartItems.length === 0) {
-return ( <main className="checkout-empty"> <div className="checkout-empty-icon">🛍</div>
+        productList = [];
+      }
+    }
 
-    <h1>Your cart is empty</h1>
+    // -------------------------------------------------
+    // 2. CHECK STOCK BEFORE PLACING ORDER
+    // -------------------------------------------------
 
-    <p>
-      You need to add at least one watch before
-      proceeding to checkout.
-    </p>
+    for (const cartItem of cartItems) {
+      const currentProduct =
+        productList.find(
+          (product) =>
+            product.id === cartItem.id
+        );
 
-    <Link to="/shop" className="checkout-dark-btn">
-      Start Shopping
-      <ArrowRight size={18} />
-    </Link>
-  </main>
-);
+      if (!currentProduct) {
+        alert(
+          `${cartItem.name} is no longer available.`
+        );
 
-}
+        return;
+      }
 
-return ( <main className="checkout-page">
+      const currentStock = Number(
+        currentProduct.stock ?? 0
+      );
 
+      if (
+        currentStock <
+        cartItem.quantity
+      ) {
+        alert(
+          `Sorry, only ${currentStock} ${cartItem.name} available in stock.`
+        );
 
-  {/* ================= HEADER ================= */}
+        return;
+      }
+    }
 
-  <section className="checkout-header">
-    <div>
-      <Link to="/cart" className="back-to-cart">
-        <ArrowLeft size={16} />
-        Back to Cart
-      </Link>
+    // -------------------------------------------------
+    // 3. DEDUCT STOCK
+    // -------------------------------------------------
 
-      <span className="section-label">
-        WATCHME CHECKOUT
-      </span>
+    const updatedProducts =
+      productList.map((product) => {
+        const cartItem =
+          cartItems.find(
+            (item) =>
+              item.id === product.id
+          );
 
-      <h1>Complete Your Order</h1>
+        if (!cartItem) {
+          return product;
+        }
 
-      <p>
-        You're one step away from owning your
-        perfect timepiece.
-      </p>
-    </div>
-  </section>
+        const currentStock = Number(
+          product.stock ?? 0
+        );
 
-  {/* ================= CHECKOUT CONTENT ================= */}
+        return {
+          ...product,
+          stock:
+            currentStock -
+            cartItem.quantity,
+        };
+      });
 
-  <form
-    className="checkout-container"
-    onSubmit={handleSubmit}
-  >
+    // -------------------------------------------------
+    // 4. SAVE UPDATED STOCK
+    // -------------------------------------------------
 
-    {/* ================= LEFT SIDE ================= */}
+    localStorage.setItem(
+      "watchmeProducts",
+      JSON.stringify(updatedProducts)
+    );
 
-    <div className="checkout-main">
+    // -------------------------------------------------
+    // 5. CREATE ORDER
+    // -------------------------------------------------
 
-      {/* CUSTOMER INFORMATION */}
+    const orderId = `WM-${Math.floor(
+      100000 +
+        Math.random() * 900000
+    )}`;
 
-      <section className="checkout-card">
+    const order = {
+      orderId,
 
-        <div className="checkout-card-heading">
-          <div className="checkout-step">
-            <span>01</span>
-          </div>
+      customer: {
+        firstName:
+          formData.firstName,
 
-          <div>
-            <h2>Contact Information</h2>
-            <p>
-              How can we reach you about your order?
-            </p>
-          </div>
+        lastName:
+          formData.lastName,
+
+        email:
+          user?.email ||
+          formData.email,
+
+        phone:
+          formData.phone,
+
+        address:
+          formData.address,
+
+        city:
+          formData.city,
+
+        province:
+          formData.province,
+
+        postalCode:
+          formData.postalCode,
+      },
+
+      items: cartItems,
+
+      subtotal: cartTotal,
+
+      delivery,
+
+      total,
+
+      paymentMethod,
+
+      date:
+        new Date().toISOString(),
+
+      status: "Order Placed",
+    };
+
+    // -------------------------------------------------
+    // 6. GET EXISTING ORDERS
+    // -------------------------------------------------
+
+    const existingOrders =
+      JSON.parse(
+        localStorage.getItem(
+          "watchmeOrders"
+        )
+      ) || [];
+
+    // -------------------------------------------------
+    // 7. ADD NEW ORDER
+    // -------------------------------------------------
+
+    existingOrders.push(order);
+
+    localStorage.setItem(
+      "watchmeOrders",
+      JSON.stringify(existingOrders)
+    );
+
+    // -------------------------------------------------
+    // 8. CLEAR CART
+    // -------------------------------------------------
+
+    clearCart();
+
+    // -------------------------------------------------
+    // 9. GO TO SUCCESS PAGE
+    // -------------------------------------------------
+
+    navigate("/success", {
+      state: {
+        orderId,
+      },
+    });
+  };
+
+  // ================= EMPTY CART =================
+
+  if (cartItems.length === 0) {
+    return (
+      <main className="checkout-empty">
+
+        <div className="checkout-empty-icon">
+          🛍
         </div>
 
-        <div className="checkout-form-grid">
+        <h1>Your cart is empty</h1>
 
-          <div className="form-group">
-            <label htmlFor="firstName">
-              First Name
-            </label>
+        <p>
+          You need to add at least one watch
+          before proceeding to checkout.
+        </p>
 
-            <input
-              id="firstName"
-              name="firstName"
-              type="text"
-              placeholder="Aashish"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-            />
-          </div>
+        <Link
+          to="/shop"
+          className="checkout-dark-btn"
+        >
+          Start Shopping
+          <ArrowRight size={18} />
+        </Link>
 
-          <div className="form-group">
-            <label htmlFor="lastName">
-              Last Name
-            </label>
+      </main>
+    );
+  }
 
-            <input
-              id="lastName"
-              name="lastName"
-              type="text"
-              placeholder="Budhathoki"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-            />
-          </div>
+  // ================= PAGE =================
 
-          <div className="form-group">
-            <label htmlFor="email">
-              Email Address
-            </label>
+  return (
+    <main className="checkout-page">
 
-            <input
-              id="email"
-              name="email"
-              type="email"
-              placeholder="you@example.com"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          </div>
+      {/* ================= HEADER ================= */}
 
-          <div className="form-group">
-            <label htmlFor="phone">
-              Phone Number
-            </label>
-
-            <input
-              id="phone"
-              name="phone"
-              type="tel"
-              placeholder="98XXXXXXXX"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-        </div>
-      </section>
-
-      {/* DELIVERY INFORMATION */}
-
-      <section className="checkout-card">
-
-        <div className="checkout-card-heading">
-          <div className="checkout-step">
-            <span>02</span>
-          </div>
-
-          <div>
-            <h2>Delivery Address</h2>
-            <p>
-              Where should we deliver your watches?
-            </p>
-          </div>
-        </div>
-
-        <div className="address-icon">
-          <MapPin size={19} />
-          <span>Shipping Address</span>
-        </div>
-
-        <div className="checkout-form-grid">
-
-          <div className="form-group full-width">
-            <label htmlFor="address">
-              Street Address
-            </label>
-
-            <input
-              id="address"
-              name="address"
-              type="text"
-              placeholder="House number, street name"
-              value={formData.address}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="city">
-              City
-            </label>
-
-            <input
-              id="city"
-              name="city"
-              type="text"
-              placeholder="Kathmandu"
-              value={formData.city}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="province">
-              Province
-            </label>
-
-            <select
-              id="province"
-              name="province"
-              value={formData.province}
-              onChange={handleChange}
-              required
-            >
-              <option value="">
-                Select Province
-              </option>
-              <option value="Koshi">
-                Koshi Province
-              </option>
-              <option value="Madhesh">
-                Madhesh Province
-              </option>
-              <option value="Bagmati">
-                Bagmati Province
-              </option>
-              <option value="Gandaki">
-                Gandaki Province
-              </option>
-              <option value="Lumbini">
-                Lumbini Province
-              </option>
-              <option value="Karnali">
-                Karnali Province
-              </option>
-              <option value="Sudurpashchim">
-                Sudurpashchim Province
-              </option>
-            </select>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="postalCode">
-              Postal Code
-            </label>
-
-            <input
-              id="postalCode"
-              name="postalCode"
-              type="text"
-              placeholder="44600"
-              value={formData.postalCode}
-              onChange={handleChange}
-            />
-          </div>
-
-        </div>
-      </section>
-
-      {/* PAYMENT */}
-
-      <section className="checkout-card">
-
-        <div className="checkout-card-heading">
-          <div className="checkout-step">
-            <span>03</span>
-          </div>
-
-          <div>
-            <h2>Payment Method</h2>
-            <p>
-              Choose how you'd like to pay.
-            </p>
-          </div>
-        </div>
-
-        <div className="payment-options">
-
-          <label
-            className={`payment-option ${
-              paymentMethod === "cod"
-                ? "selected"
-                : ""
-            }`}
-          >
-            <input
-              type="radio"
-              name="payment"
-              value="cod"
-              checked={paymentMethod === "cod"}
-              onChange={(e) =>
-                setPaymentMethod(e.target.value)
-              }
-            />
-
-            <div className="payment-icon">
-              <Truck size={21} />
-            </div>
-
-            <div className="payment-info">
-              <strong>
-                Cash on Delivery
-              </strong>
-
-              <span>
-                Pay when your order arrives.
-              </span>
-            </div>
-
-            <div className="payment-check">
-              <Check size={15} />
-            </div>
-          </label>
-
-          <label
-            className={`payment-option ${
-              paymentMethod === "card"
-                ? "selected"
-                : ""
-            }`}
-          >
-            <input
-              type="radio"
-              name="payment"
-              value="card"
-              checked={paymentMethod === "card"}
-              onChange={(e) =>
-                setPaymentMethod(e.target.value)
-              }
-            />
-
-            <div className="payment-icon">
-              <CreditCard size={21} />
-            </div>
-
-            <div className="payment-info">
-              <strong>
-                Card Payment
-              </strong>
-
-              <span>
-                Secure online card payment.
-              </span>
-            </div>
-
-            <div className="payment-check">
-              <Check size={15} />
-            </div>
-          </label>
-
-        </div>
-
-        {paymentMethod === "card" && (
-          <div className="card-notice">
-            <CreditCard size={18} />
-
-            <div>
-              <strong>
-                Online payment coming soon
-              </strong>
-
-              <p>
-                Card payment integration will be
-                connected when we build the backend.
-              </p>
-            </div>
-          </div>
-        )}
-
-      </section>
-
-      {/* SECURITY */}
-
-      <div className="checkout-security">
-        <ShieldCheck size={21} />
+      <section className="checkout-header">
 
         <div>
-          <strong>Safe & Secure Checkout</strong>
 
-          <p>
-            Your personal information is protected
-            and handled securely.
-          </p>
-        </div>
-      </div>
+          <Link
+            to="/cart"
+            className="back-to-cart"
+          >
+            <ArrowLeft size={16} />
+            Back to Cart
+          </Link>
 
-    </div>
-
-    {/* ================= RIGHT SIDE ================= */}
-
-    <aside className="checkout-summary">
-
-      <div className="summary-header">
-        <div>
           <span className="section-label">
-            YOUR ORDER
+            WATCHME CHECKOUT
           </span>
 
-          <h2>Order Summary</h2>
+          <h1>
+            Complete Your Order
+          </h1>
+
+          <p>
+            You're one step away from
+            owning your perfect timepiece.
+          </p>
+
         </div>
 
-        <span className="item-count">
-          {cartItems.reduce(
-            (totalItems, item) =>
-              totalItems + item.quantity,
-            0
-          )}{" "}
-          items
-        </span>
-      </div>
+      </section>
 
-      {/* PRODUCTS */}
+      {/* ================= CHECKOUT CONTENT ================= */}
 
-      <div className="checkout-products">
+      <form
+        className="checkout-container"
+        onSubmit={handleSubmit}
+      >
 
-        {cartItems.map((item) => (
-          <div
-            className="checkout-product"
-            key={item.id}
-          >
-            <div className="checkout-product-image">
-              {item.image ? (
-                <img
-                  src={item.image}
-                  alt={item.name}
-                />
-              ) : (
-                <div
-                  className={`checkout-watch-placeholder ${item.color}`}
-                >
-                  <div className="checkout-mini-watch">
-                    <div className="checkout-mini-face">
-                      <span>12</span>
-                    </div>
-                  </div>
-                </div>
-              )}
+        {/* ================= LEFT SIDE ================= */}
+
+        <div className="checkout-main">
+
+          {/* ================= CUSTOMER INFORMATION ================= */}
+
+          <section className="checkout-card">
+
+            <div className="checkout-card-heading">
+
+              <div className="checkout-step">
+                <span>01</span>
+              </div>
+
+              <div>
+
+                <h2>
+                  Contact Information
+                </h2>
+
+                <p>
+                  How can we reach you about
+                  your order?
+                </p>
+
+              </div>
+
             </div>
 
-            <div className="checkout-product-info">
-              <span>{item.brand || "WATCHME"}</span>
+            <div className="checkout-form-grid">
 
-              <h3>{item.name}</h3>
+              <div className="form-group">
+
+                <label htmlFor="firstName">
+                  First Name
+                </label>
+
+                <input
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  placeholder="Aashish"
+                  value={
+                    formData.firstName
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  required
+                />
+
+              </div>
+
+              <div className="form-group">
+
+                <label htmlFor="lastName">
+                  Last Name
+                </label>
+
+                <input
+                  id="lastName"
+                  name="lastName"
+                  type="text"
+                  placeholder="Budhathoki"
+                  value={
+                    formData.lastName
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  required
+                />
+
+              </div>
+
+              <div className="form-group">
+
+                <label htmlFor="email">
+                  Email Address
+                </label>
+
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={
+                    formData.email
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  required
+                />
+
+              </div>
+
+              <div className="form-group">
+
+                <label htmlFor="phone">
+                  Phone Number
+                </label>
+
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  placeholder="98XXXXXXXX"
+                  value={
+                    formData.phone
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  required
+                />
+
+              </div>
+
+            </div>
+
+          </section>
+
+          {/* ================= DELIVERY ================= */}
+
+          <section className="checkout-card">
+
+            <div className="checkout-card-heading">
+
+              <div className="checkout-step">
+                <span>02</span>
+              </div>
+
+              <div>
+
+                <h2>
+                  Delivery Address
+                </h2>
+
+                <p>
+                  Where should we deliver
+                  your watches?
+                </p>
+
+              </div>
+
+            </div>
+
+            <div className="address-icon">
+
+              <MapPin size={19} />
+
+              <span>
+                Shipping Address
+              </span>
+
+            </div>
+
+            <div className="checkout-form-grid">
+
+              <div className="form-group full-width">
+
+                <label htmlFor="address">
+                  Street Address
+                </label>
+
+                <input
+                  id="address"
+                  name="address"
+                  type="text"
+                  placeholder="House number, street name"
+                  value={
+                    formData.address
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  required
+                />
+
+              </div>
+
+              <div className="form-group">
+
+                <label htmlFor="city">
+                  City
+                </label>
+
+                <input
+                  id="city"
+                  name="city"
+                  type="text"
+                  placeholder="Kathmandu"
+                  value={
+                    formData.city
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  required
+                />
+
+              </div>
+
+              <div className="form-group">
+
+                <label htmlFor="province">
+                  Province
+                </label>
+
+                <select
+                  id="province"
+                  name="province"
+                  value={
+                    formData.province
+                  }
+                  onChange={
+                    handleChange
+                  }
+                  required
+                >
+
+                  <option value="">
+                    Select Province
+                  </option>
+
+                  <option value="Koshi">
+                    Koshi Province
+                  </option>
+
+                  <option value="Madhesh">
+                    Madhesh Province
+                  </option>
+
+                  <option value="Bagmati">
+                    Bagmati Province
+                  </option>
+
+                  <option value="Gandaki">
+                    Gandaki Province
+                  </option>
+
+                  <option value="Lumbini">
+                    Lumbini Province
+                  </option>
+
+                  <option value="Karnali">
+                    Karnali Province
+                  </option>
+
+                  <option value="Sudurpashchim">
+                    Sudurpashchim Province
+                  </option>
+
+                </select>
+
+              </div>
+
+              <div className="form-group">
+
+                <label htmlFor="postalCode">
+                  Postal Code
+                </label>
+
+                <input
+                  id="postalCode"
+                  name="postalCode"
+                  type="text"
+                  placeholder="44600"
+                  value={
+                    formData.postalCode
+                  }
+                  onChange={
+                    handleChange
+                  }
+                />
+
+              </div>
+
+            </div>
+
+          </section>
+
+          {/* ================= PAYMENT ================= */}
+
+          <section className="checkout-card">
+
+            <div className="checkout-card-heading">
+
+              <div className="checkout-step">
+                <span>03</span>
+              </div>
+
+              <div>
+
+                <h2>
+                  Payment Method
+                </h2>
+
+                <p>
+                  Choose how you'd like
+                  to pay.
+                </p>
+
+              </div>
+
+            </div>
+
+            <div className="payment-options">
+
+              {/* COD */}
+
+              <label
+                className={`payment-option ${
+                  paymentMethod === "cod"
+                    ? "selected"
+                    : ""
+                }`}
+              >
+
+                <input
+                  type="radio"
+                  name="payment"
+                  value="cod"
+                  checked={
+                    paymentMethod ===
+                    "cod"
+                  }
+                  onChange={(e) =>
+                    setPaymentMethod(
+                      e.target.value
+                    )
+                  }
+                />
+
+                <div className="payment-icon">
+                  <Truck size={21} />
+                </div>
+
+                <div className="payment-info">
+
+                  <strong>
+                    Cash on Delivery
+                  </strong>
+
+                  <span>
+                    Pay when your order
+                    arrives.
+                  </span>
+
+                </div>
+
+                <div className="payment-check">
+                  <Check size={15} />
+                </div>
+
+              </label>
+
+              {/* CARD */}
+
+              <label
+                className={`payment-option ${
+                  paymentMethod === "card"
+                    ? "selected"
+                    : ""
+                }`}
+              >
+
+                <input
+                  type="radio"
+                  name="payment"
+                  value="card"
+                  checked={
+                    paymentMethod ===
+                    "card"
+                  }
+                  onChange={(e) =>
+                    setPaymentMethod(
+                      e.target.value
+                    )
+                  }
+                />
+
+                <div className="payment-icon">
+                  <CreditCard size={21} />
+                </div>
+
+                <div className="payment-info">
+
+                  <strong>
+                    Card Payment
+                  </strong>
+
+                  <span>
+                    Secure online card
+                    payment.
+                  </span>
+
+                </div>
+
+                <div className="payment-check">
+                  <Check size={15} />
+                </div>
+
+              </label>
+
+            </div>
+
+            {paymentMethod ===
+              "card" && (
+              <div className="card-notice">
+
+                <CreditCard size={18} />
+
+                <div>
+
+                  <strong>
+                    Online payment coming soon
+                  </strong>
+
+                  <p>
+                    Card payment integration
+                    will be connected when
+                    we build the backend.
+                  </p>
+
+                </div>
+
+              </div>
+            )}
+
+          </section>
+
+          {/* ================= SECURITY ================= */}
+
+          <div className="checkout-security">
+
+            <ShieldCheck size={21} />
+
+            <div>
+
+              <strong>
+                Safe & Secure Checkout
+              </strong>
 
               <p>
-                Qty: {item.quantity}
+                Your personal information is
+                protected and handled securely.
               </p>
+
             </div>
 
-            <strong>
-              Rs.{" "}
-              {(
-                item.price * item.quantity
-              ).toLocaleString()}
-            </strong>
           </div>
-        ))}
 
-      </div>
-
-      {/* TOTALS */}
-
-      <div className="summary-calculation">
-
-        <div>
-          <span>Subtotal</span>
-
-          <strong>
-            Rs. {cartTotal.toLocaleString()}
-          </strong>
         </div>
 
-        <div>
-          <span>Delivery</span>
+        {/* ================= RIGHT SIDE ================= */}
 
-          <strong>
-            Rs. {delivery.toLocaleString()}
-          </strong>
-        </div>
+        <aside className="checkout-summary">
 
-        <div className="summary-total">
-          <span>Total</span>
+          <div className="summary-header">
 
-          <strong>
-            Rs. {total.toLocaleString()}
-          </strong>
-        </div>
+            <div>
 
-      </div>
+              <span className="section-label">
+                YOUR ORDER
+              </span>
 
-      <button
-        type="submit"
-        className="place-order-btn"
-      >
-        Place Order
-        <ArrowRight size={19} />
-      </button>
+              <h2>
+                Order Summary
+              </h2>
 
-      <p className="terms-text">
-        By placing your order, you agree to
-        WatchMe's terms and conditions.
-      </p>
+            </div>
 
-      <Link
-        to="/cart"
-        className="edit-cart-link"
-      >
-        <ArrowLeft size={15} />
-        Edit Cart
-      </Link>
+            <span className="item-count">
 
-    </aside>
+              {cartItems.reduce(
+                (totalItems, item) =>
+                  totalItems +
+                  item.quantity,
+                0
+              )}{" "}
+              items
 
-  </form>
-</main>
+            </span>
 
-);
+          </div>
+
+          {/* PRODUCTS */}
+
+          <div className="checkout-products">
+
+            {cartItems.map((item) => (
+
+              <div
+                className="checkout-product"
+                key={item.id}
+              >
+
+                <div className="checkout-product-image">
+
+                  {item.image ? (
+                    <img
+                      src={item.image}
+                      alt={item.name}
+                    />
+                  ) : (
+                    <div
+                      className={`checkout-watch-placeholder ${item.color}`}
+                    >
+                      <div className="checkout-mini-watch">
+                        <div className="checkout-mini-face">
+                          <span>12</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                </div>
+
+                <div className="checkout-product-info">
+
+                  <span>
+                    {item.brand ||
+                      "WATCHME"}
+                  </span>
+
+                  <h3>
+                    {item.name}
+                  </h3>
+
+                  <p>
+                    Qty:{" "}
+                    {item.quantity}
+                  </p>
+
+                </div>
+
+                <strong>
+                  Rs.{" "}
+                  {(
+                    item.price *
+                    item.quantity
+                  ).toLocaleString()}
+                </strong>
+
+              </div>
+
+            ))}
+
+          </div>
+
+          {/* TOTALS */}
+
+          <div className="summary-calculation">
+
+            <div>
+
+              <span>
+                Subtotal
+              </span>
+
+              <strong>
+                Rs.{" "}
+                {cartTotal.toLocaleString()}
+              </strong>
+
+            </div>
+
+            <div>
+
+              <span>
+                Delivery
+              </span>
+
+              <strong>
+                Rs.{" "}
+                {delivery.toLocaleString()}
+              </strong>
+
+            </div>
+
+            <div className="summary-total">
+
+              <span>
+                Total
+              </span>
+
+              <strong>
+                Rs.{" "}
+                {total.toLocaleString()}
+              </strong>
+
+            </div>
+
+          </div>
+
+          {/* PLACE ORDER */}
+
+          <button
+            type="submit"
+            className="place-order-btn"
+          >
+            Place Order
+            <ArrowRight size={19} />
+          </button>
+
+          <p className="terms-text">
+            By placing your order, you
+            agree to WatchMe's terms and
+            conditions.
+          </p>
+
+          <Link
+            to="/cart"
+            className="edit-cart-link"
+          >
+            <ArrowLeft size={15} />
+            Edit Cart
+          </Link>
+
+        </aside>
+
+      </form>
+
+    </main>
+  );
 };
 
 export default Checkout;
