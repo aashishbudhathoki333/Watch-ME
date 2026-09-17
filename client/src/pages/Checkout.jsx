@@ -139,7 +139,58 @@ const Checkout = () => {
     }
 
     // -------------------------------------------------
-    // 3. DEDUCT STOCK
+    // 3. STOCK HISTORY
+    // -------------------------------------------------
+
+    const stockHistory = JSON.parse(
+      localStorage.getItem(
+        "watchmeStockHistory"
+      ) || "[]"
+    );
+
+    const newStockHistory = [
+      ...stockHistory,
+    ];
+
+    cartItems.forEach((item) => {
+      const latestProduct =
+        productList.find(
+          (product) =>
+            product.id === item.id
+        );
+
+      if (!latestProduct) return;
+
+      const previousStock = Number(
+        latestProduct.stock ?? 0
+      );
+
+      const soldQuantity = Number(
+        item.quantity ?? 0
+      );
+
+      const remainingStock =
+        previousStock - soldQuantity;
+
+      newStockHistory.unshift({
+        id: `${Date.now()}-${item.id}`,
+        productId: item.id,
+        productName: item.name,
+        previousStock,
+        soldQuantity,
+        remainingStock,
+        orderId: orderId,
+        date: new Date().toISOString(),
+      });
+    });
+
+    localStorage.setItem(
+      "watchmeStockHistory",
+      JSON.stringify(newStockHistory)
+    );
+
+    // -------------------------------------------------
+    // 4. DEDUCT STOCK
     // -------------------------------------------------
 
     const updatedProducts =
@@ -167,7 +218,7 @@ const Checkout = () => {
       });
 
     // -------------------------------------------------
-    // 4. SAVE UPDATED STOCK
+    // 5. SAVE UPDATED STOCK
     // -------------------------------------------------
 
     localStorage.setItem(
@@ -176,7 +227,7 @@ const Checkout = () => {
     );
 
     // -------------------------------------------------
-    // 5. CREATE ORDER
+    // 6. CREATE ORDER
     // -------------------------------------------------
 
     const orderId = `WM-${Math.floor(
@@ -231,7 +282,7 @@ const Checkout = () => {
     };
 
     // -------------------------------------------------
-    // 6. GET EXISTING ORDERS
+    // 7. GET EXISTING ORDERS
     // -------------------------------------------------
 
     const existingOrders =
@@ -242,7 +293,7 @@ const Checkout = () => {
       ) || [];
 
     // -------------------------------------------------
-    // 7. ADD NEW ORDER
+    // 8. ADD NEW ORDER
     // -------------------------------------------------
 
     existingOrders.push(order);
@@ -253,13 +304,13 @@ const Checkout = () => {
     );
 
     // -------------------------------------------------
-    // 8. CLEAR CART
+    // 9. CLEAR CART
     // -------------------------------------------------
 
     clearCart();
 
     // -------------------------------------------------
-    // 9. GO TO SUCCESS PAGE
+    // 10. GO TO SUCCESS PAGE
     // -------------------------------------------------
 
     navigate("/success", {
