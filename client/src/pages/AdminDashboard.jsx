@@ -150,6 +150,16 @@ if (recentReviewsData) {
       outOfStock,
     };
   }, [productList]);
+  
+  const restockProducts = useMemo(() => {
+    return productList
+      .map((product) => ({
+        ...product,
+        stock: Number(product.stock ?? 0),
+      }))
+      .filter((product) => product.stock <= 5)
+      .sort((a, b) => a.stock - b.stock);
+  }, [productList]);
 
   /* =========================================================
      SALES CHART
