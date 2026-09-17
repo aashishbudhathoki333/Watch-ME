@@ -139,7 +139,19 @@ const Checkout = () => {
     }
 
     // -------------------------------------------------
-    // 3. STOCK HISTORY
+    // 3. CREATE ORDER ID
+    // -------------------------------------------------
+    // IMPORTANT:
+    // This must happen BEFORE stock history because
+    // stock history stores this orderId.
+
+    const orderId = `WM-${Math.floor(
+      100000 +
+        Math.random() * 900000
+    )}`;
+
+    // -------------------------------------------------
+    // 4. STOCK HISTORY
     // -------------------------------------------------
 
     const stockHistory = JSON.parse(
@@ -190,7 +202,7 @@ const Checkout = () => {
     );
 
     // -------------------------------------------------
-    // 4. DEDUCT STOCK
+    // 5. DEDUCT STOCK
     // -------------------------------------------------
 
     const updatedProducts =
@@ -218,7 +230,7 @@ const Checkout = () => {
       });
 
     // -------------------------------------------------
-    // 5. SAVE UPDATED STOCK
+    // 6. SAVE UPDATED STOCK
     // -------------------------------------------------
 
     localStorage.setItem(
@@ -227,13 +239,8 @@ const Checkout = () => {
     );
 
     // -------------------------------------------------
-    // 6. CREATE ORDER
+    // 7. CREATE ORDER
     // -------------------------------------------------
-
-    const orderId = `WM-${Math.floor(
-      100000 +
-        Math.random() * 900000
-    )}`;
 
     const order = {
       orderId,
@@ -282,7 +289,7 @@ const Checkout = () => {
     };
 
     // -------------------------------------------------
-    // 7. GET EXISTING ORDERS
+    // 8. GET EXISTING ORDERS
     // -------------------------------------------------
 
     const existingOrders =
@@ -293,7 +300,7 @@ const Checkout = () => {
       ) || [];
 
     // -------------------------------------------------
-    // 8. ADD NEW ORDER
+    // 9. ADD NEW ORDER
     // -------------------------------------------------
 
     existingOrders.push(order);
@@ -304,13 +311,13 @@ const Checkout = () => {
     );
 
     // -------------------------------------------------
-    // 9. CLEAR CART
+    // 10. CLEAR CART
     // -------------------------------------------------
 
     clearCart();
 
     // -------------------------------------------------
-    // 10. GO TO SUCCESS PAGE
+    // 11. GO TO SUCCESS PAGE
     // -------------------------------------------------
 
     navigate("/success", {
