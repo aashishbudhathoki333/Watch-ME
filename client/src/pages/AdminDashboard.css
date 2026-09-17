@@ -2092,3 +2092,126 @@
 .restock-view-all:hover {
     color: #111;
 }
+/* ================= STOCK HISTORY ================= */
+
+.stock-history-card {
+    margin-top: 20px;
+}
+
+.stock-history-card .admin-card-header {
+    margin-bottom: 14px;
+}
+
+.stock-history-card .admin-card-header p {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: #888;
+}
+
+.stock-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.stock-history-item {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    gap: 18px;
+    padding: 11px 12px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.stock-history-product {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+
+.stock-history-product strong {
+    font-size: 12px;
+    color: #222;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stock-history-product span {
+    font-size: 10px;
+    color: #999;
+}
+
+.stock-history-change {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.stock-before {
+    color: #555;
+}
+
+.stock-after {
+    color: #16794c;
+}
+
+.stock-after.zero {
+    color: #b42318;
+}
+
+.stock-history-sold {
+    min-width: 55px;
+    text-align: right;
+    color: #b42318;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.stock-history-empty {
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #999;
+}
+
+.stock-history-empty p {
+    margin: 0;
+    font-size: 12px;
+}
+
+.stock-history-footer {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+    text-align: center;
+    font-size: 10px;
+    color: #999;
+}
+
+/* ================= STOCK HISTORY RESPONSIVE ================= */
+
+@media (max-width: 700px) {
+    .stock-history-item {
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+    }
+
+    .stock-history-sold {
+        grid-column: 2;
+        grid-row: 2;
+    }
+
+    .stock-history-change {
+        grid-column: 2;
+        grid-row: 1;
+    }
+}
