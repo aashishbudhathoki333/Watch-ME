@@ -1973,3 +1973,122 @@
         min-width: 0;
     }
 }
+/* ================= RESTOCK PRODUCTS ================= */
+
+.restock-products {
+    margin-top: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 18px;
+}
+
+.restock-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #222;
+}
+
+.restock-header span:last-child {
+    min-width: 24px;
+    height: 24px;
+    padding: 0 7px;
+    border-radius: 12px;
+    background: #fff4df;
+    color: #a15c00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+}
+
+.restock-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.restock-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 9px 10px;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.restock-product-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.restock-product-info img,
+.restock-product-placeholder {
+    width: 38px;
+    height: 38px;
+    border-radius: 7px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.restock-product-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    color: #888;
+}
+
+.restock-product-info div:last-child {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.restock-product-info strong {
+    font-size: 12px;
+    color: #222;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.restock-product-info span {
+    font-size: 10px;
+    color: #a15c00;
+}
+
+.restock-zero {
+    color: #b42318;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.restock-low {
+    color: #a15c00;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.restock-view-all {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #555;
+    text-decoration: none;
+}
+
+.restock-view-all:hover {
+    color: #111;
+}
