@@ -27,6 +27,7 @@ const AdminDashboard = () => {
   const [chartPeriod, setChartPeriod] = useState("30D");
   const [reviewCount, setReviewCount] = useState(0);
 const [recentReviews, setRecentReviews] = useState([]);
+const [stockHistory, setStockHistory] = useState([]);
 
   useEffect(() => {
     const savedOrders =
@@ -75,6 +76,12 @@ if (recentReviewsData) {
 } else {
   setRecentReviews([]);
 }
+const savedStockHistory =
+  JSON.parse(
+    localStorage.getItem("watchmeStockHistory") || "[]"
+  );
+
+setStockHistory(savedStockHistory);
   }, []);
 
   /* =========================================================
