@@ -1084,3 +1084,53 @@
     color: #888;
     font-size: 12px;
 }
+ /* =========================================================
+    RESTOCK MODAL
+ ========================================================= */
+
+ .restock-modal {
+     max-width: 500px;
+ }
+
+ .restock-product-info {
+     padding: 18px 20px;
+     margin-bottom: 4px;
+
+     border: 1px solid var(--admin-border);
+     background: var(--admin-soft);
+ }
+
+ .restock-product-info h3 {
+     margin: 0 0 8px;
+
+     color: var(--admin-black);
+     font-size: 18px;
+     font-weight: 700;
+ }
+
+ .restock-product-info p {
+     margin: 0;
+
+     color: var(--admin-muted);
+     font-size: 13px;
+ }
+
+ .restock-product-info p strong {
+     color: var(--admin-gold);
+     font-weight: 800;
+ }
+
+ .restock-new-stock {
+     padding: 14px 16px;
+
+     border-left: 3px solid var(--admin-gold);
+     background: #faf5ea;
+
+     color: #666;
+     font-size: 13px;
+ }
+
+ .restock-new-stock strong {
+     color: var(--admin-black);
+     font-size: 15px;
+ }
