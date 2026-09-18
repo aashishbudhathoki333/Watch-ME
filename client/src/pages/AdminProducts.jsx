@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
 import {
   Plus,
   Pencil,
   Trash2,
   X,
   Search,
+  Package,
 } from "lucide-react";
 
 import products from "../data/products";
