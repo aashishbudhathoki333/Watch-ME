@@ -1434,7 +1434,7 @@ setStockHistory(savedStockHistory);
           </div>
 
        {/* ================= STOCK HISTORY ================= */}
-<Link
+<div
   to="/admin/stock-history"
   className="admin-overview-card stock-history-card"
 >
@@ -1449,11 +1449,13 @@ setStockHistory(savedStockHistory);
   <Link
     to="/admin/stock-history"
     className="stock-history-icon-link"
-    aria-label="View Stock History"
+    aria-label="View stock history"
+    title="View Stock History"
   >
     <Boxes size={20} />
   </Link>
 </div>
+
 
 
   {stockHistory.length === 0 ? (
@@ -1557,7 +1559,7 @@ setStockHistory(savedStockHistory);
 
   )}
 
-</Link >
+</div >
 
 
 

@@ -2215,18 +2215,22 @@
         grid-row: 1;
     }
 }
-.stock-history-card {
+.stock-history-icon-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    color: #111;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
     text-decoration: none;
-    color: inherit;
-    cursor: pointer;
-    transition:
-        transform 0.2s ease,
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
+    transition: all 0.2s ease;
 }
 
-.stock-history-card:hover {
-    transform: translateY(-2px);
-    border-color: #d2b477;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+.stock-history-icon-link:hover {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+    transform: translateY(-1px);
 }
