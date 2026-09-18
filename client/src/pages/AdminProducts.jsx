@@ -157,6 +157,57 @@ const [restockQuantity, setRestockQuantity] = useState("");
     saveProducts(updatedProducts);
   };
 
+// Restock product
+const handleRestock = () => {
+  if (!restockProduct) return;
+
+  const quantity = Number(restockQuantity);
+
+  if (!Number.isInteger(quantity) || quantity <= 0) {
+    alert("Please enter a valid restock quantity.");
+    return;
+  }
+
+  const updatedProducts = productList.map((product) =>
+    product.id === restockProduct.id
+      ? {
+          ...product,
+          stock: Number(product.stock ?? 0) + quantity,
+        }
+      : product
+  );
+
+  saveProducts(updatedProducts);
+
+  // Save stock movement history
+  const stockHistory = JSON.parse(
+    localStorage.getItem("watchmeStockHistory") || "[]"
+  );
+
+  const previousStock = Number(
+    restockProduct.stock ?? 0
+  );
+
+  stockHistory.unshift({
+    id: `${Date.now()}-${restockProduct.id}`,
+    productId: restockProduct.id,
+    productName: restockProduct.name,
+    previousStock,
+    addedQuantity: quantity,
+    remainingStock: previousStock + quantity,
+    type: "restock",
+    date: new Date().toISOString(),
+  });
+
+  localStorage.setItem(
+    "watchmeStockHistory",
+    JSON.stringify(stockHistory)
+  );
+
+  setRestockProduct(null);
+  setRestockQuantity("");
+};
+
   // Stock status
   const getStockStatus = (stock) => {
     const quantity = Number(stock || 0);
@@ -355,6 +406,17 @@ const [restockQuantity, setRestockQuantity] = useState("");
                         <td>
 
                           <div className="admin-product-actions">
+                            <button
+  type="button"
+  className="restock-product-button"
+  onClick={() => {
+    setRestockProduct(product);
+    setRestockQuantity("");
+  }}
+  aria-label={`Restock ${product.name}`}
+>
+  <Package size={16} />
+</button>
 
                             <button
                               type="button"
