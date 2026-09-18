@@ -2215,3 +2215,18 @@
         grid-row: 1;
     }
 }
+.stock-history-card {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.stock-history-card:hover {
+    transform: translateY(-2px);
+    border-color: #d2b477;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+}

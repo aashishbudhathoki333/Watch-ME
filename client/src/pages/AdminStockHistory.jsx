@@ -1,168 +1,345 @@
 import { useEffect, useState } from "react";
-import { PackagePlus, ShoppingCart, Search } from "lucide-react";
+import { Link } from "react-router-dom";
+import {
+  ArrowLeft,
+  ArrowDown,
+  ArrowUp,
+  Boxes,
+  Package,
+  Plus,
+  ShoppingBag,
+} from "lucide-react";
+
 import "./AdminStockHistory.css";
 
 const AdminStockHistory = () => {
-  const [history, setHistory] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [stockHistory, setStockHistory] = useState([]);
 
   useEffect(() => {
     const savedHistory = JSON.parse(
       localStorage.getItem("watchmeStockHistory") || "[]"
     );
 
-    setHistory(savedHistory);
+    setStockHistory(savedHistory);
   }, []);
 
-  const filteredHistory = history.filter((item) =>
-    item.productName
-      ?.toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
-
   const formatDate = (date) => {
-    return new Date(date).toLocaleString();
+    if (!date) return "Unknown date";
+
+    return new Date(date).toLocaleString("en-US", {
+      dateStyle: "medium",
+      timeStyle: "short",
+    });
   };
 
   return (
     <main className="admin-stock-history-page">
 
-      <div className="admin-stock-history-header">
+      {/* HEADER */}
+
+      <header className="stock-history-page-header">
+
         <div>
+
+          <Link
+            to="/admin"
+            className="stock-history-back"
+          >
+            <ArrowLeft size={15} />
+            Back to Dashboard
+          </Link>
+
           <span className="admin-label">
-            WATCHME ADMIN
+            INVENTORY MANAGEMENT
           </span>
 
           <h1>Stock History</h1>
 
           <p>
-            Track product restocks and sales.
+            Track every restock and stock reduction in your store.
           </p>
-        </div>
-      </div>
 
-      <div className="admin-stock-history-toolbar">
-
-        <div className="admin-stock-history-search">
-          <Search size={18} />
-
-          <input
-            type="text"
-            placeholder="Search products..."
-            value={searchTerm}
-            onChange={(e) =>
-              setSearchTerm(e.target.value)
-            }
-          />
         </div>
 
-        <span>
-          {filteredHistory.length} movement
-          {filteredHistory.length !== 1 ? "s" : ""}
-        </span>
+        <Link
+          to="/admin/products"
+          className="stock-history-restock-link"
+        >
+          <Plus size={16} />
+          Restock Products
+        </Link>
 
-      </div>
+      </header>
 
-      <section className="admin-stock-history-card">
 
-        {filteredHistory.length === 0 ? (
+      {/* SUMMARY */}
 
-          <div className="admin-stock-history-empty">
-            <h3>No stock history found</h3>
+      <section className="stock-history-summary">
+
+        <div className="stock-history-summary-card">
+
+          <div className="stock-history-summary-icon">
+            <Boxes size={20} />
+          </div>
+
+          <div>
+            <span>Total Movements</span>
+            <strong>{stockHistory.length}</strong>
+          </div>
+
+        </div>
+
+
+        <div className="stock-history-summary-card">
+
+          <div className="stock-history-summary-icon restock">
+            <ArrowUp size={20} />
+          </div>
+
+          <div>
+            <span>Restocks</span>
+
+            <strong>
+              {
+                stockHistory.filter(
+                  (entry) => entry.type === "restock"
+                ).length
+              }
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div className="stock-history-summary-card">
+
+          <div className="stock-history-summary-icon sale">
+            <ArrowDown size={20} />
+          </div>
+
+          <div>
+            <span>Stock Reductions</span>
+
+            <strong>
+              {
+                stockHistory.filter(
+                  (entry) => entry.type !== "restock"
+                ).length
+              }
+            </strong>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      {/* HISTORY */}
+
+      <section className="stock-history-table-card">
+
+        <div className="stock-history-table-header">
+
+          <div>
+
+            <span className="admin-label">
+              INVENTORY ACTIVITY
+            </span>
+
+            <h2>All Stock Movements</h2>
+
+          </div>
+
+          <Boxes size={22} />
+
+        </div>
+
+
+        {stockHistory.length === 0 ? (
+
+          <div className="stock-history-page-empty">
+
+            <Package size={32} />
+
+            <h3>No stock history yet</h3>
 
             <p>
-              Stock movements will appear here.
+              Restocks and stock reductions will appear here.
             </p>
+
+            <Link to="/admin/products">
+              Go to Products
+            </Link>
+
           </div>
 
         ) : (
 
-          <div className="admin-stock-history-table-wrapper">
+          <div className="stock-history-table-wrapper">
 
-            <table className="admin-stock-history-table">
+            <table className="stock-history-table">
 
               <thead>
+
                 <tr>
+
                   <th>Product</th>
+
                   <th>Type</th>
+
                   <th>Previous Stock</th>
-                  <th>Quantity</th>
+
+                  <th>Change</th>
+
                   <th>Remaining</th>
+
                   <th>Date</th>
+
                 </tr>
+
               </thead>
 
               <tbody>
 
-                {filteredHistory.map((item) => {
+                {stockHistory.map((entry) => {
 
                   const isRestock =
-                    item.type === "restock";
+                    entry.type === "restock";
 
                   const quantity = isRestock
-                    ? item.addedQuantity
-                    : item.soldQuantity;
+                    ? entry.addedQuantity
+                    : entry.soldQuantity;
 
                   return (
-                    <tr key={item.id}>
+
+                    <tr key={entry.id}>
+
+                      {/* PRODUCT */}
 
                       <td>
-                        <strong>
-                          {item.productName}
-                        </strong>
+
+                        <div className="stock-history-product-cell">
+
+                          <div className="stock-history-product-icon">
+
+                            {isRestock ? (
+                              <Package size={17} />
+                            ) : (
+                              <ShoppingBag size={17} />
+                            )}
+
+                          </div>
+
+                          <div>
+
+                            <strong>
+                              {entry.productName}
+                            </strong>
+
+                            <span>
+                              Product ID: {entry.productId}
+                            </span>
+
+                          </div>
+
+                        </div>
+
                       </td>
 
+
+                      {/* TYPE */}
+
                       <td>
+
                         <span
-                          className={`stock-history-type ${
+                          className={
                             isRestock
-                              ? "restock"
-                              : "sale"
-                          }`}
+                              ? "stock-history-type restock"
+                              : "stock-history-type sale"
+                          }
                         >
+
                           {isRestock ? (
                             <>
-                              <PackagePlus size={14} />
+                              <ArrowUp size={13} />
                               Restock
                             </>
                           ) : (
                             <>
-                              <ShoppingCart size={14} />
+                              <ArrowDown size={13} />
                               Sale
                             </>
                           )}
+
                         </span>
+
                       </td>
 
-                      <td>
-                        {item.previousStock}
-                      </td>
+
+                      {/* PREVIOUS */}
 
                       <td>
+
+                        <strong>
+                          {entry.previousStock}
+                        </strong>
+
+                      </td>
+
+
+                      {/* CHANGE */}
+
+                      <td>
+
                         <strong
                           className={
                             isRestock
-                              ? "quantity-positive"
-                              : "quantity-negative"
+                              ? "stock-change-positive"
+                              : "stock-change-negative"
                           }
                         >
+
                           {isRestock ? "+" : "-"}
-                          {quantity}
+                          {quantity || 0}
+
                         </strong>
+
                       </td>
 
-                      <td>
-                        <strong>
-                          {item.remainingStock}
-                        </strong>
-                      </td>
+
+                      {/* REMAINING */}
 
                       <td>
-                        {formatDate(item.date)}
+
+                        <strong
+                          className={
+                            Number(entry.remainingStock) === 0
+                              ? "stock-remaining-zero"
+                              : "stock-remaining"
+                          }
+                        >
+                          {entry.remainingStock}
+                        </strong>
+
+                      </td>
+
+
+                      {/* DATE */}
+
+                      <td>
+
+                        <span className="stock-history-date">
+                          {formatDate(entry.date)}
+                        </span>
+
                       </td>
 
                     </tr>
+
                   );
+
                 })}
 
               </tbody>

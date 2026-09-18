@@ -1433,70 +1433,132 @@ setStockHistory(savedStockHistory);
 
           </div>
 
-          {/* ================= STOCK HISTORY ================= */}
+       {/* ================= STOCK HISTORY ================= */}
+<Link
+  to="/admin/stock-history"
+  className="admin-overview-card stock-history-card"
+>
 
-<div className="admin-overview-card stock-history-card">
-  <div className="admin-card-header">
-    <div>
-      <h3>Stock History</h3>
-      <p>Recent inventory changes from orders</p>
-    </div>
 
-    <Boxes size={20} />
+ <div className="admin-card-header">
+  <div>
+    <h3>Stock History</h3>
+    <p>Recent inventory changes from orders</p>
   </div>
 
+  <Link
+    to="/admin/stock-history"
+    className="stock-history-icon-link"
+    aria-label="View Stock History"
+  >
+    <Boxes size={20} />
+  </Link>
+</div>
+
+
   {stockHistory.length === 0 ? (
+
     <div className="stock-history-empty">
+
       <Package size={24} />
-      <p>No stock movements yet.</p>
+
+      <p>
+        No stock movements yet.
+      </p>
+
     </div>
+
   ) : (
+
     <div className="stock-history-list">
-      {stockHistory.slice(0, 6).map((entry) => (
-        <div
-          className="stock-history-item"
-          key={entry.id}
-        >
-          <div className="stock-history-product">
-            <strong>{entry.productName}</strong>
 
-            <span>
-              Order #{entry.orderId}
-            </span>
-          </div>
+      {stockHistory
+        .slice(0, 6)
+        .map((entry) => {
 
-          <div className="stock-history-change">
-            <span className="stock-before">
-              {entry.previousStock}
-            </span>
+          const isRestock =
+            entry.type === "restock";
 
-            <ArrowRight size={14} />
+          return (
 
-            <span
-              className={
-                entry.remainingStock === 0
-                  ? "stock-after zero"
-                  : "stock-after"
-              }
+            <div
+              className="stock-history-item"
+              key={entry.id}
             >
-              {entry.remainingStock}
-            </span>
-          </div>
 
-          <div className="stock-history-sold">
-            -{entry.soldQuantity} sold
-          </div>
-        </div>
-      ))}
+              <div className="stock-history-product">
+
+                <strong>
+                  {entry.productName}
+                </strong>
+
+                <span>
+                  {isRestock
+                    ? "Restocked"
+                    : `Order #${entry.orderId || "—"}`}
+                </span>
+
+              </div>
+
+
+              <div className="stock-history-change">
+
+                <span className="stock-before">
+                  {entry.previousStock}
+                </span>
+
+                <ArrowRight size={14} />
+
+                <span
+                  className={
+                    entry.remainingStock === 0
+                      ? "stock-after zero"
+                      : "stock-after"
+                  }
+                >
+                  {entry.remainingStock}
+                </span>
+
+              </div>
+
+
+              <div
+                className={
+                  isRestock
+                    ? "stock-history-restocked"
+                    : "stock-history-sold"
+                }
+              >
+
+                {isRestock
+                  ? `+${entry.addedQuantity} restocked`
+                  : `-${entry.soldQuantity || 0} sold`}
+
+              </div>
+
+            </div>
+
+          );
+
+        })}
+
     </div>
+
   )}
+
 
   {stockHistory.length > 6 && (
+
     <div className="stock-history-footer">
+
       Showing the 6 most recent stock changes
+
     </div>
+
   )}
-</div>
+
+</Link >
+
 
 
           {inventoryStats.outOfStock > 0 ||
