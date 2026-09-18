@@ -15,6 +15,8 @@ const AdminProducts = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+const [restockProduct, setRestockProduct] = useState(null);
+const [restockQuantity, setRestockQuantity] = useState("");
 
   const emptyProduct = {
     name: "",
