@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   Plus,
   Pencil,
@@ -845,6 +846,102 @@ const handleRestock = () => {
         </div>
 
       )}
+
+      {restockProduct && (
+        <div className="admin-modal-overlay">
+          <div className="admin-product-modal restock-modal">
+
+            <div className="admin-modal-header">
+              <div>
+                <span className="admin-label">
+                  WATCHME ADMIN
+                </span>
+
+                <h2>Restock Product</h2>
+              </div>
+
+              <button
+                type="button"
+                className="close-admin-modal"
+                onClick={() => {
+                  setRestockProduct(null);
+                  setRestockQuantity("");
+                }}
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="restock-product-info">
+              <h3>{restockProduct.name}</h3>
+
+              <p>
+                Current stock:{" "}
+                <strong>
+                  {Number(restockProduct.stock ?? 0)}
+                </strong>
+              </p>
+            </div>
+
+            <form
+              className="admin-product-form"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleRestock();
+              }}
+            >
+              <div className="admin-form-group">
+                <label>
+                  Quantity to Add
+                </label>
+
+                <input
+                  type="number"
+                  min="1"
+                  step="1"
+                  value={restockQuantity}
+                  onChange={(e) =>
+                    setRestockQuantity(e.target.value)
+                  }
+                  placeholder="Enter quantity"
+                  required
+                  autoFocus
+                />
+              </div>
+
+              <div className="restock-new-stock">
+                New stock after restock:{" "}
+                <strong>
+                  {Number(restockProduct.stock ?? 0) +
+                    Number(restockQuantity || 0)}
+                </strong>
+              </div>
+
+              <div className="admin-form-actions">
+                <button
+                  type="button"
+                  className="cancel-product-button"
+                  onClick={() => {
+                    setRestockProduct(null);
+                    setRestockQuantity("");
+                  }}
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  className="save-product-button"
+                >
+                  Restock Product
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      )}
+
 
     </main>
   );
