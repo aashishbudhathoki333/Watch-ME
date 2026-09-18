@@ -431,6 +431,19 @@
     transform: translateY(-2px);
 }
 
+/* RESTOCK */
+
+.restock-product-button {
+    border: 1px solid #d9e4d8;
+    background: #fff;
+    color: #4d7650;
+}
+
+.restock-product-button:hover {
+    border-color: #7ca47f;
+    background: #eef7ef;
+    color: #356238;
+}
 
 /* EDIT */
 
