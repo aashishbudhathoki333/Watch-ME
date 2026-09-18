@@ -31,6 +31,8 @@ import AdminProducts from "./pages/AdminProducts";
 import AdminCustomers from "./pages/AdminCustomers";
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
 import AdminReviews from "./pages/AdminReviews";
+import AdminStockHistory from "./pages/AdminStockHistory";
+
 
 const App = () => {
   return (
@@ -189,6 +191,16 @@ const App = () => {
     </AdminProtectedRoute>
   }
 />
+
+<Route
+  path="/admin/stock-history"
+  element={
+    <AdminProtectedRoute>
+      <AdminStockHistory />
+    </AdminProtectedRoute>
+  }
+/>
+
 
               {/* ================= 404 ================= */}
 
